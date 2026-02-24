@@ -1,0 +1,100 @@
+/* 系统配置通用样式，目前主要用于标题区域、分页按钮等小细节统一 */
+
+.system-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.system-tab {
+    padding: 8px 14px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.system-tab:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.system-tab.active {
+    background: var(--neon-blue, #0ea5e9);
+    color: #fff;
+}
+
+.sysconfig-card-title {
+    margin: 0;
+}
+
+.sysconfig-load-more {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.sysconfig-helpblock {
+    margin-top: 6px;
+}
+
+.sysconfig-table-cell-w300 {
+    max-width: 300px;
+    word-break: break-all;
+    font-size: 12px;
+}
+
+.sysconfig-table-cell-w200 {
+    max-width: 200px;
+    word-break: break-all;
+    font-size: 12px;
+}
+
+.sysconfig-card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sysconfig-inline-muted {
+    margin-left: 8px;
+}
+
+.sysconfig-link-danger {
+    margin-left: 8px;
+    color: #ef4444;
+}
+
+.sysconfig-permissions-box {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 12px;
+}
+
+.sysconfig-permission-item {
+    margin-bottom: 8px;
+}
+
+.sysconfig-empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+.sysconfig-inline-form {
+    display: inline;
+}
+
+.sysconfig-info-box {
+    margin-top: 24px;
+}
+
+.sysconfig-info-list {
+    margin: 12px 0;
+    padding-left: 24px;
+    line-height: 1.8;
+}
+

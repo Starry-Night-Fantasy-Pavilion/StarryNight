@@ -1,0 +1,4 @@
+<?php
+return ["account" => ["title" => "账号(account)", "type" => "text", "value" => "", "tip" => ""], "password" => ["title" => "密码(password)", "type" => "text", "value" => "", "tip" => ""], "appid" => ["title" => "应用ID(appId)", "type" => "text", "value" => "", "tip" => ""], "authCode" => ["title" => "授权码(authCode)", "type" => "text", "value" => "", "tip" => ""], "smgWhiteListIp" => ["title" => "白名单IP", "type" => "text", "value" => "0.0.0.0", "tip" => ""], "channel" => ["title" => "通道编码(channel)", "type" => "text", "value" => "", "tip" => ""], "signature" => ["title" => "短信签名(signature)", "type" => "text", "value" => "", "tip" => ""]];
+
+?>

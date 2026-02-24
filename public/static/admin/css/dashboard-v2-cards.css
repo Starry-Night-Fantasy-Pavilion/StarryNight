@@ -1,0 +1,454 @@
+/**
+ * 仪表板V2卡片样式
+ * 星空主题设计 - 与图片完全一致的布局
+ */
+
+/* ===== 仪表板V2容器 ===== */
+.dashboard-v2 {
+    padding: 0;
+    min-height: calc(100vh - 60px);
+}
+
+/* ===== 头部区域 - 优化设计 ===== */
+.dashboard-header-v2 {
+    text-align: center;
+    padding: 48px 32px 36px;
+    margin-bottom: 16px;
+    position: relative;
+}
+
+.dashboard-header-v2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #5eead4, transparent);
+    border-radius: 2px;
+    opacity: 0.8;
+}
+
+.dashboard-title-v2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #5eead4;
+    margin-bottom: 12px;
+    letter-spacing: 3px;
+    text-shadow: 
+        0 0 20px rgba(94, 234, 212, 0.4),
+        0 0 40px rgba(94, 234, 212, 0.2);
+    position: relative;
+    display: inline-block;
+}
+
+.dashboard-title-v2::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #5eead4, transparent);
+    border-radius: 1px;
+    opacity: 0.6;
+}
+
+.dashboard-subtitle-v2 {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    margin-top: 8px;
+}
+
+/* ===== 卡片网格布局 - 优化布局 ===== */
+.dashboard-grid-v2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 0 32px 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ===== 卡片基础样式 - 增强液态玻璃效果 ===== */
+.dashboard-card-v2 {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    min-height: 120px;
+}
+
+.dashboard-card-v2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.dashboard-card-v2::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.dashboard-card-v2:hover {
+    transform: translateY(-6px) scale(1.02);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.1));
+    border-color: rgba(255, 255, 255, 0.35);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.dashboard-card-v2:hover::after {
+    opacity: 1;
+}
+
+/* ===== 卡片图标 - 增强设计 ===== */
+.card-icon-v2 {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 20px;
+    position: relative;
+    z-index: 2;
+    transition: all 0.4s ease;
+}
+
+.card-icon-v2 svg {
+    width: 28px;
+    height: 28px;
+    color: white;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    transition: all 0.4s ease;
+}
+
+/* ===== 卡片图标增强交互效果 ===== */
+.dashboard-card-v2:hover .card-icon-v2 {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-card-v2:hover .card-icon-v2 svg {
+    transform: scale(1.1);
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+}
+
+/* 用户管理 - 紫色 */
+.card-icon-v2.bg-user {
+    background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+}
+
+.dashboard-card-v2:hover .card-icon-v2.bg-user {
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.6);
+}
+
+/* 活跃度DAU - 粉色 */
+.card-icon-v2.bg-dau {
+    background: linear-gradient(135deg, #ec4899, #f472b6);
+    box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+}
+
+.dashboard-card-v2:hover .card-icon-v2.bg-dau {
+    box-shadow: 0 8px 25px rgba(236, 72, 153, 0.6);
+}
+
+/* 星夜币消耗 - 蓝色 */
+.card-icon-v2.bg-coin {
+    background: linear-gradient(135deg, #06b6d4, #22d3ee);
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+}
+
+.dashboard-card-v2:hover .card-icon-v2.bg-coin {
+    box-shadow: 0 8px 25px rgba(6, 182, 212, 0.6);
+}
+
+/* 收入统计 - 绿色 */
+.card-icon-v2.bg-revenue {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.dashboard-card-v2:hover .card-icon-v2.bg-revenue {
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
+}
+
+/* 小说内容 - 橙色 */
+.card-icon-v2.bg-novel {
+    background: linear-gradient(135deg, #f97316, #fb923c);
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+}
+
+.dashboard-card-v2:hover .card-icon-v2.bg-novel {
+    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.6);
+}
+
+/* 音乐内容 - 青色 */
+.card-icon-v2.bg-music {
+    background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+}
+
+.dashboard-card-v2:hover .card-icon-v2.bg-music {
+    box-shadow: 0 8px 25px rgba(14, 165, 233, 0.6);
+}
+
+/* 动漫内容 - 白色/灰色 */
+.card-icon-v2.bg-anime {
+    background: linear-gradient(135deg, #64748b, #94a3b8);
+    box-shadow: 0 4px 15px rgba(100, 116, 139, 0.4);
+}
+
+.dashboard-card-v2:hover .card-icon-v2.bg-anime {
+    box-shadow: 0 8px 25px rgba(100, 116, 139, 0.6);
+}
+
+/* 存储管理 - 青色 */
+.card-icon-v2.bg-storage {
+    background: linear-gradient(135deg, #06b6d4, #22d3ee);
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+}
+
+/* 插件/引擎 - 紫色 */
+.card-icon-v2.bg-plugins {
+    background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+}
+
+/* ===== 卡片内容 ===== */
+.card-content-v2 {
+    flex: 1;
+    min-width: 0;
+}
+
+.card-title-v2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 8px;
+}
+
+/* ===== 统计数据行 - 优化布局 ===== */
+.card-stats-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.stat-item .stat-label {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 400;
+}
+
+.stat-item .stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.2;
+}
+
+/* ===== 卡片箭头 - 增强动画效果 ===== */
+.card-arrow-v2 {
+    margin-left: auto;
+    padding-left: 16px;
+    opacity: 0;
+    transform: translateX(-12px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+}
+
+.card-arrow-v2 svg {
+    width: 20px;
+    height: 20px;
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 0.4s ease;
+}
+
+.dashboard-card-v2:hover .card-arrow-v2 {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.dashboard-card-v2:hover .card-arrow-v2 svg {
+    color: rgba(255, 255, 255, 0.9);
+    transform: translateX(4px);
+}
+
+/* ===== 顶部栏样式已统一到 style.css ===== */
+/* 顶部栏样式现在使用统一的液态玻璃效果，定义在 style.css 中 */
+
+/* ===== 侧边栏样式优化 - 与图片一致 ===== */
+/* ===== 侧边栏样式已统一到 style.css ===== */
+/* 所有侧边栏样式现在使用统一的液态玻璃胶囊效果，定义在 style.css 中 */
+
+/* ===== 菜单样式已统一到 style.css ===== */
+/* 菜单样式现在使用统一的液态玻璃胶囊效果，定义在 style.css 中 */
+
+/* ===== 侧边栏用户信息样式已统一到 style.css ===== */
+/* 用户信息区域现在使用统一的横向胶囊液态玻璃效果，定义在 style.css 中 */
+
+/* ===== 侧边栏切换按钮样式已统一到 style.css ===== */
+/* 切换按钮现在使用统一的液态玻璃效果，定义在 style.css 中 */
+
+/* ===== 响应式布局 - 优化移动端体验 ===== */
+@media (max-width: 1400px) {
+    .dashboard-grid-v2 {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        padding: 0 24px 24px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .dashboard-grid-v2 {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+    }
+}
+
+@media (max-width: 992px) {
+    .dashboard-grid-v2 {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+        padding: 0 20px 20px;
+    }
+    
+    .dashboard-card-v2 {
+        padding: 20px;
+        min-height: 110px;
+    }
+    
+    .card-icon-v2 {
+        width: 48px;
+        height: 48px;
+        margin-right: 16px;
+    }
+    
+    .card-icon-v2 svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-grid-v2 {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 0 16px 16px;
+    }
+    
+    .dashboard-card-v2 {
+        padding: 18px;
+        min-height: 100px;
+        border-radius: 16px;
+    }
+    
+    .card-icon-v2 {
+        width: 44px;
+        height: 44px;
+        margin-right: 14px;
+    }
+    
+    .card-icon-v2 svg {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .card-stats-row {
+        gap: 16px;
+    }
+    
+    .stat-item .stat-value {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-header-v2 {
+        padding: 20px 16px 16px;
+    }
+    
+    .dashboard-title-v2 {
+        font-size: 1.3rem;
+        letter-spacing: 1px;
+    }
+    
+    .dashboard-subtitle-v2 {
+        font-size: 0.8rem;
+    }
+    
+    .dashboard-card-v2 {
+        padding: 16px;
+        min-height: 90px;
+    }
+    
+    .card-icon-v2 {
+        width: 40px;
+        height: 40px;
+        margin-right: 12px;
+        border-radius: 12px;
+    }
+    
+    .card-icon-v2 svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .card-title-v2 {
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+    }
+    
+    .card-stats-row {
+        gap: 12px;
+    }
+    
+    .stat-item .stat-label {
+        font-size: 0.65rem;
+    }
+    
+    .stat-item .stat-value {
+        font-size: 1rem;
+    }
+}

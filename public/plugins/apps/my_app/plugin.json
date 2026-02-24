@@ -1,0 +1,19 @@
+{
+    "plugin_id": "my_app",
+    "id": "my_app",
+    "name": "在线书城",
+    "version": "2.0.0",
+    "description": "提供完整的在线书城功能，包括作品展示、书源管理、拆书与仿写、下载、评论互动、阅读进度跟踪、书签功能和智能推荐系统。",
+    "author": "Kilo Code",
+    "type": "app",
+    "namespace": "plugins\\apps\\my_app",
+    "dependencies": [],
+    "main_class": "Plugin.php",
+    "installed": true,
+    "status": "disabled",
+    "frontend_entry": "\/bookstore",
+    "admin_entry": "\/admin\/my_app\/settings",
+    "install_sql": "database\/install.sql",
+    "uninstall_sql": "database\/uninstall.sql",
+    "upgrade_sql": "database\/upgrade_v2.sql"
+}

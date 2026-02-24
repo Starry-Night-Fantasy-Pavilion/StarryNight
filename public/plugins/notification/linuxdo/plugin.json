@@ -1,0 +1,73 @@
+{
+    "plugin_id": "linuxdo_login",
+    "name": "Linux DO社区登录",
+    "version": "1.0.0",
+    "description": "通过Linux DO Connect进行第三方登录，使用OAuth2认证流程",
+    "author": "StarryNight Team",
+    "website": "https:\/\/wiki.linux.do\/Community\/LinuxDoConnect",
+    "type": "thirdparty_login",
+    "category": "oauth2",
+    "namespace": "Plugins\\Notification\\Linuxdo",
+    "main_class": "Plugin.php",
+    "dependencies": [],
+    "installed": true,
+    "status": "enabled",
+    "install_sql": null,
+    "uninstall_sql": null,
+    "config": {
+        "usage_scenario": {
+            "type": "checkbox",
+            "label": "使用场景",
+            "options": {
+                "frontend": "前端使用"
+            },
+            "default": [
+                "frontend"
+            ],
+            "required": false
+        },
+        "client_id": {
+            "type": "text",
+            "label": "Client ID",
+            "default": "",
+            "required": true,
+            "description": "从Linux DO Connect获取的Client ID"
+        },
+        "client_secret": {
+            "type": "password",
+            "label": "Client Secret",
+            "default": "",
+            "required": true,
+            "description": "从Linux DO Connect获取的Client Secret"
+        },
+        "redirect_uri": {
+            "type": "text",
+            "label": "回调地址",
+            "default": "",
+            "required": true,
+            "description": "OAuth2回调地址，需要在Linux DO Connect中注册"
+        },
+        "scope": {
+            "type": "text",
+            "label": "授权范围",
+            "default": "user",
+            "required": false,
+            "description": "OAuth2授权范围，默认为user"
+        },
+        "api_timeout": {
+            "type": "number",
+            "label": "API超时时间（秒）",
+            "default": 10,
+            "min": 1,
+            "max": 60,
+            "required": false
+        }
+    },
+    "requirements": {
+        "php": ">=7.4",
+        "extensions": [
+            "curl",
+            "json"
+        ]
+    }
+}

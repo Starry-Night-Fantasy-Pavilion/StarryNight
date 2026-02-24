@@ -1,0 +1,491 @@
+/**
+ * 响应式表单样式
+ * 优化表单在各种屏幕尺寸下的显示和交互
+ */
+
+/* ===== 基础表单响应式样式 ===== */
+@media (max-width: 768px) {
+    /* 表单容器优化 */
+    .card {
+        margin: 0 -8px;
+        border-radius: 0;
+    }
+    
+    .card-header {
+        padding: 16px 16px 12px;
+    }
+    
+    .card-body {
+        padding: 16px;
+    }
+    
+    /* 表单布局优化 */
+    .form-row-2,
+    .form-row-3,
+    .form-row-4 {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    /* 表单控件优化 */
+    .form-control {
+        font-size: 16px; /* 防止iOS自动缩放 */
+        padding: 12px 16px;
+        min-height: 48px; /* 触摸友好的最小高度 */
+        border-radius: var(--radius-md);
+    }
+    
+    .form-select {
+        font-size: 16px;
+        padding: 12px 16px;
+        min-height: 48px;
+    }
+    
+    .form-label {
+        font-size: 14px;
+        margin-bottom: 6px;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+    
+    /* 按钮组优化 */
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+    }
+    
+    .btn-group .btn {
+        width: 100%;
+        justify-content: center;
+        min-height: 48px;
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+    
+    /* 表单网格布局 */
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    /* 搜索表单优化 */
+    .card-header form {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .card-header form > div {
+        min-width: auto !important;
+        width: 100%;
+    }
+    
+    /* 内联表单组 */
+    .input-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .input-group .form-control {
+        border-radius: var(--radius-md);
+    }
+    
+    .input-group .btn {
+        border-radius: var(--radius-md);
+        min-height: 48px;
+    }
+}
+
+/* 更小屏幕优化 */
+@media (max-width: 480px) {
+    .card {
+        margin: 0 -4px;
+    }
+    
+    .card-header {
+        padding: 12px 12px 8px;
+    }
+    
+    .card-body {
+        padding: 12px;
+    }
+    
+    .form-control,
+    .form-select {
+        padding: 10px 14px;
+        font-size: 16px;
+    }
+    
+    .form-label {
+        font-size: 13px;
+    }
+    
+    /* 复选框和单选框优化 */
+    .form-check {
+        margin-bottom: 12px;
+        min-height: 44px; /* 触摸友好的最小高度 */
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+    }
+    
+    .form-check-input {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+    }
+    
+    .form-check-label {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    
+    /* 开关组件优化 */
+    .form-switch {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
+    }
+    
+    .form-switch .form-check-input {
+        width: 48px;
+        height: 24px;
+    }
+    
+    /* 文件上传优化 */
+    .form-control[type="file"] {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    /* 文本域优化 */
+    .form-control[type="textarea"],
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+}
+
+/* ===== 特殊表单组件响应式 ===== */
+
+/* 分页组件 */
+@media (max-width: 768px) {
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
+    }
+    
+    .pagination .page-item {
+        margin: 0;
+    }
+    
+    .pagination .page-link {
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+    
+    /* 隐藏部分页码 */
+    .pagination .page-item:nth-child(n+4):nth-last-child(n+4) {
+        display: none;
+    }
+    
+    /* 显示省略号 */
+    .pagination .page-ellipsis {
+        display: flex;
+        align-items: center;
+        padding: 0 8px;
+        color: var(--text-muted);
+    }
+}
+
+@media (max-width: 480px) {
+    .pagination {
+        gap: 2px;
+    }
+    
+    .pagination .page-link {
+        min-width: 40px;
+        min-height: 40px;
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+}
+
+/* 模态框响应式 */
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 8px;
+        max-width: calc(100vw - 16px);
+        height: calc(100vh - 16px);
+        max-height: calc(100vh - 16px);
+    }
+    
+    .modal-content {
+        height: 100%;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+    }
+    
+    .modal-header {
+        padding: 16px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .modal-body {
+        padding: 16px;
+        max-height: calc(100% - 120px);
+        overflow-y: auto;
+    }
+    
+    .modal-footer {
+        padding: 16px;
+        border-top: 1px solid var(--border-color);
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+        min-height: 48px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-dialog {
+        margin: 4px;
+        height: calc(100vh - 8px);
+        max-height: calc(100vh - 8px);
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 12px;
+    }
+}
+
+/* 下拉菜单响应式 */
+@media (max-width: 768px) {
+    .dropdown-menu {
+        min-width: 200px;
+        max-width: calc(100vw - 32px);
+        left: 16px !important;
+        right: 16px !important;
+        transform: none !important;
+    }
+    
+    .dropdown-item {
+        padding: 12px 16px;
+        font-size: 14px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .dropdown-divider {
+        margin: 8px 0;
+    }
+}
+
+/* 标签页响应式 */
+@media (max-width: 768px) {
+    .nav-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0;
+    }
+    
+    .nav-tabs::-webkit-scrollbar {
+        height: 3px;
+    }
+    
+    .nav-tabs::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .nav-tabs::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 2px;
+    }
+    
+    .nav-tabs .nav-link {
+        white-space: nowrap;
+        padding: 12px 16px;
+        font-size: 14px;
+        border: none;
+        border-bottom: 2px solid transparent;
+        color: var(--text-secondary);
+        min-width: 80px;
+        text-align: center;
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
+        background: transparent;
+    }
+    
+    .nav-tabs .nav-link:hover {
+        color: var(--text-primary);
+        border-bottom-color: var(--border-color);
+    }
+}
+
+/* 进度条响应式 */
+@media (max-width: 768px) {
+    .progress {
+        height: 8px;
+        border-radius: 4px;
+    }
+    
+    .progress-bar {
+        font-size: 0; /* 隐藏文字 */
+    }
+}
+
+/* 警告框响应式 */
+@media (max-width: 768px) {
+    .alert {
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        line-height: 1.5;
+    }
+    
+    .alert-dismissible {
+        padding-right: 40px;
+    }
+    
+    .alert-dismissible .btn-close {
+        padding: 12px;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}
+
+/* 工具提示响应式 */
+@media (max-width: 768px) {
+    .tooltip {
+        font-size: 12px;
+    }
+    
+    .tooltip .tooltip-inner {
+        padding: 6px 10px;
+        border-radius: var(--radius-sm);
+    }
+}
+
+/* ===== 表单验证响应式 ===== */
+@media (max-width: 768px) {
+    .invalid-feedback {
+        font-size: 13px;
+        margin-top: 6px;
+        padding: 8px 12px;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: var(--radius-sm);
+        color: var(--danger-color);
+    }
+    
+    .valid-feedback {
+        font-size: 13px;
+        margin-top: 6px;
+        padding: 8px 12px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        border-radius: var(--radius-sm);
+        color: var(--success-color);
+    }
+    
+    .form-control.is-invalid,
+    .form-control.is-valid {
+        background-size: 20px 20px;
+        background-position: right 12px center;
+    }
+}
+
+/* ===== 加载状态响应式 ===== */
+@media (max-width: 768px) {
+    .form-loading {
+        position: relative;
+    }
+    
+    .form-loading::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(2px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        border-radius: var(--radius-md);
+    }
+    
+    .form-loading::before {
+        content: '处理中...';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--text-primary);
+        font-size: 14px;
+        z-index: 11;
+        background: var(--bg-primary);
+        padding: 8px 16px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border-color);
+    }
+}
+
+/* ===== 无障碍优化 ===== */
+@media (max-width: 768px) {
+    /* 焦点状态优化 */
+    .form-control:focus,
+    .form-select:focus,
+    .btn:focus {
+        outline: 2px solid var(--primary-color);
+        outline-offset: 2px;
+    }
+    
+    /* 高对比度模式支持 */
+    @media (prefers-contrast: high) {
+        .form-control,
+        .form-select {
+            border-width: 2px;
+        }
+        
+        .btn {
+            border-width: 2px;
+        }
+    }
+    
+    /* 减少动画模式支持 */
+    @media (prefers-reduced-motion: reduce) {
+        .form-control,
+        .form-select,
+        .btn {
+            transition: none;
+        }
+    }
+}

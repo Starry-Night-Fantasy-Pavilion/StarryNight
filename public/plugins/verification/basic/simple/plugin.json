@@ -1,0 +1,63 @@
+{
+    "plugin_id": "simple_captcha",
+    "name": "简单验证码",
+    "version": "1.0.0",
+    "description": "简单的数学运算验证码，无需外部API",
+    "author": "StarryNight Team",
+    "website": "",
+    "type": "verification",
+    "category": "basic",
+    "namespace": "Plugins\\Verification\\Basic\\Simple",
+    "main_class": "Plugin.php",
+    "dependencies": [],
+    "installed": true,
+    "status": "enabled",
+    "install_sql": null,
+    "uninstall_sql": null,
+    "config": {
+        "usage_scenario": {
+            "type": "checkbox",
+            "label": "使用场景",
+            "options": {
+                "frontend": "前端使用",
+                "backend": "后端使用"
+            },
+            "default": [
+                "frontend",
+                "backend"
+            ],
+            "required": false
+        },
+        "difficulty": {
+            "type": "select",
+            "label": "难度级别",
+            "options": {
+                "easy": "简单 (1-10)",
+                "medium": "中等 (1-20)",
+                "hard": "困难 (1-50)"
+            },
+            "default": "easy",
+            "required": false
+        },
+        "operators": {
+            "type": "checkbox",
+            "label": "支持的运算符",
+            "options": {
+                "+": "加法",
+                "-": "减法"
+            },
+            "default": [
+                "+",
+                "-"
+            ],
+            "required": false
+        }
+    },
+    "requirements": {
+        "php": ">=7.4",
+        "extensions": [
+            "gd",
+            "session"
+        ]
+    }
+}

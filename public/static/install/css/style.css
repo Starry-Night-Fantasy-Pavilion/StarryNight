@@ -1,0 +1,690 @@
+/*
+ * Starry Night Installer - Glassmorphism Two-Column Theme
+ * Inspired by the provided UI design.
+ */
+
+:root {
+    --primary-color: #3b82f6;
+    --primary-hover-color: #60a5fa;
+    --secondary-color: rgba(255, 255, 255, 0.05);
+    --secondary-hover-color: rgba(255, 255, 255, 0.1);
+    --text-color: #ffffff;
+    --text-color-dark: rgba(255, 255, 255, 0.6);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --glass-alpha: 0.25;
+    --glass-tint: 20, 20, 28;
+    --glass-bg: rgba(var(--glass-tint), var(--glass-alpha));
+    --sidebar-bg: rgba(15, 23, 42, 0.7);
+    --input-bg: rgba(0, 0, 0, 0.3);
+    --success-color: #10b981;
+    --fail-color: #ef4444;
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+body.install-page {
+    font-family: var(--font-family);
+    background-image: url('/static/install/img/background.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.install-wrapper {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    height: 85vh;
+    gap: 20px;
+}
+
+/* Left Card - Sidebar */
+.install-sidebar {
+    flex: 0 0 220px;
+    background: var(--sidebar-bg);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px 12px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+}
+
+.install-sidebar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+}
+
+.brand-section {
+    text-align: center;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.brand-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-logo img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 4px;
+}
+
+.brand-logo span {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+.nav-steps {
+    margin: 0;
+    list-style: none;
+    padding: 0;
+    flex-grow: 1;
+}
+
+.nav-step {
+    padding: 10px 12px;
+    margin-bottom: 5px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.nav-step.active {
+    background: rgba(59, 130, 246, 0.2);
+    color: #fff;
+    font-weight: 600;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Right Card - Main Content */
+.install-main {
+    flex: 1;
+    background: var(--glass-bg);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    position: relative;
+}
+
+.install-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 40px 60px;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+}
+
+.install-content::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+}
+
+h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    color: #fff;
+    text-align: center;
+}
+
+.description {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+    line-height: 1.4;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Forms & Content */
+.form-wrapper {
+    flex: 1;
+}
+
+fieldset {
+    border: none;
+    padding: 20px;
+    margin: 0 0 20px 0;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-grid .form-item:last-child:nth-child(odd) {
+    grid-column: span 2;
+}
+
+legend {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-item {
+    margin-bottom: 0;
+}
+
+.form-item label {
+    display: block;
+    font-size: 1rem;
+    color: var(--text-color-dark);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-item label.required::after {
+    content: " *";
+    color: #ff4d4f;
+    margin-left: 4px;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-group input {
+    flex: 1;
+    padding-right: 45px !important;
+}
+
+.btn-random {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+}
+
+.btn-random:hover {
+    color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: 100%;
+    padding: 10px 15px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Actions */
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 35px;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border-color);
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    flex-shrink: 0;
+}
+
+.actions .btn-secondary {
+    margin-right: auto;
+}
+
+.btn {
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(59, 130, 246, 0.5);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--secondary-hover-color);
+}
+
+/* Tables */
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.table th {
+    text-align: left;
+    padding: 8px 20px;
+    color: var(--text-color-dark);
+    font-weight: 500;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.table td {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1.1rem;
+}
+
+/* Step 1 (环境检查) specific compact style */
+.step-1 .install-content {
+    padding-top: 10px;
+}
+
+.step-1 h1 {
+    margin-bottom: 5px;
+}
+
+.step-1 .description {
+    margin-bottom: 10px;
+}
+
+.step-1 fieldset {
+    padding: 10px 20px;
+    margin-bottom: 10px;
+}
+
+.step-1 legend {
+    margin-bottom: 5px;
+}
+
+.step-1 .table th {
+    padding: 4px 20px;
+}
+
+.step-1 .table td {
+    padding: 6px 20px;
+    line-height: 1.4;
+}
+
+.step-1 .table {
+    border-spacing: 0 1px;
+}
+
+.table td:first-child {
+    border-left: 1px solid var(--border-color);
+    border-radius: 12px 0 0 12px;
+}
+
+.table td:last-child {
+    border-right: 1px solid var(--border-color);
+    border-radius: 0 12px 12px 0;
+}
+
+.status-success { color: var(--success-color); }
+.status-fail { color: var(--fail-color); }
+
+/* Footer */
+.install-footer {
+    margin-top: auto;
+    padding-top: 20px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-color-dark);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .install-wrapper {
+        flex-direction: column;
+        height: auto;
+        width: 95%;
+        max-height: 95vh;
+    }
+    .install-sidebar {
+        flex: none;
+        padding: 30px;
+    }
+    .brand-section {
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+    .nav-steps {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        flex-grow: 0;
+    }
+    .nav-step {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    .install-footer {
+        display: none;
+    }
+    .install-main {
+        padding: 0;
+    }
+    .install-content {
+        padding: 30px;
+    }
+    .actions {
+        padding: 15px 30px;
+    }
+    h1 {
+        font-size: 2rem;
+    }
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .form-grid .form-item:last-child:nth-child(odd) {
+        grid-column: span 1;
+    }
+}
+
+/* 存储配置样式 */
+.storage-options {
+    margin-top: 20px;
+}
+
+.storage-option {
+    background: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.storage-option:hover {
+    background: var(--secondary-hover-color);
+    border-color: var(--primary-color);
+}
+
+.storage-option.selected {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: var(--primary-color);
+}
+
+.storage-option-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.storage-option-header input[type="radio"] {
+    margin-right: 12px;
+    width: 18px;
+    height: 18px;
+}
+
+.storage-option-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.storage-option-description {
+    color: var(--text-color-dark);
+    margin: 0 0 15px 0;
+    line-height: 1.5;
+}
+
+.storage-option-details {
+    display: none;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.storage-option.selected .storage-option-details {
+    display: block;
+}
+
+.config-section {
+    margin-bottom: 20px;
+}
+
+.config-section h4 {
+    margin: 0 0 15px 0;
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+.config-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.config-grid.full-width {
+    grid-template-columns: 1fr;
+}
+
+.config-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.config-item label {
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.config-item input,
+.config-item select,
+.config-item textarea {
+    padding: 12px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.config-item input:focus,
+.config-item select:focus,
+.config-item textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.config-item input.error,
+.config-item select.error,
+.config-item textarea.error {
+    border-color: var(--fail-color);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.config-help {
+    margin-top: 5px;
+    font-size: 0.85rem;
+    color: var(--text-color-dark);
+    line-height: 1.4;
+}
+
+.config-warning {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 15px 0;
+    font-size: 0.9rem;
+    color: #ff9999;
+}
+
+.config-info {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 15px 0;
+    font-size: 0.9rem;
+    color: #a5c8ff;
+}
+
+/* 货币配置样式 */
+.currency-preview {
+    background: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.currency-preview h4 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+.currency-example {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0;
+    font-size: 0.9rem;
+}
+
+.currency-example .label {
+    color: var(--text-color-dark);
+    min-width: 80px;
+}
+
+.currency-example .value {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.currency-example .admin-value {
+    color: var(--success-color);
+}
+
+.currency-rules {
+    background: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.currency-rules h4 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+.currency-rules ul {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--text-color-dark);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.currency-rules li {
+    margin-bottom: 5px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .config-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .storage-option-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .currency-example {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "name": "星夜",
+    "version": "1.0.0",
+    "description": "星夜阁前台主题",
+    "author": "星夜",
+    "type": "web",
+    "parent": null,
+    "responsive": true,
+    "rtl_support": false,
+    "screenshot": "theme.jpg",
+    "config": {
+        "primary_color": "#00f2ff",
+        "secondary_color": "#7000ff",
+        "background_color": "#0a0a0a",
+        "text_color": "#ffffff"
+    }
+}

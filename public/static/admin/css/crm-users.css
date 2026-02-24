@@ -1,0 +1,1423 @@
+/**
+ * CRM 用户管理界面样式 V2 - 现代化玻璃态设计
+ * 采用液态玻璃效果、渐变色彩和流畅动画
+ */
+
+/* ===== CSS 变量 ===== */
+:root {
+    /* 主色调 - 与后台管理界面统一 */
+    --crm-primary: #3b82f6;
+    --crm-primary-dark: #2563eb;
+    --crm-primary-light: #60a5fa;
+    --crm-primary-glow: rgba(59, 130, 246, 0.4);
+    
+    /* 状态色 */
+    --crm-success: #10b981;
+    --crm-success-bg: rgba(16, 185, 129, 0.15);
+    --crm-warning: #f59e0b;
+    --crm-warning-bg: rgba(245, 158, 11, 0.15);
+    --crm-danger: #ef4444;
+    --crm-danger-bg: rgba(239, 68, 68, 0.15);
+    --crm-info: #3b82f6;
+    --crm-info-bg: rgba(59, 130, 246, 0.15);
+    
+    /* 间距 */
+    --crm-space-xs: 4px;
+    --crm-space-sm: 8px;
+    --crm-space-md: 12px;
+    --crm-space-lg: 16px;
+    --crm-space-xl: 24px;
+    --crm-space-2xl: 32px;
+    --crm-space-3xl: 48px;
+    
+    /* 玻璃效果 */
+    --crm-glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
+    --crm-glass-border: rgba(255, 255, 255, 0.15);
+    --crm-glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    --crm-glass-blur: blur(20px) saturate(180%);
+}
+
+/* ===== 页面容器 ===== */
+.crm-page-v2 {
+    padding: var(--crm-space-xl);
+    max-width: 100%;
+    min-height: 100%;
+}
+
+/* ===== 页面头部 V2 ===== */
+.crm-header-v2 {
+    margin-bottom: var(--crm-space-2xl);
+}
+
+.crm-header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: var(--crm-space-lg);
+}
+
+.crm-title-group {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--crm-space-lg);
+}
+
+.crm-title-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--crm-primary), #2563eb);
+    border-radius: 14px;
+    color: white;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    flex-shrink: 0;
+}
+
+.crm-title-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.crm-page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.crm-page-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.crm-header-actions {
+    display: flex;
+    gap: var(--crm-space-md);
+    flex-wrap: wrap;
+}
+
+/* ===== 按钮样式 V2 ===== */
+.crm-btn-v2 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--crm-space-sm);
+    padding: 10px 18px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.crm-btn-v2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.crm-btn-v2:hover::before {
+    opacity: 1;
+}
+
+.crm-btn-v2:hover {
+    transform: translateY(-2px);
+}
+
+.crm-btn-primary-v2 {
+    background: linear-gradient(135deg, var(--crm-primary), var(--crm-primary-dark));
+    color: white;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+}
+
+.crm-btn-primary-v2:hover {
+    box-shadow: 0 6px 24px rgba(59, 130, 246, 0.4);
+    color: white;
+}
+
+.crm-btn-glass {
+    background: var(--crm-glass-bg);
+    backdrop-filter: var(--crm-glass-blur);
+    -webkit-backdrop-filter: var(--crm-glass-blur);
+    border: 1px solid var(--crm-glass-border);
+    color: var(--text-primary);
+    box-shadow: var(--crm-glass-shadow);
+}
+
+.crm-btn-glass:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08));
+}
+
+.crm-btn-success-v2 {
+    background: linear-gradient(135deg, var(--crm-success), #059669);
+    color: white;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+}
+
+.crm-btn-warning-v2 {
+    background: linear-gradient(135deg, var(--crm-warning), #d97706);
+    color: white;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+}
+
+.crm-btn-danger-v2 {
+    background: linear-gradient(135deg, var(--crm-danger), #dc2626);
+    color: white;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+}
+
+.crm-btn-info-v2 {
+    background: linear-gradient(135deg, var(--crm-info), #0891b2);
+    color: white;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+}
+
+.crm-btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8125rem;
+}
+
+/* ===== 高级筛选面板 V2 ===== */
+.crm-filters-panel-v2 {
+    margin-top: var(--crm-space-xl);
+    background: var(--crm-glass-bg);
+    backdrop-filter: var(--crm-glass-blur);
+    -webkit-backdrop-filter: var(--crm-glass-blur);
+    border: 1px solid var(--crm-glass-border);
+    border-radius: 16px;
+    padding: var(--crm-space-xl);
+    box-shadow: var(--crm-glass-shadow);
+    animation: slideDownV2 0.3s ease;
+}
+
+@keyframes slideDownV2 {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.crm-filters-form-v2 {
+    display: flex;
+    flex-direction: column;
+    gap: var(--crm-space-lg);
+}
+
+.crm-filters-grid-v2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--crm-space-lg);
+}
+
+.crm-filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--crm-space-sm);
+}
+
+.crm-filter-label-v2 {
+    display: flex;
+    align-items: center;
+    gap: var(--crm-space-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.crm-filter-label-v2 svg {
+    opacity: 0.7;
+}
+
+.crm-input-v2,
+.crm-select-v2 {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.crm-input-v2:focus,
+.crm-select-v2:focus {
+    outline: none;
+    border-color: var(--crm-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.crm-input-v2::placeholder {
+    color: var(--text-muted);
+}
+
+.crm-select-v2 {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+
+.crm-date-range {
+    display: flex;
+    align-items: center;
+    gap: var(--crm-space-sm);
+}
+
+.crm-input-date {
+    flex: 1;
+    min-width: 0;
+}
+
+.crm-date-sep {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+
+.crm-filters-footer {
+    display: flex;
+    gap: var(--crm-space-md);
+    flex-wrap: wrap;
+    padding-top: var(--crm-space-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ===== 统计卡片行 ===== */
+.crm-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--crm-space-lg);
+    margin-bottom: var(--crm-space-xl);
+}
+
+.crm-stat-card-v2 {
+    display: flex;
+    align-items: center;
+    gap: var(--crm-space-lg);
+    padding: var(--crm-space-lg) var(--crm-space-xl);
+    background: var(--crm-glass-bg);
+    backdrop-filter: var(--crm-glass-blur);
+    -webkit-backdrop-filter: var(--crm-glass-blur);
+    border: 1px solid var(--crm-glass-border);
+    border-radius: 16px;
+    box-shadow: var(--crm-glass-shadow);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.crm-stat-card-v2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.crm-stat-card-v2:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.crm-stat-icon-wrap {
+    flex-shrink: 0;
+}
+
+.crm-stat-icon-inner {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    color: white;
+}
+
+.crm-stat-purple .crm-stat-icon-inner {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+}
+
+.crm-stat-green .crm-stat-icon-inner {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+}
+
+.crm-stat-orange .crm-stat-icon-inner {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+}
+
+.crm-stat-blue .crm-stat-icon-inner {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+}
+
+.crm-stat-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.crm-stat-number {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+
+.crm-stat-label {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.crm-stat-trend {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.crm-trend-up {
+    background: var(--crm-success-bg);
+    color: var(--crm-success);
+}
+
+.crm-stat-percent {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--crm-success);
+    padding: 4px 8px;
+    background: var(--crm-success-bg);
+    border-radius: 6px;
+}
+
+/* ===== 批量操作栏 ===== */
+.crm-batch-bar {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.15));
+    backdrop-filter: var(--crm-glass-blur);
+    -webkit-backdrop-filter: var(--crm-glass-blur);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 12px;
+    padding: var(--crm-space-md) var(--crm-space-lg);
+    margin-bottom: var(--crm-space-lg);
+    animation: slideDownV2 0.3s ease;
+}
+
+.crm-batch-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--crm-space-md);
+}
+
+.crm-batch-left {
+    display: flex;
+    align-items: center;
+    gap: var(--crm-space-md);
+}
+
+.crm-batch-text {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+.crm-batch-text strong {
+    color: var(--crm-primary-light);
+    font-weight: 700;
+}
+
+.crm-batch-right {
+    display: flex;
+    gap: var(--crm-space-sm);
+    flex-wrap: wrap;
+}
+
+/* ===== 复选框样式 ===== */
+.crm-checkbox-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.crm-checkbox-wrap input {
+    display: none;
+}
+
+.crm-checkbox-custom {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    border-radius: 5px;
+    position: relative;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.crm-checkbox-wrap input:checked + .crm-checkbox-custom {
+    background: linear-gradient(135deg, var(--crm-primary), var(--crm-primary-dark));
+    border-color: transparent;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.crm-checkbox-wrap input:checked + .crm-checkbox-custom::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* ===== 表格卡片 ===== */
+.crm-table-card {
+    background: var(--crm-glass-bg);
+    backdrop-filter: var(--crm-glass-blur);
+    -webkit-backdrop-filter: var(--crm-glass-blur);
+    border: 1px solid var(--crm-glass-border);
+    border-radius: 16px;
+    box-shadow: var(--crm-glass-shadow);
+    overflow: hidden;
+    position: relative;
+    max-width: 100%;
+}
+
+/* 表格内容区域保持圆角效果 */
+.crm-table-wrapper-v2 {
+    overflow-x: auto;
+    overflow-y: auto;
+    position: relative;
+    border-radius: 0 0 16px 16px; /* 底部圆角 */
+    max-height: calc(100vh - 220px); /* 父容器高度：页面高度减去头部/统计区域 */
+}
+
+.crm-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--crm-space-lg) var(--crm-space-xl);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px 16px 0 0; /* 顶部圆角 */
+    overflow: hidden; /* 保持头部圆角效果 */
+}
+
+.crm-table-title {
+    display: flex;
+    align-items: center;
+    gap: var(--crm-space-md);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.crm-table-count {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    padding: 3px 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+}
+
+.crm-table-tools {
+    display: flex;
+    align-items: center;
+    gap: var(--crm-space-md);
+}
+
+.crm-view-switch {
+    display: flex;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 2px;
+}
+
+.crm-view-btn {
+    padding: 6px 10px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.crm-view-btn:hover {
+    color: var(--text-primary);
+}
+
+.crm-view-btn.active {
+    background: var(--crm-primary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* ===== 数据表格 ===== */
+.crm-table-wrapper-v2 {
+    overflow-x: auto;
+    overflow-y: auto;
+    position: relative;
+    max-height: calc(100vh - 400px); /* 固定最大高度，不再智能扩大 */
+}
+
+.crm-data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.crm-data-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.crm-data-table th {
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
+}
+
+.crm-data-table th:first-child {
+    padding-left: 24px;
+}
+
+.crm-data-table th:last-child {
+    padding-right: 24px;
+}
+
+.crm-sort-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 4px 8px;
+    margin: -4px -8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.crm-sort-link:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.crm-sort-link.is-active {
+    color: var(--crm-primary-light);
+}
+
+.crm-sort-icon {
+    font-size: 0.65rem;
+    opacity: 0.5;
+}
+
+.crm-sort-link.is-active .crm-sort-icon {
+    opacity: 1;
+}
+
+/* 表格行 */
+.crm-data-row {
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.crm-data-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.crm-data-row:last-child {
+    border-bottom: none;
+}
+
+.crm-data-table td {
+    padding: 14px 16px;
+    vertical-align: middle;
+    color: var(--text-primary);
+}
+
+.crm-data-table td:first-child {
+    padding-left: 24px;
+}
+
+.crm-data-table td:last-child {
+    padding-right: 24px;
+}
+
+/* 列宽定义 */
+.crm-col-checkbox { width: 50px; text-align: center; }
+.crm-col-id { width: 80px; }
+.crm-col-user { min-width: 200px; }
+.crm-col-email { min-width: 180px; }
+.crm-col-coin { width: 120px; text-align: right; }
+.crm-col-membership { width: 120px; }
+.crm-col-date { width: 140px; }
+.crm-col-status { width: 100px; }
+.crm-col-actions { 
+    width: 60px; 
+    text-align: center; 
+}
+
+/* ID 徽章 */
+.crm-id-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    font-family: 'SF Mono', 'Monaco', 'Cascadia Code', monospace;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+}
+
+/* 用户单元格 */
+.crm-user-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 10px;
+    margin: -6px -10px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+}
+
+.crm-user-cell:hover {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.crm-user-avatar-v2 {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--crm-primary), #2563eb);
+    overflow: hidden;
+}
+
+.crm-user-avatar-v2 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.crm-avatar-text {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+}
+
+.crm-user-meta {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.crm-user-name-v2 {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.crm-user-nick {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.crm-arrow-icon {
+    color: var(--text-muted);
+    opacity: 0;
+    transition: all 0.2s ease;
+}
+
+.crm-user-cell:hover .crm-arrow-icon {
+    opacity: 1;
+    transform: translateX(2px);
+}
+
+/* 邮箱 */
+.crm-email-text {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+}
+
+/* 星夜币 - 使用等宽数字确保对齐 */
+.crm-data-table th.crm-col-coin {
+    text-align: right;
+}
+
+.crm-coin-cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    min-width: 80px;
+    font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Consolas', monospace;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fbbf24;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+.crm-coin-cell svg {
+    color: #fbbf24;
+    opacity: 0.7;
+    flex-shrink: 0;
+}
+
+.crm-coin-cell span {
+    text-align: right;
+}
+
+/* 会员标签 */
+.crm-membership-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.crm-member-none {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+}
+
+.crm-member-vip {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(245, 158, 11, 0.15));
+    color: #fbbf24;
+    border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.crm-member-vip svg {
+    color: #fbbf24;
+}
+
+/* 日期 */
+.crm-date-text {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+.crm-never-login {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* 状态标签 */
+.crm-status-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.crm-status-active-v2 {
+    background: var(--crm-success-bg);
+    color: var(--crm-success);
+}
+
+.crm-status-disabled-v2 {
+    background: var(--crm-warning-bg);
+    color: var(--crm-warning);
+}
+
+.crm-status-frozen-v2 {
+    background: var(--crm-info-bg);
+    color: var(--crm-info);
+}
+
+.crm-status-deleted-v2 {
+    background: var(--crm-danger-bg);
+    color: var(--crm-danger);
+}
+
+/* 操作下拉菜单 */
+.crm-actions-dropdown-v2 {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px; /* 固定宽度 */
+}
+
+.crm-actions-trigger {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.crm-actions-trigger:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: var(--crm-primary-light);
+}
+
+.crm-actions-panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    min-width: 160px;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+    animation: fadeInUp 0.2s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.crm-action-link {
+    display: flex;
+    align-items: center;
+    gap: var(--crm-space-sm);
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    border-radius: 8px;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.crm-action-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.crm-action-link svg {
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.crm-action-danger {
+    color: var(--crm-danger);
+}
+
+.crm-action-danger:hover {
+    background: var(--crm-danger-bg);
+}
+
+/* 空状态 */
+.crm-empty-row-v2 td {
+    padding: var(--crm-space-3xl) !important;
+}
+
+.crm-empty-state-v2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--crm-space-md);
+    text-align: center;
+}
+
+.crm-empty-icon-v2 {
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+.crm-empty-title-v2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.crm-empty-desc-v2 {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: var(--crm-space-sm);
+}
+
+/* ===== 分页 V2 ===== */
+.crm-pagination-v2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--crm-space-lg);
+    margin-top: var(--crm-space-xl);
+    padding: var(--crm-space-lg) 0;
+}
+
+.crm-pagination-info {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.crm-pagination-info strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.crm-pagination-controls {
+    display: flex;
+    gap: var(--crm-space-xs);
+    align-items: center;
+}
+
+.crm-page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 var(--crm-space-md);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.crm-page-btn:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: var(--crm-primary-light);
+}
+
+.crm-page-active {
+    background: linear-gradient(135deg, var(--crm-primary), var(--crm-primary-dark));
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.crm-page-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.crm-page-ellipsis {
+    padding: 0 var(--crm-space-sm);
+    color: var(--text-muted);
+}
+
+/* ===== 响应式设计 ===== */
+@media (max-width: 1400px) {
+    .crm-stats-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .crm-filters-grid-v2 {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .crm-page-v2 {
+        padding: var(--crm-space-md);
+    }
+    
+    .crm-header-main {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .crm-title-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--crm-space-md);
+    }
+    
+    .crm-header-actions {
+        justify-content: stretch;
+    }
+    
+    .crm-header-actions .crm-btn-v2 {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .crm-filters-grid-v2 {
+        grid-template-columns: 1fr;
+    }
+    
+    .crm-date-range {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .crm-date-sep {
+        display: none;
+    }
+    
+    .crm-stats-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .crm-stat-card-v2 {
+        padding: var(--crm-space-md) var(--crm-space-lg);
+    }
+    
+    .crm-batch-inner {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .crm-batch-right {
+        justify-content: stretch;
+    }
+    
+    .crm-batch-right .crm-btn-v2 {
+        flex: 1;
+    }
+    
+    .crm-table-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--crm-space-md);
+    }
+    
+    .crm-pagination-v2 {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .crm-pagination-controls {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    /* 移动端表格响应式 */
+    .crm-table-wrapper-v2 {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .crm-data-table {
+        min-width: 800px;
+    }
+}
+
+@media (max-width: 480px) {
+    .crm-page-title {
+        font: 1.5rem;
+    }
+    
+    .crm-stat-icon-inner {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .crm-stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .crm-table-card {
+        border-radius: 12px;
+    }
+    
+    .crm-table-header {
+        padding: var(--crm-space-md);
+    }
+    
+    .crm-data-table th,
+    .crm-data-table td {
+        padding: 10px var(--crm-space-sm);
+    }
+}
+
+/* ===== 可访问性增强 ===== */
+.crm-btn-v2:focus-visible,
+.crm-input-v2:focus-visible,
+.crm-select-v2:focus-visible,
+.crm-checkbox-wrap:focus-visible .crm-checkbox-custom,
+.crm-actions-trigger:focus-visible {
+    outline: 2px solid var(--crm-primary);
+    outline-offset: 2px;
+}
+
+/* 减少动画（尊重用户偏好） */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ===== 深色模式适配 ===== */
+@media (prefers-color-scheme: dark) {
+    .crm-actions-panel {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.99));
+    }
+}
+
+/* ===== 视图切换样式 ===== */
+.crm-view-grid .crm-table-wrapper-v2 {
+    overflow-y: auto;
+    max-height: calc(100vh - 400px);
+    padding: 0;
+}
+
+.crm-cards-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--crm-space-lg);
+    padding: var(--crm-space-lg);
+}
+
+.crm-view-grid .crm-data-table {
+    display: none !important;
+}
+
+.crm-view-grid .crm-cards-container {
+    display: grid !important;
+}
+
+/* 卡片视图中的用户卡片 */
+.crm-user-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--crm-glass-bg);
+    backdrop-filter: var(--crm-glass-blur);
+    -webkit-backdrop-filter: var(--crm-glass-blur);
+    border: 1px solid var(--crm-glass-border);
+    border-radius: 16px;
+    padding: var(--crm-space-lg);
+    box-shadow: var(--crm-glass-shadow);
+    transition: all 0.3s ease;
+    min-height: 280px;
+    position: relative;
+    overflow: hidden;
+}
+
+.crm-user-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.crm-user-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.crm-user-card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--crm-space-md);
+    padding-bottom: var(--crm-space-md);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: var(--crm-space-md);
+}
+
+.crm-user-card-header .crm-checkbox-wrap {
+    flex-shrink: 0;
+}
+
+.crm-user-card-header .crm-user-cell {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.crm-user-card-header .crm-actions-trigger {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+}
+
+.crm-user-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--crm-space-md);
+    flex: 1;
+}
+
+.crm-user-card-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-size: 0.875rem;
+    padding: var(--crm-space-sm) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.crm-user-card-field:last-child {
+    border-bottom: none;
+}
+
+.crm-user-card-label {
+    color: var(--text-muted);
+    font-weight: 500;
+    flex-shrink: 0;
+    min-width: 80px;
+    font-size: 0.8125rem;
+}
+
+.crm-user-card-value {
+    color: var(--text-primary);
+    font-weight: 600;
+    text-align: right;
+    flex: 1;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.crm-user-card-value .crm-status-tag {
+    display: inline-block;
+}
+
+.crm-user-card-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--crm-space-sm);
+    padding-top: var(--crm-space-md);
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* 响应式调整 - 与统计卡片保持一致 */
+@media (max-width: 1400px) {
+    .crm-cards-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .crm-cards-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--crm-space-md);
+        padding: var(--crm-space-md);
+    }
+    
+    .crm-user-card {
+        min-height: 260px;
+        padding: var(--crm-space-md);
+    }
+}
+
+@media (max-width: 768px) {
+    .crm-cards-container {
+        grid-template-columns: 1fr;
+        gap: var(--crm-space-md);
+        padding: var(--crm-space-md);
+    }
+    
+    .crm-user-card {
+        min-height: auto;
+    }
+    
+    .crm-user-card-field {
+        flex-direction: column;
+        gap: var(--crm-space-xs);
+    }
+    
+    .crm-user-card-label {
+        min-width: auto;
+    }
+    
+    .crm-user-card-value {
+        text-align: left;
+    }
+}

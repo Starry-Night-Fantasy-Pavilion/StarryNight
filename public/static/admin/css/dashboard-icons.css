@@ -1,0 +1,328 @@
+/**
+ * 仪表板图标样式
+ * 包含图标组件和图标字体相关样式
+ */
+
+/* ===== 图标基础 ===== */
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+}
+
+.icon svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+}
+
+/* ===== 图标尺寸 ===== */
+.icon-xs {
+    width: 12px;
+    height: 12px;
+}
+
+.icon-sm {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-md {
+    width: 20px;
+    height: 20px;
+}
+
+.icon-lg {
+    width: 24px;
+    height: 24px;
+}
+
+.icon-xl {
+    width: 32px;
+    height: 32px;
+}
+
+.icon-2xl {
+    width: 48px;
+    height: 48px;
+}
+
+/* ===== 图标按钮 ===== */
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.icon-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.icon-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.icon-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.icon-btn-sm {
+    width: 28px;
+    height: 28px;
+}
+
+.icon-btn-lg {
+    width: 44px;
+    height: 44px;
+}
+
+/* ===== 图标组 ===== */
+.icon-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.icon-group .icon-btn {
+    border-radius: 0;
+}
+
+.icon-group .icon-btn:first-child {
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.icon-group .icon-btn:last-child {
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+/* ===== 状态图标 ===== */
+.status-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-icon.online {
+    background: var(--success-color);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+}
+
+.status-icon.away {
+    background: var(--warning-color);
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+}
+
+.status-icon.busy {
+    background: var(--danger-color);
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+}
+
+.status-icon.offline {
+    background: var(--text-muted);
+}
+
+.status-icon-lg {
+    width: 12px;
+    height: 12px;
+}
+
+/* ===== 图标包装器 ===== */
+.icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+}
+
+.icon-wrapper-primary {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary-color);
+}
+
+.icon-wrapper-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+}
+
+.icon-wrapper-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning-color);
+}
+
+.icon-wrapper-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+}
+
+.icon-wrapper-info {
+    background: rgba(6, 182, 212, 0.1);
+    color: var(--info-color);
+}
+
+.icon-wrapper-sm {
+    width: 32px;
+    height: 32px;
+}
+
+.icon-wrapper-md {
+    width: 40px;
+    height: 40px;
+}
+
+.icon-wrapper-lg {
+    width: 48px;
+    height: 48px;
+}
+
+.icon-wrapper-xl {
+    width: 64px;
+    height: 64px;
+}
+
+/* ===== 带文字的图标 ===== */
+.icon-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon-text .icon {
+    color: var(--text-secondary);
+}
+
+/* ===== 动画图标 ===== */
+.icon-spin {
+    animation: icon-spin 1s linear infinite;
+}
+
+@keyframes icon-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.icon-pulse {
+    animation: icon-pulse 2s ease-in-out infinite;
+}
+
+@keyframes icon-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.icon-bounce {
+    animation: icon-bounce 1s ease infinite;
+}
+
+@keyframes icon-bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+/* ===== 图标列表 ===== */
+.icon-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.icon-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    transition: background var(--transition-fast);
+}
+
+.icon-list-item:hover {
+    background: var(--bg-secondary);
+}
+
+.icon-list-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-tertiary);
+    color: var(--primary-color);
+    flex-shrink: 0;
+}
+
+.icon-list-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.icon-list-title {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.icon-list-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* ===== 社交图标 ===== */
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: white;
+    transition: transform var(--transition-fast);
+}
+
+.social-icon:hover {
+    transform: translateY(-2px);
+}
+
+.social-icon-wechat {
+    background: #07c160;
+}
+
+.social-icon-weibo {
+    background: #e6162d;
+}
+
+.social-icon-qq {
+    background: #12b7f5;
+}
+
+.social-icon-github {
+    background: #333;
+}

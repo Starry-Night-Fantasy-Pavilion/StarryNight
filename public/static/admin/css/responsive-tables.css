@@ -1,0 +1,344 @@
+/**
+ * 响应式表格样式
+ * 优化表格在各种屏幕尺寸下的显示效果
+ */
+
+/* ===== 基础表格响应式样式 ===== */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 移动端表格优化 */
+@media (max-width: 768px) {
+    .table-responsive {
+        border-radius: var(--radius-md);
+        background: var(--bg-primary);
+        backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--border-color);
+        margin: 0 -16px;
+        padding: 8px 16px;
+    }
+    
+    /* 隐藏不必要的列 */
+    .table-responsive table {
+        min-width: 600px;
+    }
+    
+    .table-responsive .table {
+        font-size: 14px;
+    }
+    
+    .table-responsive .table th,
+    .table-responsive .table td {
+        padding: 8px 6px;
+        white-space: nowrap;
+    }
+    
+    /* 状态列保持显示 */
+    .table-responsive .table th:nth-child(1),    /* ID */
+    .table-responsive .table th:nth-child(2),    /* 用户名 */
+    .table-responsive .table th:nth-child(5),    /* 星夜币 */
+    .table-responsive .table th:nth-child(6),    /* 会员 */
+    .table-responsive .table th:nth-child(9),    /* 状态 */
+    .table-responsive .table th:nth-child(10) {  /* 操作 */
+        display: table-cell;
+    }
+    
+    /* 在小屏幕上隐藏部分列 */
+    .table-responsive .table th:nth-child(3),    /* 昵称 */
+    .table-responsive .table th:nth-child(4),    /* 邮箱 */
+    .table-responsive .table th:nth-child(7),    /* 注册时间 */
+    .table-responsive .table th:nth-child(8) {   /* 最后登录 */
+        display: none;
+    }
+    
+    .table-responsive .table td:nth-child(3),
+    .table-responsive .table td:nth-child(4),
+    .table-responsive .table td:nth-child(7),
+    .table-responsive .table td:nth-child(8) {
+        display: none;
+    }
+    
+    /* 操作按钮优化 */
+    .table-responsive .btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 80px;
+    }
+    
+    .table-responsive .btn-group .btn {
+        padding: 4px 8px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+    
+    /* 用户信息优化 */
+    .table-responsive .table td:nth-child(2) {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* 头像大小调整 */
+    .table-responsive .sidebar-user-avatar {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 10px !important;
+    }
+}
+
+/* 更小屏幕优化 */
+@media (max-width: 480px) {
+    .table-responsive {
+        margin: 0 -12px;
+        padding: 6px 12px;
+    }
+    
+    .table-responsive .table {
+        font-size: 13px;
+    }
+    
+    .table-responsive .table th,
+    .table-responsive .table td {
+        padding: 6px 4px;
+    }
+    
+    /* 只显示最重要的列 */
+    .table-responsive .table th:nth-child(1),    /* ID */
+    .table-responsive .table th:nth-child(2),    /* 用户名 */
+    .table-responsive .table th:nth-child(9),    /* 状态 */
+    .table-responsive .table th:nth-child(10) {  /* 操作 */
+        display: table-cell;
+    }
+    
+    .table-responsive .table th:nth-child(5),    /* 星夜币 */
+    .table-responsive .table th:nth-child(6) {   /* 会员 */
+        display: none;
+    }
+    
+    .table-responsive .table td:nth-child(1),
+    .table-responsive .table td:nth-child(2),
+    .table-responsive .table td:nth-child(9),
+    .table-responsive .table td:nth-child(10) {
+        display: table-cell;
+    }
+    
+    .table-responsive .table td:nth-child(5),
+    .table-responsive .table td:nth-child(6) {
+        display: none;
+    }
+    
+    /* 操作按钮进一步优化 */
+    .table-responsive .btn-group {
+        min-width: 60px;
+    }
+    
+    .table-responsive .btn-group .btn {
+        padding: 3px 6px;
+        font-size: 11px;
+    }
+}
+
+/* ===== 卡片式表格布局（超小屏幕） ===== */
+@media (max-width: 380px) {
+    .table-responsive {
+        overflow-x: visible;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+    }
+    
+    /* 将表格转换为卡片布局 */
+    .table-responsive table {
+        display: none;
+    }
+    
+    /* 创建卡片式数据展示 */
+    .table-responsive::before {
+        content: '';
+        display: block;
+        margin-bottom: 16px;
+    }
+    
+    .table-card-container {
+        display: block;
+    }
+    
+    .table-card {
+        background: var(--bg-primary);
+        backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        padding: 16px;
+        margin-bottom: 12px;
+    }
+    
+    .table-card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+    
+    .table-card-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .table-card-title {
+        flex: 1;
+    }
+    
+    .table-card-name {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 2px;
+    }
+    
+    .table-card-id {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+    
+    .table-card-status {
+        padding: 4px 8px;
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .table-card-status.active {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success-color);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    
+    .table-card-status.inactive {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger-color);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    
+    .table-card-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+    
+    .table-card-info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    
+    .table-card-info-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .table-card-info-value {
+        font-size: 14px;
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+    
+    .table-card-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    .table-card-actions .btn {
+        flex: 1;
+        min-width: 0;
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
+
+/* ===== 表格滚动条美化 ===== */
+.table-responsive::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 3px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* ===== 表格加载状态 ===== */
+.table-loading {
+    position: relative;
+}
+
+.table-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.table-loading::before {
+    content: '加载中...';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-primary);
+    font-size: 14px;
+    z-index: 11;
+}
+
+/* ===== 空状态优化 ===== */
+.table-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+}
+
+.table-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.table-empty-text {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.table-empty-subtext {
+    font-size: 14px;
+    opacity: 0.7;
+}

@@ -1,0 +1,80 @@
+{
+    "plugin_id": "cloudflare_captcha",
+    "name": "Cloudflare验证码",
+    "version": "1.0.0",
+    "description": "Cloudflare Turnstile验证码服务，提供无干扰的人机验证体验",
+    "author": "StarryNight Team",
+    "website": "https:\/\/www.cloudflare.com",
+    "type": "verification",
+    "category": "thirdparty",
+    "namespace": "Plugins\\Verification\\Thirdparty\\Cloudflare",
+    "main_class": "Plugin.php",
+    "dependencies": [],
+    "installed": false,
+    "status": "disabled",
+    "install_sql": null,
+    "uninstall_sql": null,
+    "config": {
+        "usage_scenario": {
+            "type": "checkbox",
+            "label": "使用场景",
+            "options": {
+                "frontend": "前端使用"
+            },
+            "default": [
+                "frontend"
+            ],
+            "required": false
+        },
+        "site_key": {
+            "type": "text",
+            "label": "Site Key",
+            "default": "",
+            "required": true,
+            "description": "从Cloudflare Turnstile获取的Site Key"
+        },
+        "secret_key": {
+            "type": "password",
+            "label": "Secret Key",
+            "default": "",
+            "required": true,
+            "description": "从Cloudflare Turnstile获取的Secret Key"
+        },
+        "theme": {
+            "type": "select",
+            "label": "主题",
+            "options": {
+                "light": "浅色",
+                "dark": "深色",
+                "auto": "自动"
+            },
+            "default": "auto",
+            "required": false
+        },
+        "size": {
+            "type": "select",
+            "label": "尺寸",
+            "options": {
+                "normal": "标准",
+                "compact": "紧凑"
+            },
+            "default": "normal",
+            "required": false
+        },
+        "api_timeout": {
+            "type": "number",
+            "label": "API超时时间（秒）",
+            "default": 10,
+            "min": 1,
+            "max": 60,
+            "required": false
+        }
+    },
+    "requirements": {
+        "php": ">=7.4",
+        "extensions": [
+            "curl",
+            "json"
+        ]
+    }
+}

@@ -1,0 +1,62 @@
+{
+    "name": "starrynight/starrynight",
+    "description": "星夜阁 - AI小说创作平台",
+    "type": "project",
+    "keywords": ["ai", "novel", "writing", "rag", "llm"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "StarryNight Team",
+            "email": "dev@starrynight.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-pdo": "*",
+        "psr/log": "^2.0|^3.0",
+        "phpmailer/phpmailer": "^6.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10",
+        "squizlabs/php_codesniffer": "^3.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Core\\": "core/",
+            "App\\": "app/",
+            "app\\": "app/"
+        },
+        "classmap": [
+            "app/core"
+        ],
+        "files": [
+            "core/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:coverage": "phpunit --coverage-html coverage/html",
+        "stan": "phpstan analyse",
+        "cs:check": "phpcs --standard=PSR12 app core",
+        "cs:fix": "php-cs-fixer fix",
+        "migrate": "php scripts/run_migrations.php",
+        "migrate:reset": "php scripts/reset_database.php",
+        "admin:create": "php scripts/create_admin.php",
+        "test:db": "php scripts/test_db_connection.php"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "platform-check": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

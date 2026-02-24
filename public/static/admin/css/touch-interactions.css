@@ -1,0 +1,145 @@
+/**
+ * 触摸交互优化样式
+ * 增强移动端的触摸体验
+ */
+
+/* ===== 触摸友好的尺寸 ===== */
+@media (max-width: 768px) {
+    /* 按钮最小触摸区域 */
+    .btn {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 10px 16px;
+        font-size: 16px;
+    }
+    
+    /* 链接触摸区域 */
+    a:not(.btn) {
+        display: inline-block;
+        padding: 4px 8px;
+        margin: -4px -8px;
+        text-decoration: none;
+    }
+    
+    /* 表单控件 */
+    .form-control, .form-select {
+        min-height: 44px;
+        font-size: 16px;
+    }
+    
+    /* 复选框和单选框 */
+    .form-check {
+        min-height: 44px;
+        padding: 10px 0;
+    }
+    
+    .form-check-input {
+        width: 24px;
+        height: 24px;
+        margin-right: 12px;
+    }
+    
+    /* 开关 */
+    .form-switch {
+        min-height: 44px;
+        padding: 10px 0;
+    }
+    
+    .form-switch .form-check-input {
+        width: 52px;
+        height: 28px;
+    }
+}
+
+/* ===== 触摸反馈效果 ===== */
+.touch-feedback {
+    position: relative;
+    overflow: hidden;
+}
+
+.touch-feedback::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.touch-feedback.active::after {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+}
+
+/* ===== 长按效果 ===== */
+.long-press {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+.long-press.active {
+    transform: scale(0.95);
+    opacity: 0.8;
+}
+
+/* ===== 滑动手势提示 ===== */
+.swipe-hint {
+    position: relative;
+    overflow: hidden;
+}
+
+.swipe-hint::before {
+    content: '← 滑动操作 →';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-muted);
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.swipe-hint.show-hint::before {
+    opacity: 0.7;
+}
+
+/* ===== 触摸滚动优化 ===== */
+.touch-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+.touch-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* ===== 防止误触 ===== */
+.no-tap-highlight {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+}
+
+/* ===== 触摸菜单 ===== */
+@media (max-width: 768px) {
+    .dropdown-menu {
+        max-width: calc(100vw - 32px);
+        left: 16px !important;
+        right: 16px !important;
+    }
+    
+    .dropdown-item {
+        min-height: 44px;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+    }
+}

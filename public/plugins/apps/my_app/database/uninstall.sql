@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS `__PREFIX__comments`;
+DROP TABLE IF EXISTS `__PREFIX__chapters`;
+DROP TABLE IF EXISTS `__PREFIX__book_sources`;
+DROP TABLE IF EXISTS `__PREFIX__books`;
+

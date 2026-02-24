@@ -1,0 +1,934 @@
+/* AI音乐编辑器专用样式 */
+
+/* 编辑器容器布局 */
+.editor-container {
+    display: flex;
+    margin-top: 60px;
+    min-height: calc(100vh - 60px);
+    background: #1a1a1a;
+}
+
+/* 编辑器导航栏 */
+.editor-container .navbar {
+    background: #2d2d2d;
+    border-bottom: 1px solid #404040;
+}
+
+.editor-container .nav-container {
+    background: #2d2d2d;
+}
+
+.editor-container .nav-brand .brand-link {
+    color: #fff;
+}
+
+.editor-container .nav-center {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.project-title {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-draft {
+    background: #6c757d;
+    color: white;
+}
+
+.status-in-progress {
+    background: #17a2b8;
+    color: white;
+}
+
+.status-completed {
+    background: #28a745;
+    color: white;
+}
+
+.status-published {
+    background: #667eea;
+    color: white;
+}
+
+/* 编辑器侧边栏 */
+.editor-sidebar {
+    width: 250px;
+    background: #252525;
+    border-right: 1px solid #404040;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.editor-sidebar .sidebar-title {
+    color: #b3b3b3;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.tool-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 25px;
+}
+
+.tool-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: #b3b3b3;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+}
+
+.tool-item:hover {
+    background: #404040;
+    color: #fff;
+}
+
+.tool-item.active {
+    background: #667eea;
+    color: #fff;
+}
+
+.tool-item i {
+    width: 20px;
+    text-align: center;
+}
+
+.ai-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.ai-tool-btn {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.ai-tool-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.project-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #404040;
+}
+
+.info-label {
+    color: #b3b3b3;
+    font-size: 0.9rem;
+}
+
+.info-value {
+    color: #fff;
+    font-weight: 500;
+}
+
+/* 主编辑区 */
+.editor-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #1a1a1a;
+}
+
+.editor-panel {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+}
+
+.editor-panel.active {
+    display: flex;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #2d2d2d;
+    border-bottom: 1px solid #404040;
+}
+
+.panel-header h2 {
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.panel-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.panel-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* 歌词编辑器 */
+.lyrics-editor {
+    display: flex;
+    gap: 20px;
+    height: 100%;
+}
+
+.lyrics-editor textarea {
+    flex: 1;
+    background: #2d2d2d;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    color: #fff;
+    padding: 15px;
+    font-size: 1rem;
+    line-height: 1.6;
+    resize: none;
+    outline: none;
+}
+
+.lyrics-editor textarea:focus {
+    border-color: #667eea;
+}
+
+.lyrics-analysis {
+    width: 300px;
+    background: #2d2d2d;
+    border-radius: 8px;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.analysis-section {
+    margin-bottom: 20px;
+}
+
+.analysis-section h4 {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.emotion-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.emotion-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.emotion-label {
+    color: #b3b3b3;
+    font-size: 0.9rem;
+    width: 60px;
+}
+
+.emotion-bar {
+    flex: 1;
+    height: 8px;
+    background: #404040;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.emotion-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
+}
+
+.emotion-value {
+    color: #fff;
+    font-size: 0.8rem;
+    width: 40px;
+    text-align: right;
+}
+
+.structure-view {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.structure-item {
+    background: #404040;
+    padding: 10px;
+    border-radius: 6px;
+    color: #b3b3b3;
+    font-size: 0.9rem;
+}
+
+.structure-item strong {
+    color: #667eea;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* 旋律编辑器 */
+.melody-editor {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 20px;
+}
+
+.piano-roll {
+    flex: 1;
+    background: #2d2d2d;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.melody-controls {
+    display: flex;
+    gap: 20px;
+    padding: 15px;
+    background: #2d2d2d;
+    border-radius: 8px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.control-group label {
+    color: #b3b3b3;
+    font-size: 0.9rem;
+}
+
+.control-group input,
+.control-group select {
+    background: #404040;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #fff;
+    padding: 8px;
+    outline: none;
+}
+
+.control-group input:focus,
+.control-group select:focus {
+    border-color: #667eea;
+}
+
+/* 编曲编辑器 */
+.track-editor {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 20px;
+}
+
+.track-list {
+    background: #2d2d2d;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    padding: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.track-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: #404040;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.track-item:hover {
+    background: #555;
+}
+
+.track-item.selected {
+    background: #667eea;
+}
+
+.track-info {
+    flex: 1;
+}
+
+.track-name {
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.track-type {
+    font-size: 0.8rem;
+    color: #b3b3b3;
+}
+
+.track-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.track-btn {
+    background: none;
+    border: none;
+    color: #b3b3b3;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.track-btn:hover {
+    background: #555;
+    color: #fff;
+}
+
+.timeline {
+    flex: 1;
+    background: #2d2d2d;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 人声编辑器 */
+.vocal-editor {
+    display: flex;
+    gap: 20px;
+    height: 100%;
+}
+
+.vocal-tracks {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.vocal-track {
+    background: #2d2d2d;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.vocal-track-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.vocal-track-name {
+    color: #fff;
+    font-weight: 500;
+}
+
+.vocal-track-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.vocal-waveform {
+    height: 80px;
+    background: #404040;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.vocal-effects {
+    width: 300px;
+    background: #2d2d2d;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.vocal-effects h3 {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.effect-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.effect-control {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.effect-control label {
+    color: #b3b3b3;
+    font-size: 0.9rem;
+}
+
+.effect-control input[type="range"] {
+    width: 100%;
+    height: 6px;
+    background: #404040;
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.effect-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #667eea;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.effect-control input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #667eea;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+/* 混音编辑器 */
+.mix-editor {
+    display: flex;
+    gap: 20px;
+    height: 100%;
+}
+
+.mixer-channels {
+    flex: 1;
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 20px;
+    background: #2d2d2d;
+    border-radius: 8px;
+}
+
+.mixer-channel {
+    min-width: 120px;
+    background: #404040;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.channel-header {
+    text-align: center;
+}
+
+.channel-name {
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.channel-type {
+    color: #b3b3b3;
+    font-size: 0.8rem;
+}
+
+.channel-fader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.channel-fader label {
+    color: #b3b3b3;
+    font-size: 0.8rem;
+}
+
+.volume-slider {
+    writing-mode: bt-lr; /* IE */
+    -webkit-appearance: slider-vertical; /* WebKit */
+    width: 30px;
+    height: 100px;
+    background: #555;
+    outline: none;
+}
+
+.channel-pan {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.channel-pan label {
+    color: #b3b3b3;
+    font-size: 0.8rem;
+}
+
+.pan-slider {
+    width: 80px;
+}
+
+.master-controls {
+    width: 200px;
+    background: #2d2d2d;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.master-controls h3 {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.master-channel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 属性面板 */
+.properties-panel {
+    width: 280px;
+    background: #252525;
+    border-left: 1px solid #404040;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.panel-section {
+    margin-bottom: 30px;
+}
+
+.panel-title {
+    color: #b3b3b3;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.properties-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.property-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.property-item label {
+    color: #b3b3b3;
+    font-size: 0.9rem;
+}
+
+.property-item input,
+.property-item select {
+    background: #404040;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #fff;
+    padding: 8px;
+    outline: none;
+}
+
+.property-item input:focus,
+.property-item select:focus {
+    border-color: #667eea;
+}
+
+.version-history {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.version-item {
+    background: #404040;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.version-item:hover {
+    background: #555;
+}
+
+.version-name {
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+}
+
+.version-time {
+    color: #b3b3b3;
+    font-size: 0.8rem;
+}
+
+.collaboration-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.collaborator-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.collaborator-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    background: #404040;
+    border-radius: 6px;
+}
+
+.collaborator-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #667eea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 500;
+}
+
+.collaborator-info {
+    flex: 1;
+}
+
+.collaborator-name {
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.collaborator-role {
+    color: #b3b3b3;
+    font-size: 0.8rem;
+}
+
+/* 编辑器按钮样式 */
+.editor-container .btn {
+    background: #404040;
+    border: 1px solid #555;
+    color: #fff;
+}
+
+.editor-container .btn:hover {
+    background: #555;
+    border-color: #667eea;
+}
+
+.editor-container .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.editor-container .btn-outline {
+    background: transparent;
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.editor-container .btn-outline:hover {
+    background: #667eea;
+    color: #fff;
+}
+
+/* 编辑器模态框 */
+.editor-container .modal-content {
+    background: #2d2d2d;
+    color: #fff;
+}
+
+.editor-container .modal-header {
+    border-bottom-color: #404040;
+}
+
+.editor-container .modal-header h3 {
+    color: #fff;
+}
+
+.editor-container .modal-footer {
+    border-top-color: #404040;
+}
+
+.editor-container .form-group label {
+    color: #b3b3b3;
+}
+
+.editor-container .form-group input,
+.editor-container .form-group select,
+.editor-container .form-group textarea {
+    background: #404040;
+    border-color: #555;
+    color: #fff;
+}
+
+.editor-container .form-group input:focus,
+.editor-container .form-group select:focus,
+.editor-container .form-group textarea:focus {
+    border-color: #667eea;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .editor-sidebar {
+        width: 200px;
+    }
+    
+    .properties-panel {
+        width: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .editor-container {
+        flex-direction: column;
+    }
+    
+    .editor-sidebar {
+        width: 100%;
+        order: 2;
+    }
+    
+    .editor-main {
+        order: 1;
+    }
+    
+    .properties-panel {
+        width: 100%;
+        order: 3;
+    }
+    
+    .lyrics-editor {
+        flex-direction: column;
+    }
+    
+    .lyrics-analysis {
+        width: 100%;
+    }
+    
+    .vocal-editor {
+        flex-direction: column;
+    }
+    
+    .vocal-effects {
+        width: 100%;
+    }
+    
+    .mix-editor {
+        flex-direction: column;
+    }
+    
+    .master-controls {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .editor-container .nav-container {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+    }
+    
+    .editor-container .navbar {
+        position: relative;
+        height: auto;
+    }
+    
+    .editor-container {
+        margin-top: 0;
+    }
+    
+    .panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .panel-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .melody-controls {
+        flex-direction: column;
+    }
+    
+    .mixer-channels {
+        flex-direction: column;
+        overflow-x: visible;
+    }
+}

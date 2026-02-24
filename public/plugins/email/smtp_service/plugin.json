@@ -1,0 +1,138 @@
+{
+    "plugin_id": "email\/smtp_service",
+    "name": "SMTP 邮箱服务",
+    "version": "1.0.0",
+    "description": "基于 SMTP 的系统邮件发送服务，使用 PHPMailer 实现，支持 SSL\/TLS。",
+    "author": "星夜幻梦",
+    "website": "",
+    "type": "email",
+    "category": "smtp",
+    "namespace": "Plugins\\Email\\Smtp_service",
+    "main_class": "Plugin.php",
+    "dependencies": [],
+    "installed": true,
+    "status": "enabled",
+    "config": {
+        "host": {
+            "type": "text",
+            "label": "SMTP 服务器地址",
+            "default": "",
+            "required": true,
+            "description": "例如：smtp.qq.com、mail.example.com"
+        },
+        "port": {
+            "type": "number",
+            "label": "SMTP 端口",
+            "default": 465,
+            "min": 1,
+            "max": 65535,
+            "required": true
+        },
+        "username": {
+            "type": "text",
+            "label": "SMTP 登录用户名",
+            "default": "",
+            "required": true
+        },
+        "password": {
+            "type": "password",
+            "label": "SMTP 登录密码",
+            "default": "",
+            "required": true
+        },
+        "smtpsecure": {
+            "type": "select",
+            "label": "加密方式",
+            "options": {
+                "ssl": "SSL（常用端口 465）",
+                "tls": "TLS（常用端口 587）",
+                "none": "不加密"
+            },
+            "default": "ssl",
+            "required": true
+        },
+        "fromname": {
+            "type": "text",
+            "label": "发件人名称",
+            "default": "",
+            "required": false
+        },
+        "systememail": {
+            "type": "text",
+            "label": "系统邮箱地址",
+            "default": "",
+            "required": true,
+            "description": "用于作为发件人邮箱地址，需与 SMTP 账号匹配"
+        },
+        "charset": {
+            "type": "text",
+            "label": "邮件编码",
+            "default": "utf-8",
+            "required": false
+        },
+        "timeout": {
+            "type": "number",
+            "label": "连接超时时间（秒）",
+            "default": 30,
+            "min": 5,
+            "max": 120,
+            "required": false,
+            "description": "SMTP连接超时时间，建议30秒"
+        },
+        "keepalive": {
+            "type": "checkbox",
+            "label": "保持连接",
+            "default": false,
+            "required": false,
+            "description": "启用后保持SMTP连接，提高发送效率"
+        },
+        "retry_attempts": {
+            "type": "number",
+            "label": "重试次数",
+            "default": 3,
+            "min": 1,
+            "max": 10,
+            "required": false,
+            "description": "发送失败时的重试次数"
+        },
+        "retry_delay": {
+            "type": "number",
+            "label": "重试延迟（秒）",
+            "default": 5,
+            "min": 1,
+            "max": 60,
+            "required": false,
+            "description": "每次重试之间的延迟时间"
+        },
+        "verify_peer": {
+            "type": "checkbox",
+            "label": "验证SSL证书",
+            "default": false,
+            "required": false,
+            "description": "启用后验证SSL证书，如果连接失败可尝试关闭此选项"
+        },
+        "verify_peer_name": {
+            "type": "checkbox",
+            "label": "验证SSL证书名称",
+            "default": false,
+            "required": false,
+            "description": "启用后验证SSL证书名称，如果连接失败可尝试关闭此选项"
+        },
+        "debug": {
+            "type": "number",
+            "label": "调试级别",
+            "default": 0,
+            "min": 0,
+            "max": 4,
+            "required": false,
+            "description": "0=关闭, 1=客户端消息, 2=客户端和服务器消息, 3=连接信息, 4=详细调试"
+        }
+    },
+    "requirements": {
+        "php": ">=8.0",
+        "extensions": [
+            "openssl",
+            "mbstring"
+        ]
+    }
+}

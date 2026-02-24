@@ -1,0 +1,25 @@
+.password-input {
+    padding-right: 40px !important;
+}
+
+.password-toggle-btn {
+    padding: 5px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.password-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.required {
+    color: #ff4757;
+    margin-left: 4px;
+}
+
+.form-control:focus {
+    border-color: #00f2ff;
+    outline: none;
+}
+

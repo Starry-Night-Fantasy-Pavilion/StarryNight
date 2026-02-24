@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{subject}}</title>
+    <!--[if mso]>
+    <style type="text/css">
+        body, table, td {font-family: Arial, sans-serif !important;}
+    </style>
+    <![endif]-->
+</head>
+<body style="margin: 0; padding: 20px 0; background-color: #f4f4f4; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
+        <tr>
+            <td style="padding: 40px 30px;">
+                <!-- 头部 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="text-align: center; padding-bottom: 30px; border-bottom: 2px solid #667eea;">
+                            <h1 style="margin: 0; color: #667eea; font-size: 28px; font-weight: 600;">{{site_name}}</h1>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 标签 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="padding-bottom: 16px;">
+                            <span style="display: inline-block; padding: 6px 12px; border-radius: 6px; background-color: rgba(251,191,36,0.2); color: #d97706; font-size: 12px;">来自 {{site_name}} 的创作讯息</span>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 标题 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="padding-bottom: 24px;">
+                            <h2 style="margin: 0 0 12px 0; font-size: 22px; font-weight: 600; color: #333333;">{{headline}}</h2>
+                            <p style="margin: 0; font-size: 16px; color: #666666; line-height: 1.6;">嗨，{{username}}，{{intro}}</p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 正文内容 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="padding: 20px 0; font-size: 16px; color: #333333; line-height: 1.7;">
+                            {{body_html}}
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 按钮 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="padding: 24px 0 12px 0;">
+                            <a href="{{action_url}}" target="_blank" rel="noopener" style="display: inline-block; padding: 12px 24px; border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; font-size: 16px; text-decoration: none; font-weight: 600;">{{action_text}}</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0 0 24px 0; font-size: 13px; color: #666666;">
+                            如果按钮无法点击，可复制以下链接到浏览器打开：<br>
+                            <span style="word-break: break-all; color: #999999;">{{action_url}}</span>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 底部 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="padding-top: 30px; border-top: 1px solid #eeeeee; text-align: center; font-size: 12px; line-height: 1.6; color: #999999;">
+                            本邮件发送至：{{email}}，用于产品更新、活动及功能通知。<br>
+                            如不希望继续接收此类邮件，可<a href="{{unsubscribe_url}}" style="color: #667eea; text-decoration: underline;" target="_blank" rel="noopener">点击这里退订</a>。<br>
+                            © {{current_year}} {{site_name}} · All rights reserved.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

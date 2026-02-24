@@ -1,0 +1,18 @@
+{
+    "plugin_id": "music_library",
+    "id": "music_library",
+    "name": "在线音乐库",
+    "version": "1.0.0",
+    "description": "提供完整的在线音乐库功能，包括音乐作品展示、播放器、拆歌与仿写、下载、评论互动和后台管理。",
+    "author": "StarryNight Team",
+    "type": "app",
+    "namespace": "plugins\\apps\\music_library",
+    "dependencies": [],
+    "main_class": "Plugin.php",
+    "installed": true,
+    "status": "enabled",
+    "frontend_entry": "\/music",
+    "admin_entry": "\/admin\/music_library\/settings",
+    "install_sql": "database\/install.sql",
+    "uninstall_sql": "database\/uninstall.sql"
+}

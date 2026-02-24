@@ -1,0 +1,11 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wechatGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#07C160;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06AD56;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="20" fill="url(#wechatGradient)"/>
+  <path d="M30 35 C30 28.37 35.37 23 42 23 C48.63 23 54 28.37 54 35 C54 41.63 48.63 47 42 47 C41.2 47 40.5 46.5 39.8 45.7 L36 48 L37 44 C33.5 42.5 30 39.5 30 35 Z" fill="white"/>
+  <path d="M58 50 C58 44.5 63.5 40 70 40 C76.5 40 82 44.5 82 50 C82 55.5 76.5 60 70 60 C69.3 60 68.6 59.5 68 59 L65 61 L66 58 C63.5 56.5 58 54 58 50 Z" fill="white" opacity="0.9"/>
+</svg>

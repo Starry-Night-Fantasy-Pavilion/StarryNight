@@ -1,0 +1,83 @@
+{
+    "plugin_id": "basic_recaptcha",
+    "name": "基础验证码",
+    "version": "1.0.0",
+    "description": "融合中文数字运算验证码和随机验证码，随机调用提供多样化验证方式",
+    "author": "StarryNight Team",
+    "website": "https:\/\/xxapi.cn",
+    "type": "verification",
+    "category": "basic",
+    "namespace": "Plugins\\Verification\\Basic\\Recaptcha",
+    "main_class": "Plugin.php",
+    "dependencies": [],
+    "installed": false,
+    "status": "disabled",
+    "install_sql": null,
+    "uninstall_sql": null,
+    "config": {
+        "usage_scenario": {
+            "type": "checkbox",
+            "label": "使用场景",
+            "options": {
+                "frontend": "前端使用",
+                "backend": "后端使用"
+            },
+            "default": [
+                "frontend",
+                "backend"
+            ],
+            "required": false
+        },
+        "api_timeout": {
+            "type": "number",
+            "label": "API超时时间（秒）",
+            "default": 10,
+            "min": 1,
+            "max": 60,
+            "required": false
+        },
+        "cache_duration": {
+            "type": "number",
+            "label": "验证码缓存时间（秒）",
+            "default": 300,
+            "min": 60,
+            "max": 3600,
+            "required": false
+        },
+        "use_chinese": {
+            "type": "boolean",
+            "label": "启用中文数字运算验证码",
+            "default": true,
+            "required": false
+        },
+        "use_random": {
+            "type": "boolean",
+            "label": "启用随机验证码",
+            "default": true,
+            "required": false
+        }
+    },
+    "apis": {
+        "chinese": {
+            "name": "中文数字运算验证码",
+            "endpoint": "https:\/\/xxapi.cn\/api\/chineseCaptcha",
+            "description": "生成中文数字运算题验证码"
+        },
+        "random": {
+            "name": "随机验证码",
+            "endpoint": "https:\/\/xxapi.cn\/api\/captcha",
+            "description": "生成随机字符验证码"
+        }
+    },
+    "storage": {
+        "cache_dir": "storage\/plugins\/basic_captcha\/cache",
+        "log_dir": "storage\/plugins\/basic_captcha\/logs"
+    },
+    "requirements": {
+        "php": ">=8.0",
+        "extensions": [
+            "curl",
+            "json"
+        ]
+    }
+}
