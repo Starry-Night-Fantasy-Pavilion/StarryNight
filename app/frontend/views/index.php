@@ -8,7 +8,7 @@ $siteName = Setting::get('site_name') ?: (string)get_env('APP_NAME', '星夜阁'
     <meta charset="utf-8">
     <title><?= htmlspecialchars($siteName) ?> - 首页总览</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    
     <!-- 复用后台管理的样式体系，让前台首页风格接近后台界面 -->
     <link rel="stylesheet" href="/static/admin/css/style.css">
     <link rel="stylesheet" href="/static/admin/css/dashboard-base.css">
@@ -19,9 +19,10 @@ $siteName = Setting::get('site_name') ?: (string)get_env('APP_NAME', '星夜阁'
     $themeManager = new ThemeManager();
     $activeThemeId = $themeManager->getActiveThemeId('web') ?? FrontendConfig::THEME_DEFAULT;
     $themeBasePath = FrontendConfig::getThemePath($activeThemeId);
+    // 前台工作台首页也通过当前主题包的样式入口进行渲染
+    $frontendCssUrl = FrontendConfig::getThemeCssUrl('style.css', $activeThemeId, FrontendConfig::CACHE_VERSION);
     ?>
-    <!-- 主题样式 - 从静态资源目录加载 -->
-    <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getAssetUrl(FrontendConfig::PATH_STATIC_FRONTEND_WEB_CSS . '/style.css')) ?>">
+    <link rel="stylesheet" href="<?= htmlspecialchars($frontendCssUrl) ?>">
 </head>
 <body>
     <div class="app-layout">

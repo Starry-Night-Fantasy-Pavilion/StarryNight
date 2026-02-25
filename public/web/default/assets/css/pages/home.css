@@ -1,11 +1,6 @@
-/* 企业官网首页样式 - 与登录页面统一的背景图 */
+/* 企业官网首页样式：
+   底图统一由 body.page-home 提供，这里只负责内容布局，避免与全局底图叠加 */
 .enterprise-home {
-    background-color: #0f172a;
-    background-image: url('/web/default/assets/images/IMG_20260217_233007.jpg');
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
     color: #ffffff;
     overflow-x: hidden;
 }
@@ -169,7 +164,7 @@
 /* 导航栏 - 液态玻璃效果 */
 .navbar {
     position: fixed;
-    top: 14px;
+    top: 3px; /* 距离浏览器顶部预留 3px 间距 */
     left: 0;
     right: 0;
     margin: 0 20px;
@@ -210,7 +205,7 @@
     align-items: center;
     gap: 12px;
     text-decoration: none;
-    color: #ffffff;
+    color: #ffffff; /* 顶部品牌文字改为纯白色 */
 }
 
 .brand-logo {
@@ -221,7 +216,7 @@
 .brand-name {
     font-size: 1.2rem;
     font-weight: 700;
-    color: #ffffff;
+    color: #ffffff; /* 品牌名称文字改为纯白色 */
 }
 
 .nav-menu {
@@ -236,7 +231,7 @@
 }
 
 .nav-link {
-    color: #cbd5e1;
+    color: #f9fafb; /* 导航文字改为接近纯白 */
     text-decoration: none;
     font-weight: 500;
     font-size: 0.95rem;
@@ -246,7 +241,7 @@
 }
 
 .nav-link:hover {
-    color: #f8fafc;
+    color: #ffffff; /* 悬停时使用纯白色 */
     background: rgba(255, 255, 255, 0.08);
 }
 

@@ -2,8 +2,8 @@
 -- 邮件模板初始化数据
 -- =========================
 
--- 插入默认邮件模板
-INSERT INTO `__PREFIX__notification_templates` (`channel`, `code`, `title`, `content`, `created_at`) VALUES
+-- 插入默认邮件模板（允许重复执行，因此使用 INSERT IGNORE）
+INSERT IGNORE INTO `__PREFIX__notification_templates` (`channel`, `code`, `title`, `content`, `created_at`) VALUES
 ('email', 'register_verify_email', '注册验证码', 'register_verify_email.html', NOW()),
 ('email', 'reset_password_email', '密码重置验证码', 'reset_password_email.html', NOW()),
 ('email', 'welcome_email', '欢迎邮件', 'welcome_email.html', NOW()),
@@ -13,16 +13,16 @@ INSERT INTO `__PREFIX__notification_templates` (`channel`, `code`, `title`, `con
 ('email', 'account_suspended', '账户暂停通知', 'account_suspended.html', NOW()),
 ('email', 'system_maintenance', '系统维护通知', 'system_maintenance.html', NOW());
 
--- 插入默认短信模板
-INSERT INTO `__PREFIX__notification_templates` (`channel`, `code`, `title`, `content`, `created_at`) VALUES
+-- 插入默认短信模板（允许重复执行，因此使用 INSERT IGNORE）
+INSERT IGNORE INTO `__PREFIX__notification_templates` (`channel`, `code`, `title`, `content`, `created_at`) VALUES
 ('sms', 'register_verify_sms', '注册验证码', '您的验证码是：{{code}}，{{minutes}}分钟内有效。', NOW()),
 ('sms', 'reset_password_sms', '密码重置验证码', '您的密码重置验证码是：{{code}}，{{minutes}}分钟内有效。', NOW()),
 ('sms', 'login_verify', '登录验证码', '您的登录验证码是：{{code}}，{{minutes}}分钟内有效。', NOW()),
 ('sms', 'order_notice', '订单通知', '您有新的订单：{{order_id}}，金额：{{amount}}元。', NOW()),
 ('sms', 'payment_notice', '支付通知', '您的订单{{order_id}}已支付成功，金额：{{amount}}元。', NOW());
 
--- 插入系统通知模板
-INSERT INTO `__PREFIX__notification_templates` (`channel`, `code`, `title`, `content`, `created_at`) VALUES
+-- 插入系统通知模板（允许重复执行，因此使用 INSERT IGNORE）
+INSERT IGNORE INTO `__PREFIX__notification_templates` (`channel`, `code`, `title`, `content`, `created_at`) VALUES
 ('system', 'new_message', '新消息通知', '您有新的消息：{{message_title}}', NOW()),
 ('system', 'system_update', '系统更新通知', '系统已更新到{{version}}版本，新增功能：{{features}}', NOW()),
 ('system', 'security_alert', '安全提醒', '检测到您的账户有异常登录，地点：{{location}}，时间：{{time}}', NOW()),

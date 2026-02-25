@@ -78,8 +78,8 @@ class NovelCreationController
         if (strpos($view, 'novel_creation') !== false) {
             $themeManager = new \app\services\ThemeManager();
             $activeThemeId = $themeManager->getActiveThemeId('web') ?? \app\config\FrontendConfig::THEME_DEFAULT;
-            $themeBasePath = \app\config\FrontendConfig::getThemePath($activeThemeId);
-            $extra_css[] = \app\config\FrontendConfig::PATH_STATIC_FRONTEND_WEB_CSS . '/pages/novel-creation.css';
+            // 通过当前启用的前台主题加载小说创作相关样式
+            $extra_css[] = \app\config\FrontendConfig::getThemeCssUrl('pages/novel-creation.css', $activeThemeId);
         }
         $data['extra_css'] = $extra_css;
         extract($data);

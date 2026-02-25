@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>订单确认 - {{site_name}}</title>
+    <!--[if mso]>
+    <style type="text/css">
+        body, table, td {font-family: Arial, sans-serif !important;}
+    </style>
+    <![endif]-->
+</head>
+<body style="margin: 0; padding: 20px 0; background-color: #f4f4f4; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 640px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
+        <tr>
+            <td style="padding: 40px 32px;">
+                <!-- 头部 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="text-align: center; padding-bottom: 28px; border-bottom: 2px solid #3b82f6;">
+                            <h1 style="margin: 0; color: #3b82f6; font-size: 24px; font-weight: 600;">订单确认</h1>
+                            <p style="margin: 8px 0 0 0; font-size: 13px; color: #6b7280;">感谢你在 {{site_name}} 下单</p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 问候语 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="padding: 24px 0 16px 0;">
+                            <p style="margin: 0 0 14px 0; font-size: 15px; line-height: 1.6; color: #374151;">
+                                您好{{username}}：
+                            </p>
+                            <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #374151;">
+                                我们已经收到你的订单请求，以下是本次订单的关键信息，请查收确认。
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 订单摘要 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 8px 0 16px 0; background-color: #f3f4f6; border-radius: 8px;">
+                    <tr>
+                        <td style="padding: 18px 18px 10px 18px;">
+                            <p style="margin: 0 0 10px 0; font-size: 14px; font-weight: 600; color: #111827;">订单信息</p>
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tr>
+                                    <td style="padding: 3px 0; font-size: 13px; color: #4b5563; width: 120px;">订单编号：</td>
+                                    <td style="padding: 3px 0; font-size: 13px; color: #111827;">{{order_id}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 3px 0; font-size: 13px; color: #4b5563;">订单金额：</td>
+                                    <td style="padding: 3px 0; font-size: 13px; color: #111827;"><strong style="font-size: 14px;">¥ {{amount}}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 3px 0; font-size: 13px; color: #4b5563;">下单时间：</td>
+                                    <td style="padding: 3px 0; font-size: 13px; color: #111827;">{{time}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 3px 0; font-size: 13px; color: #4b5563;">订单状态：</td>
+                                    <td style="padding: 3px 0; font-size: 13px; color: #16a34a;">待支付 / 处理中</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 使用说明 / 提示 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="padding: 8px 0 18px 0;">
+                            <p style="margin: 0 0 10px 0; font-size: 14px; line-height: 1.6; color: #374151;">
+                                如果你尚未完成支付，请尽快前往 {{site_name}} 完成订单，逾期未支付的订单可能会被系统自动关闭。
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 操作按钮 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td align="center" style="padding: 6px 0 18px 0;">
+                            <a href="{{site_url}}" style="display: inline-block; padding: 11px 26px; border-radius: 6px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #ffffff; font-size: 15px; text-decoration: none; font-weight: 600;">
+                                查看 / 支付订单
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0 0 20px 0;">
+                            <p style="margin: 0; font-size: 12px; line-height: 1.6; color: #6b7280; text-align: center;">
+                                如果按钮无法点击，请将以下链接复制到浏览器中打开：<br>
+                                <span style="word-break: break-all; color: #9ca3af;">{{site_url}}</span>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 底部 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="padding-top: 24px; border-top: 1px solid #e5e7eb; text-align: center;">
+                            <p style="margin: 0 0 8px 0; font-size: 12px; line-height: 1.5; color: #9ca3af;">
+                                本邮件为系统自动发送的订单通知，请勿直接回复。
+                            </p>
+                            <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #9ca3af;">
+                                © {{current_year}} {{site_name}} · All rights reserved.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+

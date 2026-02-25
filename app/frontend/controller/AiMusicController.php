@@ -2,14 +2,21 @@
 
 namespace app\frontend\controller;
 
+use Core\Controller;
+use Core\Exceptions\ErrorCode;
 use app\models\AiMusicProject;
 use app\models\AiMusicLyrics;
 use app\models\AiMusicTrack;
 use app\models\AiMusicMixMaster;
 use app\models\AiMusicExport;
 use app\models\User;
+use app\services\FrontendDataService;
 
-class AiMusicController
+/**
+ * AI音乐控制器
+ * 已迁移到新的设计模式，使用统一的API响应和数据绑定
+ */
+class AiMusicController extends Controller
 {
     private $projectModel;
     private $lyricsModel;
@@ -19,6 +26,7 @@ class AiMusicController
 
     public function __construct()
     {
+        parent::__construct();
         $this->projectModel = new AiMusicProject();
         $this->lyricsModel = new AiMusicLyrics();
         $this->trackModel = new AiMusicTrack();
@@ -29,14 +37,13 @@ class AiMusicController
     /**
      * 检查用户登录状态
      */
-    private function checkAuth()
+    private function checkAuth(): int
     {
-        if (!isset($_SESSION['user_logged_in']) || !$_SESSION['user_logged_in']) {
+        if (!$this->isLoggedIn()) {
             $redirectUrl = $_SERVER['REQUEST_URI'] ?? '/ai_music';
-            header('Location: /login?redirect=' . urlencode($redirectUrl));
-            exit;
+            $this->redirect('/login?redirect=' . urlencode($redirectUrl));
         }
-        return $_SESSION['user_id'];
+        return $this->getUserId();
     }
 
     /**
@@ -45,17 +52,6 @@ class AiMusicController
     private function getCurrentUserId(): int
     {
         return $this->checkAuth();
-    }
-
-    /**
-     * 返回JSON响应
-     */
-    private function jsonResponse($data, int $statusCode = 200): void
-    {
-        header('Content-Type: application/json');
-        http_response_code($statusCode);
-        echo json_encode($data, JSON_UNESCAPED_UNICODE);
-        exit;
     }
 
     /**
@@ -98,24 +94,30 @@ class AiMusicController
 
     /**
      * 验证请求参数
+     * 使用 FrontendDataService 进行统一验证
      */
     private function validateRequired(array $data, array $required): array
     {
-        $missing = [];
+        $rules = [];
         foreach ($required as $field) {
-            if (!isset($data[$field]) || empty($data[$field])) {
-                $missing[] = $field;
-            }
+            $rules[$field] = [
+                'required' => true,
+                'type' => 'string',
+                'message' => "字段 {$field} 是必填的",
+            ];
         }
         
-        if (!empty($missing)) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '缺少必需参数: ' . implode(', ', $missing)
-            ], 400);
+        $validation = FrontendDataService::validateInput($data, $rules);
+        
+        if (!$validation['valid']) {
+            $this->sendError(
+                ErrorCode::INVALID_PARAMETER,
+                '缺少必需参数: ' . implode(', ', array_keys($validation['errors'])),
+                $validation['errors']
+            );
         }
         
-        return $data;
+        return $validation['data'];
     }
 
     /**
@@ -123,7 +125,7 @@ class AiMusicController
      */
     public function createProject(): void
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        $data = json_decode(file_get_contents('php://input'), true) ?? [];
         $data = $this->validateRequired($data, ['title']);
         
         $data['user_id'] = $this->getCurrentUserId();
@@ -132,15 +134,9 @@ class AiMusicController
             $projectId = $this->getDb()->lastInsertId();
             $project = $this->projectModel->getById($projectId);
             
-            $this->jsonResponse([
-                'success' => true,
-                'data' => $project
-            ]);
+            $this->sendSuccess($project, '项目创建成功');
         } else {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '创建项目失败'
-            ], 500);
+            $this->sendError(ErrorCode::SYSTEM_ERROR, '创建项目失败');
         }
     }
 
@@ -157,16 +153,7 @@ class AiMusicController
         $projects = $this->projectModel->getByUserId($userId, $page, $limit, $status);
         $totalCount = $this->projectModel->getUserTotalCount($userId, $status);
         
-        $this->jsonResponse([
-            'success' => true,
-            'data' => $projects,
-            'pagination' => [
-                'page' => $page,
-                'limit' => $limit,
-                'total' => $totalCount,
-                'pages' => ceil($totalCount / $limit)
-            ]
-        ]);
+        $this->sendPaginated($projects, $totalCount, $page, $limit, '获取项目列表成功');
     }
 
     /**
@@ -177,40 +164,28 @@ class AiMusicController
         $project = $this->projectModel->getById($id);
         
         if (!$project) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '项目不存在'
-            ], 404);
+            $this->sendError(ErrorCode::RESOURCE_NOT_FOUND, '项目不存在');
         }
         
         // 检查权限
         if ($project['user_id'] !== $this->getCurrentUserId() && !$project['is_public']) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '无权访问此项目'
-            ], 403);
+            $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
         // 获取项目统计信息
         $stats = $this->projectModel->getProjectStats($id);
         
         // 获取相关数据
-        $lyrics = $this->lyricsModel->getByProjectId($id);
-        $tracks = $this->trackModel->getByProjectId($id);
-        $mixes = $this->mixMasterModel->getByProjectId($id);
-        $exports = $this->exportModel->getByProjectId($id);
+        $data = [
+            'project' => $project,
+            'stats' => $stats,
+            'lyrics' => $this->lyricsModel->getByProjectId($id),
+            'tracks' => $this->trackModel->getByProjectId($id),
+            'mixes' => $this->mixMasterModel->getByProjectId($id),
+            'exports' => $this->exportModel->getByProjectId($id),
+        ];
         
-        $this->jsonResponse([
-            'success' => true,
-            'data' => [
-                'project' => $project,
-                'stats' => $stats,
-                'lyrics' => $lyrics,
-                'tracks' => $tracks,
-                'mixes' => $mixes,
-                'exports' => $exports
-            ]
-        ]);
+        $this->sendSuccess($data, '获取项目详情成功');
     }
 
     /**
@@ -221,32 +196,20 @@ class AiMusicController
         $project = $this->projectModel->getById($id);
         
         if (!$project) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '项目不存在'
-            ], 404);
+            $this->sendError(ErrorCode::RESOURCE_NOT_FOUND, '项目不存在');
         }
         
         if ($project['user_id'] !== $this->getCurrentUserId()) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '无权修改此项目'
-            ], 403);
+            $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权修改此项目');
         }
         
-        $data = json_decode(file_get_contents('php://input'), true);
+        $data = json_decode(file_get_contents('php://input'), true) ?? [];
         
         if ($this->projectModel->update($id, $data)) {
             $updatedProject = $this->projectModel->getById($id);
-            $this->jsonResponse([
-                'success' => true,
-                'data' => $updatedProject
-            ]);
+            $this->sendSuccess($updatedProject, '项目更新成功');
         } else {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '更新项目失败'
-            ], 500);
+            $this->sendError(ErrorCode::SYSTEM_ERROR, '更新项目失败');
         }
     }
 
@@ -258,29 +221,17 @@ class AiMusicController
         $project = $this->projectModel->getById($id);
         
         if (!$project) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '项目不存在'
-            ], 404);
+            $this->sendError(ErrorCode::RESOURCE_NOT_FOUND, '项目不存在');
         }
         
         if ($project['user_id'] !== $this->getCurrentUserId()) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '无权删除此项目'
-            ], 403);
+            $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权删除此项目');
         }
         
         if ($this->projectModel->delete($id)) {
-            $this->jsonResponse([
-                'success' => true,
-                'message' => '项目删除成功'
-            ]);
+            $this->sendSuccess(null, '项目删除成功');
         } else {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '删除项目失败'
-            ], 500);
+            $this->sendError(ErrorCode::SYSTEM_ERROR, '删除项目失败');
         }
     }
 
@@ -295,10 +246,7 @@ class AiMusicController
         // 检查项目权限
         $project = $this->projectModel->getById($data['project_id']);
         if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '无权访问此项目'
-            ], 403);
+            $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
         // 分析歌词
@@ -322,15 +270,9 @@ class AiMusicController
             $lyricsId = $this->getDb()->lastInsertId();
             $lyrics = $this->lyricsModel->getById($lyricsId);
             
-            $this->jsonResponse([
-                'success' => true,
-                'data' => $lyrics
-            ]);
+            $this->sendSuccess($lyrics, '创建歌词成功');
         } else {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '创建歌词失败'
-            ], 500);
+            $this->sendError(ErrorCode::SYSTEM_ERROR, '创建歌词失败');
         }
     }
 
@@ -345,10 +287,7 @@ class AiMusicController
         // 检查项目权限
         $project = $this->projectModel->getById($data['project_id']);
         if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '无权访问此项目'
-            ], 403);
+            $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
         $generationParams = [
@@ -376,21 +315,12 @@ class AiMusicController
                 $lyricsId = $this->getDb()->lastInsertId();
                 $lyrics = $this->lyricsModel->getById($lyricsId);
                 
-                $this->jsonResponse([
-                    'success' => true,
-                    'data' => $lyrics
-                ]);
+                $this->sendSuccess($lyrics, 'AI生成歌词成功');
             } else {
-                $this->jsonResponse([
-                    'success' => false,
-                    'error' => '保存生成的歌词失败'
-                ], 500);
+                $this->sendError(ErrorCode::SYSTEM_ERROR, '保存生成的歌词失败');
             }
         } else {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => 'AI生成歌词失败'
-            ], 500);
+            $this->sendError(ErrorCode::SYSTEM_ERROR, 'AI生成歌词失败');
         }
     }
 
@@ -405,10 +335,7 @@ class AiMusicController
         // 检查项目权限
         $project = $this->projectModel->getById($data['project_id']);
         if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '无权访问此项目'
-            ], 403);
+            $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
         // 设置位置
@@ -420,15 +347,9 @@ class AiMusicController
             $trackId = $this->getDb()->lastInsertId();
             $track = $this->trackModel->getById($trackId);
             
-            $this->jsonResponse([
-                'success' => true,
-                'data' => $track
-            ]);
+            $this->sendSuccess($track, '创建音轨成功');
         } else {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '创建音轨失败'
-            ], 500);
+            $this->sendError(ErrorCode::SYSTEM_ERROR, '创建音轨失败');
         }
     }
 
@@ -440,34 +361,22 @@ class AiMusicController
         $track = $this->trackModel->getById($id);
         
         if (!$track) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '音轨不存在'
-            ], 404);
+            $this->sendError(ErrorCode::RESOURCE_NOT_FOUND, '音轨不存在');
         }
         
         // 检查项目权限
         $project = $this->projectModel->getById($track['project_id']);
         if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '无权修改此音轨'
-            ], 403);
+            $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权修改此音轨');
         }
         
-        $data = json_decode(file_get_contents('php://input'), true);
+        $data = json_decode(file_get_contents('php://input'), true) ?? [];
         
         if ($this->trackModel->update($id, $data)) {
             $updatedTrack = $this->trackModel->getById($id);
-            $this->jsonResponse([
-                'success' => true,
-                'data' => $updatedTrack
-            ]);
+            $this->sendSuccess($updatedTrack, '更新音轨成功');
         } else {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '更新音轨失败'
-            ], 500);
+            $this->sendError(ErrorCode::SYSTEM_ERROR, '更新音轨失败');
         }
     }
 
@@ -479,31 +388,19 @@ class AiMusicController
         $track = $this->trackModel->getById($id);
         
         if (!$track) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '音轨不存在'
-            ], 404);
+            $this->sendError(ErrorCode::RESOURCE_NOT_FOUND, '音轨不存在');
         }
         
         // 检查项目权限
         $project = $this->projectModel->getById($track['project_id']);
         if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '无权删除此音轨'
-            ], 403);
+            $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权删除此音轨');
         }
         
         if ($this->trackModel->delete($id)) {
-            $this->jsonResponse([
-                'success' => true,
-                'message' => '音轨删除成功'
-            ]);
+            $this->sendSuccess(null, '音轨删除成功');
         } else {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '删除音轨失败'
-            ], 500);
+            $this->sendError(ErrorCode::SYSTEM_ERROR, '删除音轨失败');
         }
     }
 
@@ -518,25 +415,15 @@ class AiMusicController
         // 检查项目权限
         $project = $this->projectModel->getById($data['project_id']);
         if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '无权访问此项目'
-            ], 403);
+            $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
         $separatedTracks = $this->trackModel->separateTracks($data['project_id'], $data['source_audio_url']);
         
         if (!empty($separatedTracks)) {
-            $this->jsonResponse([
-                'success' => true,
-                'data' => $separatedTracks,
-                'message' => '音轨分离成功'
-            ]);
+            $this->sendSuccess($separatedTracks, '音轨分离成功');
         } else {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '音轨分离失败'
-            ], 500);
+            $this->sendError(ErrorCode::SYSTEM_ERROR, '音轨分离失败');
         }
     }
 
@@ -551,26 +438,16 @@ class AiMusicController
         // 检查项目权限
         $project = $this->projectModel->getById($data['project_id']);
         if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '无权访问此项目'
-            ], 403);
+            $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
         $mixParams = $data['params'] ?? [];
         $result = $this->mixMasterModel->autoMix($data['project_id'], $mixParams);
         
         if ($result['success']) {
-            $this->jsonResponse([
-                'success' => true,
-                'data' => $result,
-                'message' => 'AI混音成功'
-            ]);
+            $this->sendSuccess($result, 'AI混音成功');
         } else {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => $result['error'] ?? 'AI混音失败'
-            ], 500);
+            $this->sendError(ErrorCode::SYSTEM_ERROR, $result['error'] ?? 'AI混音失败');
         }
     }
 
@@ -585,26 +462,16 @@ class AiMusicController
         // 检查项目权限
         $project = $this->projectModel->getById($data['project_id']);
         if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '无权访问此项目'
-            ], 403);
+            $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
         $masterParams = $data['params'] ?? [];
         $result = $this->mixMasterModel->autoMaster($data['project_id'], $masterParams);
         
         if ($result['success']) {
-            $this->jsonResponse([
-                'success' => true,
-                'data' => $result,
-                'message' => 'AI母带处理成功'
-            ]);
+            $this->sendSuccess($result, 'AI母带处理成功');
         } else {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => $result['error'] ?? 'AI母带处理失败'
-            ], 500);
+            $this->sendError(ErrorCode::SYSTEM_ERROR, $result['error'] ?? 'AI母带处理失败');
         }
     }
 
@@ -619,25 +486,15 @@ class AiMusicController
         // 检查项目权限
         $project = $this->projectModel->getById($data['project_id']);
         if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '无权访问此项目'
-            ], 403);
+            $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
         $result = $this->exportModel->exportAudio($data['project_id'], $data);
         
         if ($result['success']) {
-            $this->jsonResponse([
-                'success' => true,
-                'data' => $result,
-                'message' => '音频导出成功'
-            ]);
+            $this->sendSuccess($result, '音频导出成功');
         } else {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => $result['error'] ?? '音频导出失败'
-            ], 500);
+            $this->sendError(ErrorCode::SYSTEM_ERROR, $result['error'] ?? '音频导出失败');
         }
     }
 
@@ -647,11 +504,7 @@ class AiMusicController
     public function getExportFormats(): void
     {
         $formats = $this->exportModel->getSupportedFormats();
-        
-        $this->jsonResponse([
-            'success' => true,
-            'data' => $formats
-        ]);
+        $this->sendSuccess($formats, '获取导出格式成功');
     }
 
     /**
@@ -661,11 +514,7 @@ class AiMusicController
     {
         $userId = $this->getCurrentUserId();
         $stats = $this->projectModel->getUserProjectStats($userId);
-        
-        $this->jsonResponse([
-            'success' => true,
-            'data' => $stats
-        ]);
+        $this->sendSuccess($stats, '获取统计信息成功');
     }
 
     /**
@@ -678,18 +527,11 @@ class AiMusicController
         $limit = (int)($_GET['limit'] ?? 20);
         
         if (empty($keyword)) {
-            $this->jsonResponse([
-                'success' => false,
-                'error' => '搜索关键词不能为空'
-            ], 400);
+            $this->sendError(ErrorCode::INVALID_PARAMETER, '搜索关键词不能为空');
         }
         
         $projects = $this->projectModel->search($keyword, $page, $limit);
-        
-        $this->jsonResponse([
-            'success' => true,
-            'data' => $projects
-        ]);
+        $this->sendSuccess($projects, '搜索成功');
     }
 
     /**
@@ -701,11 +543,7 @@ class AiMusicController
         $genre = $_GET['genre'] ?? null;
         
         $projects = $this->projectModel->getPopularProjects($limit, $genre);
-        
-        $this->jsonResponse([
-            'success' => true,
-            'data' => $projects
-        ]);
+        $this->sendSuccess($projects, '获取热门项目成功');
     }
 
     /**
@@ -717,11 +555,7 @@ class AiMusicController
         $genre = $_GET['genre'] ?? null;
         
         $projects = $this->projectModel->getLatestProjects($limit, $genre);
-        
-        $this->jsonResponse([
-            'success' => true,
-            'data' => $projects
-        ]);
+        $this->sendSuccess($projects, '获取最新项目成功');
     }
 
     /**

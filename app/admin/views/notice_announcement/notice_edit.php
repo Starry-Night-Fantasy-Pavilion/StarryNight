@@ -11,8 +11,8 @@
             </div>
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <label class="form-label">优先权重（0-10，越高出现越多次）</label>
-                    <input type="number" name="priority" class="form-control" min="0" max="10"
+                    <label class="form-label">优先权重（0-100，越高出现越多次）</label>
+                    <input type="number" name="priority" class="form-control" min="0" max="100"
                            value="<?= (int)($item['priority'] ?? 0) ?>">
                 </div>
                 <div class="col-md-4 mb-3">

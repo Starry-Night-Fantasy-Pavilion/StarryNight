@@ -21,8 +21,8 @@ $hasToken = !empty($token);
     $themeBasePath = FrontendConfig::getThemePath($activeThemeId);
     $staticJsPath = FrontendConfig::PATH_STATIC_FRONTEND_WEB_JS;
     ?>
-    <!-- 主题样式 - 从静态资源目录加载 -->
-    <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getAssetUrl(FrontendConfig::PATH_STATIC_FRONTEND_WEB_CSS . '/style.css')) ?>">
+    <!-- 重置密码页面样式 - 直接从主题目录加载 -->
+    <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getThemeCssUrl('pages/reset-password.css', $activeThemeId)) ?>">
 </head>
 <body>
     <div class="reset-wrapper">

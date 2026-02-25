@@ -73,6 +73,7 @@ class BaseController
 
     /**
      * 返回JSON响应
+     * @deprecated 使用 apiResponse() 方法代替
      */
     protected function json($data, $statusCode = 200)
     {
@@ -83,9 +84,50 @@ class BaseController
     }
 
     /**
+     * 返回统一的API响应
+     * 使用Core\Api\ApiResponse类
+     *
+     * @param mixed $data 响应数据
+     * @param string $message 消息
+     * @param array $meta 元数据
+     * @return \Core\Api\ApiResponse
+     */
+    protected function apiResponse($data = null, string $message = '操作成功', array $meta = []): \Core\Api\ApiResponse
+    {
+        return \app\services\FrontendDataService::createApiResponse($data, $message, $meta);
+    }
+
+    /**
+     * 发送API成功响应
+     *
+     * @param mixed $data 响应数据
+     * @param string $message 消息
+     * @param array $meta 元数据
+     * @return void
+     */
+    protected function sendSuccess($data = null, string $message = '操作成功', array $meta = []): void
+    {
+        $this->apiResponse($data, $message, $meta)->send();
+    }
+
+    /**
+     * 发送API错误响应
+     *
+     * @param int $code 错误码
+     * @param string|null $message 消息
+     * @param array $errors 错误详情
+     * @return void
+     */
+    protected function sendError(int $code, ?string $message = null, array $errors = []): void
+    {
+        \Core\Api\ApiResponse::error($code, $message, $errors)->send();
+    }
+
+    /**
      * 返回错误响应
      * @param string $message 错误信息
      * @param int $code HTTP状态码
+     * @deprecated 使用 sendError() 方法代替
      */
     protected function error(string $message, int $code = 400)
     {

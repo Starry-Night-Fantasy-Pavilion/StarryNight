@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>注册验证码 - {{site_name}}</title>
+    <!--[if mso]>
+    <style type="text/css">
+        body, table, td {font-family: Arial, sans-serif !important;}
+    </style>
+    <![endif]-->
+</head>
+<body style="margin: 0; padding: 20px 0; background-color: #f4f4f4; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
+        <tr>
+            <td style="padding: 40px 30px;">
+                <!-- 头部 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="text-align: center; padding-bottom: 30px; border-bottom: 2px solid #667eea;">
+                            <h1 style="margin: 0; color: #667eea; font-size: 26px; font-weight: 600;">{{site_name}}</h1>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 正文内容 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="padding: 30px 0 20px 0;">
+                            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6; color: #333333;">
+                                您好{{username}}：
+                            </p>
+                            <p style="margin: 0 0 20px 0; font-size: 15px; line-height: 1.6; color: #333333;">
+                                感谢注册 <strong style="color: #667eea;">{{site_name}}</strong>，请在
+                                <strong style="color: #f97373;">{{minutes}} 分钟</strong> 内输入下方验证码完成邮箱验证。
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- 验证码框 -->
+                    <tr>
+                        <td style="padding: 10px 0 25px 0;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tr>
+                                    <td align="center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 24px 20px;">
+                                        <div style="font-size: 32px; font-weight: bold; color: #ffffff; letter-spacing: 6px; text-shadow: 0 2px 4px rgba(0,0,0,0.25);">
+                                            {{code}}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 0 0 20px 0;">
+                            <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #666666;">
+                                验证码仅用于本次注册操作，请勿转发或泄露给他人。若超过 <strong style="color: #f97373;">{{minutes}} 分钟</strong> 未使用，您可以在页面重新获取新的验证码。
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- 使用说明 -->
+                    <tr>
+                        <td style="padding: 20px 0; background-color: #f8f9fa; border-radius: 6px; padding-left: 18px; padding-right: 18px;">
+                            <p style="margin: 0 0 10px 0; font-size: 14px; line-height: 1.6; color: #333333; font-weight: 600;">
+                                完成注册后，你可以：
+                            </p>
+                            <ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.8; color: #666666;">
+                                <li>使用邮箱登录 {{site_name}}，同步和管理你的创作数据；</li>
+                                <li>接收平台的重要通知、活动更新与安全提醒；</li>
+                                <li>在需要找回密码或验证身份时，更方便地完成验证。</li>
+                            </ul>
+                        </td>
+                    </tr>
+
+                    <!-- 安全提示 -->
+                    <tr>
+                        <td style="padding: 24px 0 10px 0;">
+                            <p style="margin: 0; font-size: 13px; line-height: 1.6; color: #856404; background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 14px; border-radius: 4px;">
+                                <strong style="color: #856404;">安全提示：</strong>
+                                {{site_name}} 不会通过电话、短信或其他方式向你索取验证码或密码，如遇可疑情况请立即停止操作并修改密码。
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 底部 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="padding-top: 26px; border-top: 1px solid #eeeeee; text-align: center;">
+                            <p style="margin: 0 0 8px 0; font-size: 12px; line-height: 1.5; color: #999999;">
+                                本邮件由系统自动发送，请勿直接回复。
+                            </p>
+                            <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #999999;">
+                                © {{current_year}} {{site_name}} · All rights reserved.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+

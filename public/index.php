@@ -414,8 +414,15 @@ $router->get('/storage', ['app\frontend\controller\StorageController', 'index'])
 // 前端公告
 $router->get('/announcement', ['app\frontend\controller\AnnouncementController', 'index']);
 
-// 前端通知栏
+// 前端通知栏（管理页 + 接口）
+// 兼容旧地址 /notice_bar 和新地址 /notice-bar
 $router->get('/notice_bar', ['app\frontend\controller\NoticeBarController', 'index']);
+$router->get('/notice-bar', ['app\frontend\controller\NoticeBarController', 'index']);
+$router->post('/notice-bar/create', ['app\frontend\controller\NoticeBarController', 'create']);
+$router->post('/notice-bar/update', ['app\frontend\controller\NoticeBarController', 'update']);
+$router->post('/notice-bar/delete', ['app\frontend\controller\NoticeBarController', 'delete']);
+$router->post('/notice-bar/toggle', ['app\frontend\controller\NoticeBarController', 'toggle']);
+$router->get('/notice-bar/detail', ['app\frontend\controller\NoticeBarController', 'detail']);
 
 // 前端众筹
 $router->get('/crowdfunding', ['app\frontend\controller\CrowdfundingController', 'index']);

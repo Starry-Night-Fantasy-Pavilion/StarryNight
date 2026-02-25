@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>欢迎加入 {{site_name}}</title>
+    <!--[if mso]>
+    <style type="text/css">
+        body, table, td {font-family: Arial, sans-serif !important;}
+    </style>
+    <![endif]-->
+</head>
+<body style="margin: 0; padding: 20px 0; background-color: #f4f4f4; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
+        <tr>
+            <td style="padding: 40px 30px;">
+                <!-- 头部 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="text-align: center; padding-bottom: 30px; border-bottom: 2px solid #28a745;">
+                            <h1 style="margin: 0; color: #28a745; font-size: 26px; font-weight: 600;">🎉 欢迎加入 {{site_name}}</h1>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 欢迎区块 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td align="center" style="padding: 24px 0; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 8px; margin: 24px 0;">
+                            <h2 style="margin: 0 0 10px 0; font-size: 22px; color: #ffffff; font-weight: 600;">嗨，欢迎来到 {{site_name}}</h2>
+                            <p style="margin: 0; font-size: 15px; color: #e5e7eb; line-height: 1.6;">
+                                很高兴与你相遇，期待你在这里发现更多灵感与可能。
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 正文内容 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="padding: 22px 0;">
+                            <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6; color: #333333;">
+                                您好{{username}}：
+                            </p>
+                            <p style="margin: 0 0 18px 0; font-size: 15px; line-height: 1.6; color: #333333;">
+                                您的 {{site_name}} 账户已成功创建。从现在开始，你可以使用同一账号在我们的站点中进行登录、创作和管理内容。
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- 功能列表 -->
+                    <tr>
+                        <td style="padding: 18px 0; background-color: #f8f9fa; border-radius: 6px; padding-left: 18px; padding-right: 18px;">
+                            <p style="margin: 0 0 10px 0; font-size: 14px; line-height: 1.6; color: #333333; font-weight: 600;">
+                                现在你可以：
+                            </p>
+                            <ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.8; color: #666666;">
+                                <li>登录 {{site_name}}，完善头像、昵称等个人资料；</li>
+                                <li>体验平台提供的各类创作工具与功能；</li>
+                                <li>关注最新活动、更新公告与创作案例；</li>
+                                <li>在社区中结识更多创作者，交流经验与灵感。</li>
+                            </ul>
+                        </td>
+                    </tr>
+
+                    <!-- 按钮 -->
+                    <tr>
+                        <td align="center" style="padding: 26px 0 10px 0;">
+                            <a href="{{site_url}}" style="display: inline-block; background-color: #28a745; color: #ffffff; padding: 11px 26px; text-decoration: none; border-radius: 5px; font-weight: 600; font-size: 15px;">
+                                立即前往 {{site_name}}
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 6px 0 20px 0;">
+                            <p style="margin: 0; font-size: 13px; line-height: 1.6; color: #666666; text-align: center;">
+                                如果按钮无法点击，请将以下链接复制到浏览器中打开：<br>
+                                <span style="word-break: break-all; color: #999999;">{{site_url}}</span>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- 底部 -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="padding-top: 26px; border-top: 1px solid #eeeeee; text-align: center;">
+                            <p style="margin: 0 0 8px 0; font-size: 12px; line-height: 1.5; color: #999999;">
+                                本邮件由系统自动发送，请勿直接回复。
+                            </p>
+                            <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #999999;">
+                                © {{current_year}} {{site_name}} · All rights reserved.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+

@@ -602,12 +602,15 @@ body.page-login * {
 }
         </style>
     <?php else: ?>
-        <!-- 主题包共享管理样式 -->
-        <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getThemeCssUrl('shared/style.css')) ?>">
-        <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getThemeCssUrl('shared/responsive-tables.css')) ?>">
-        <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getThemeCssUrl('shared/responsive-forms.css')) ?>">
-        <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getThemeCssUrl('shared/dashboard-base.css')) ?>">
-        <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getThemeCssUrl('shared/dashboard-v2-cards.css')) ?>">
+        <?php
+            // 首页使用独立视觉体系（企业官网），保持轻量；其他页面走统一 CSS 入口，避免重复与覆盖
+            $isHomePage = isset($current_page) && $current_page === 'home';
+        ?>
+        <?php if ($isHomePage): ?>
+            <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getThemeCssUrl('base.css')) ?>">
+        <?php else: ?>
+            <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getThemeCssUrl('style.css')) ?>">
+        <?php endif; ?>
     <?php endif; ?>
     
     <?php if (isset($extra_css) && is_array($extra_css)): ?>
@@ -616,8 +619,7 @@ body.page-login * {
         <?php endforeach; ?>
     <?php endif; ?>
     
-    <!-- 基础样式 -->
-    <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getThemeCssUrl('base.css')) ?>">
+    <!-- 基础/通用样式已在上方按页面类型引入（home: base.css；其他: style.css） -->
     
     <!-- 首页专用样式 -->
     <?php if (isset($current_page) && $current_page === 'home'): ?>
@@ -681,59 +683,26 @@ body.page-login * {
     }
     </script>
     <?php endif; ?>
+<?php 
+    // 判断是否为官网首页，用于在加载阶段就挂载当前首页底图，避免先出现其它背景
+    $isHomePage = isset($current_page) && $current_page === 'home';
+?>
 </head>
-<body class="<?= isset($page_class) ? htmlspecialchars($page_class) : '' ?><?= $isAuthPage ? ' admin-login-page' : '' ?>">
+<body class="<?= isset($page_class) ? htmlspecialchars($page_class) : '' ?><?= $isAuthPage ? ' admin-login-page' : '' ?>"<?= $isHomePage ? ' style="background-image:url(\'/web/default/assets/images/IMG_20260217_233007.jpg\');background-size:cover;background-position:center center;background-repeat:no-repeat;background-attachment:fixed;"' : '' ?>>
     <?php 
     $isAuthPage = isset($page_class) && ($page_class === 'page-login' || $page_class === 'page-register');
     ?>
     
     <?php 
     // 首页有自己的导航栏，其他页面显示默认header
-    $isHomePage = isset($current_page) && $current_page === 'home';
+    // $isHomePage 已在 <body> 之前计算，这里直接复用
     ?>
     <?php if (!$isAuthPage && !$isHomePage): ?>
-    <header class="header" id="header">
-        <div class="header-brand">
-            <a href="/" class="header-logo">
-                <?php if (!empty($site_logo)): ?>
-                    <img src="<?= htmlspecialchars($site_logo) ?>" alt="<?= htmlspecialchars((string) ($site_name ?? '星夜阁')) ?>" class="header-logo-img">
-                <?php endif; ?>
-                <span><?= htmlspecialchars((string) ($site_name ?? '星夜阁')) ?></span>
-            </a>
-        </div>
-        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="菜单">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <nav class="header-nav" id="header-nav">
-            <ul class="nav-menu">
-                <li><a href="/" class="<?= (isset($current_page) && $current_page === 'home') ? 'active' : '' ?>">首页</a></li>
-                <li><a href="/novel_creation" class="<?= (isset($current_page) && $current_page === 'novel_creation') ? 'active' : '' ?>">小说创作</a></li>
-                <li><a href="/ai_music" class="<?= (isset($current_page) && $current_page === 'ai_music') ? 'active' : '' ?>">AI音乐</a></li>
-                <li><a href="/anime_production" class="<?= (isset($current_page) && $current_page === 'anime_production') ? 'active' : '' ?>">动画制作</a></li>
-                <li><a href="/knowledge" class="<?= (isset($current_page) && $current_page === 'knowledge') ? 'active' : '' ?>">知识库</a></li>
-                <li><a href="/templates" class="<?= (isset($current_page) && $current_page === 'templates') ? 'active' : '' ?>">模板库</a></li>
-                <li><a href="/agents" class="<?= (isset($current_page) && $current_page === 'agents') ? 'active' : '' ?>">智能体</a></li>
-                <li><a href="/ranking" class="<?= (isset($current_page) && $current_page === 'ranking') ? 'active' : '' ?>">排行榜</a></li>
-            </ul>
-        </nav>
-        <div class="header-actions">
-            <div class="language-switcher" style="display: inline-block; margin-right: 10px;">
-                <select id="language-select" style="padding: 6px 12px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.9); cursor: pointer; font-size: 14px;">
-                    <option value="zh-cn" <?= (($_SESSION['language'] ?? $_COOKIE['language'] ?? 'zh-cn') === 'zh-cn') ? 'selected' : '' ?>>中文</option>
-                    <option value="en" <?= (($_SESSION['language'] ?? $_COOKIE['language'] ?? 'zh-cn') === 'en') ? 'selected' : '' ?>>English</option>
-                </select>
-            </div>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="/user_center" class="btn btn-secondary btn-sm">个人中心</a>
-                <a href="/logout" class="btn btn-ghost btn-sm">退出</a>
-            <?php else: ?>
-                <a href="/login" class="btn btn-ghost btn-sm">登录</a>
-                <a href="/register" class="btn btn-primary btn-sm">免费注册</a>
-            <?php endif; ?>
-        </div>
-    </header>
+        <?php
+            // 导航栏组件（含logo、语言切换、登录状态）
+            $nav_items = $nav_items ?? null;
+            require __DIR__ . '/components/navbar.php';
+        ?>
     <?php endif; ?>
 
     <main class="main<?= $isAuthPage ? ' main-auth' : '' ?>">

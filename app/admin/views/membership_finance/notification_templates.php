@@ -157,14 +157,17 @@
                                                 </button>
                                                 <?php if (!empty($t['content'])): ?>
                                                     <?php $subDir = (($t['channel'] ?? 'email') === 'email') ? 'Email' : 'sms'; ?>
-                                                    <a href="/static/errors/html/<?= htmlspecialchars($subDir, ENT_QUOTES, 'UTF-8') ?>/<?= rawurlencode($t['content']) ?>"
-                                                       target="_blank" class="nt-btn-icon" title="预览模板">
+                                                    <?php $previewUrl = '/static/errors/html/' . htmlspecialchars($subDir, ENT_QUOTES, 'UTF-8') . '/' . rawurlencode($t['content']); ?>
+                                                    <button type="button"
+                                                            class="nt-btn-icon btn-template-preview"
+                                                            title="预览模板"
+                                                            data-preview-url="<?= htmlspecialchars($previewUrl, ENT_QUOTES, 'UTF-8') ?>">
                                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                                                             <polyline points="15 3 21 3 21 9"></polyline>
                                                             <line x1="10" y1="14" x2="21" y2="3"></line>
                                                         </svg>
-                                                    </a>
+                                                    </button>
                                                 <?php endif; ?>
                                                 <?php if (($t['channel'] ?? '') === 'email' || ($t['channel'] ?? '') === 'sms'): ?>
                                                     <button type="button" class="nt-btn-icon nt-btn-icon-primary btn-template-test" title="发送测试"
@@ -206,14 +209,49 @@
                     <ul class="nt-guide-list">
                         <li>邮件模板：<code class="nt-code-snippet">/static/errors/html/Email/</code></li>
                         <li>短信模板：<code class="nt-code-snippet">/static/errors/html/sms/</code></li>
+                        <li>站内信模板：存储在数据库字段 <code class="nt-code-snippet">content</code> 中（纯文本）</li>
                     </ul>
                 </div>
                 <div class="nt-guide-card">
                     <div class="nt-guide-card-icon">📝</div>
                     <h4 class="nt-guide-card-title">可用变量</h4>
                     <ul class="nt-guide-list">
-                        <li>用户名：<code class="nt-code-snippet">{{username}}</code></li>
+                        <li>用户名（可选）：<code class="nt-code-snippet">{{username}}</code></li>
                         <li>验证码：<code class="nt-code-snippet">{{code}}</code></li>
+                        <li>有效时间（分钟）：<code class="nt-code-snippet">{{minutes}}</code></li>
+                        <li>站点名称：<code class="nt-code-snippet">{{site_name}}</code></li>
+                        <li>站点链接：<code class="nt-code-snippet">{{site_url}}</code></li>
+                        <li>当前年份：<code class="nt-code-snippet">{{current_year}}</code></li>
+                        <li>订单编号：<code class="nt-code-snippet">{{order_id}}</code></li>
+                        <li>订单金额：<code class="nt-code-snippet">{{amount}}</code></li>
+                        <li>系统消息标题：<code class="nt-code-snippet">{{message_title}}</code></li>
+                        <li>系统版本号：<code class="nt-code-snippet">{{version}}</code></li>
+                        <li>更新内容简介：<code class="nt-code-snippet">{{features}}</code></li>
+                        <li>登录/操作时间：<code class="nt-code-snippet">{{time}}</code></li>
+                        <li>登录/操作地点：<code class="nt-code-snippet">{{location}}</code></li>
+                        <li>订阅套餐名称：<code class="nt-code-snippet">{{plan_name}}</code></li>
+                        <li>剩余天数 / 提醒天数：<code class="nt-code-snippet">{{days}}</code></li>
+                    </ul>
+                </div>
+                <div class="nt-guide-card">
+                    <div class="nt-guide-card-icon">💬</div>
+                    <h4 class="nt-guide-card-title">短信文案示例</h4>
+                    <ul class="nt-guide-list">
+                        <li>注册验证码：<code class="nt-code-snippet">您的验证码是：{{code}}，{{minutes}}分钟内有效。</code></li>
+                        <li>密码重置：<code class="nt-code-snippet">您的密码重置验证码是：{{code}}，{{minutes}}分钟内有效。</code></li>
+                        <li>登录验证：<code class="nt-code-snippet">您的登录验证码是：{{code}}，{{minutes}}分钟内有效。</code></li>
+                        <li>订单通知：<code class="nt-code-snippet">您有新的订单：{{order_id}}，金额：{{amount}}元。</code></li>
+                        <li>支付通知：<code class="nt-code-snippet">您的订单{{order_id}}已支付成功，金额：{{amount}}元。</code></li>
+                    </ul>
+                </div>
+                <div class="nt-guide-card">
+                    <div class="nt-guide-card-icon">🔔</div>
+                    <h4 class="nt-guide-card-title">站内信文案示例</h4>
+                    <ul class="nt-guide-list">
+                        <li>新消息通知：<code class="nt-code-snippet">您有新的消息：{{message_title}}</code></li>
+                        <li>系统更新：<code class="nt-code-snippet">系统已更新到{{version}}版本，新增功能：{{features}}</code></li>
+                        <li>安全提醒：<code class="nt-code-snippet">检测到您的账户有异常登录，地点：{{location}}，时间：{{time}}</code></li>
+                        <li>订阅续费提醒：<code class="nt-code-snippet">您的{{plan_name}}订阅即将在{{days}}天后到期，请及时续费。</code></li>
                     </ul>
                 </div>
                 <div class="nt-guide-card">
@@ -295,6 +333,34 @@
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- 模板预览弹窗 -->
+<div id="template-preview-modal" class="nt-modal">
+    <div class="nt-modal-overlay" data-close="template-preview-modal"></div>
+    <div class="nt-modal-container nt-modal-lg">
+        <div class="nt-modal-header">
+            <h5 class="nt-modal-title">
+                模板预览
+                <span id="template-preview-label" class="nt-modal-subtitle"></span>
+            </h5>
+            <button type="button" class="nt-modal-close" data-close="template-preview-modal">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="nt-modal-body nt-modal-body-preview">
+            <iframe id="template-preview-frame"
+                    src="about:blank"
+                    scrolling="no"
+                    style="width: 100%; border: none; background: #ffffff;"></iframe>
+        </div>
+        <div class="nt-modal-footer nt-modal-footer-preview">
+            <span class="nt-modal-tip-preview">
+                预览为静态效果，实际变量（如 {{code}}、{{username}}）在发送时会被替换为真实内容。
+            </span>
+            <button type="button" class="nt-btn nt-btn-secondary" data-close="template-preview-modal">关闭</button>
+        </div>
     </div>
 </div>
 
@@ -382,6 +448,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // 将本页弹窗从内容容器中移动到 <body>，避免被父级容器裁剪
+    document.querySelectorAll('.nt-modal').forEach(function(modal) {
+        if (modal.parentElement !== document.body) {
+            document.body.appendChild(modal);
+        }
+    });
+
     // Modal Logic
     const modals = {
         open: function(id) {
@@ -428,6 +501,56 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('test_template_id').value = this.dataset.id;
             document.getElementById('template-test-label').textContent = `(${this.dataset.code})`;
             modals.open('template-test-modal');
+        });
+    });
+
+    // Template Preview
+    const previewButtons = document.querySelectorAll('.btn-template-preview');
+    const previewFrame = document.getElementById('template-preview-frame');
+    const previewLabel = document.getElementById('template-preview-label');
+
+    function resizePreviewFrame() {
+        if (!previewFrame || !previewFrame.contentWindow) return;
+        try {
+            const doc = previewFrame.contentWindow.document;
+            const html = doc.documentElement;
+            const body = doc.body;
+            const height = Math.max(
+                body.scrollHeight || 0,
+                html.scrollHeight || 0,
+                window.innerHeight * 0.8
+            );
+            previewFrame.style.height = height + 'px';
+
+            // 隐藏内部滚动条（兼容主流浏览器）
+            const styleEl = doc.createElement('style');
+            styleEl.textContent = 'html,body{overflow:hidden !important;}::-webkit-scrollbar{display:none;}*{scrollbar-width:none;}';
+            doc.head.appendChild(styleEl);
+        } catch (e) {
+            // 同源下通常不会出错，忽略安全限制等异常
+        }
+    }
+
+    if (previewFrame) {
+        previewFrame.addEventListener('load', resizePreviewFrame);
+        window.addEventListener('resize', resizePreviewFrame);
+    }
+
+    previewButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const url = this.getAttribute('data-preview-url');
+            if (!url || !previewFrame) return;
+
+            if (previewLabel) {
+                const row = this.closest('tr');
+                const codeEl = row ? row.querySelector('.nt-code-snippet') : null;
+                const codeText = codeEl ? codeEl.textContent : '';
+                previewLabel.textContent = codeText ? '(' + codeText + ')' : '';
+            }
+
+            previewFrame.style.height = 'calc(94vh - 120px)';
+            previewFrame.src = url;
+            modals.open('template-preview-modal');
         });
     });
 

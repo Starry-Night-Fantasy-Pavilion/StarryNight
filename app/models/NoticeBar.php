@@ -55,12 +55,12 @@ class NoticeBar
         $data = array_intersect_key($data, array_flip($cols));
         $data['status'] = $data['status'] ?? 'enabled';
         $data['lang'] = $data['lang'] ?? 'zh-CN';
+        // 优先级：允许 0~100，便于后台使用 0/10/60/90 等更直观的权重
         $data['priority'] = (int)($data['priority'] ?? 0);
-        // 将优先权重限制在 0~10 区间
         if ($data['priority'] < 0) {
             $data['priority'] = 0;
-        } elseif ($data['priority'] > 10) {
-            $data['priority'] = 10;
+        } elseif ($data['priority'] > 100) {
+            $data['priority'] = 100;
         }
         $cols = array_keys($data);
         $placeholders = array_map(fn($c) => ":{$c}", $cols);
@@ -84,8 +84,11 @@ class NoticeBar
             $updates[] = "`{$col}` = :{$col}";
             if ($col === 'priority') {
                 $v = (int)$data[$col];
-                if ($v < 0) $v = 0;
-                if ($v > 10) $v = 10;
+                if ($v < 0) {
+                    $v = 0;
+                } elseif ($v > 100) {
+                    $v = 100;
+                }
                 $params[":{$col}"] = $v;
             } else {
                 $params[":{$col}"] = $data[$col] === '' ? null : $data[$col];

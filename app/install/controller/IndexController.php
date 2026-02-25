@@ -347,7 +347,13 @@ class IndexController
                 exit;
             }
 
+            $existing_tables = $this->_getExistingProjectTables($pdo, $db_config['name'], $db_config['prefix']);
+
             $_SESSION['install_config']['db'] = $db_config;
+            $_SESSION['install_db_detect'] = [
+                'existing_tables' => $existing_tables,
+                'existing_count' => count($existing_tables),
+            ];
              
             header('Location: ?step=7');
             exit;
@@ -366,51 +372,13 @@ class IndexController
             exit;
         }
 
-        $config = $_SESSION['install_config'];
-        $admin_info = $_SESSION['install_admin_info'];
-        $site_name = $_SESSION['install_site_name'];
-        
-        // 自动获取当前站点 URL
-        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $site_url = $protocol . '://' . $host;
-
-        // 尝试执行安装
-        try {
-            // 1. 数据库连接与创建
-            $dsn = "mysql:host={$config['db']['host']};port={$config['db']['port']};charset=utf8mb4";
-            $pdo = new \PDO($dsn, $config['db']['user'], $config['db']['pass'], [
-                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-            ]);
-            $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$config['db']['name']}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-            $pdo->exec("USE `{$config['db']['name']}`");
-
-            // 2. 生成 .env 配置文件
-            $this->_createEnvFile($config, $site_name, $site_url);
-
-            // 3. 执行数据库迁移
-            $this->_runMigrations($pdo, $config['db']['prefix']);
-
-            // 4. 创建管理员账号
-            $this->_createAdminUser($pdo, $config['db']['prefix'], $admin_info);
-
-            // 5. 创建 install.lock 文件
-            file_put_contents(APP_PATH . 'install/install.lock', 'installed at ' . date('Y-m-d H:i:s'));
-
-            // 6. 清理并跳转
-            $_SESSION['install_admin_path'] = $config['admin_path'];
-            $_SESSION['install_final_site_url'] = $site_url;
-            $_SESSION['install_admin_username'] = $admin_info['username'];
-            unset($_SESSION['install_config'], $_SESSION['install_admin_info'], $_SESSION['install_site_name'], $_SESSION['install_error'], $_SESSION['install_admin_draft']);
-             
-            header('Location: ?step=8');
-            exit;
-        } catch (\Exception $e) {
-            $_SESSION['install_error'] = '安装失败: ' . $e->getMessage();
-            header('Location: ?step=6');
-            exit;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'execute') {
+            $this->_executeInstallStream();
+            return;
         }
+
+        $db_detect = $_SESSION['install_db_detect'] ?? ['existing_count' => 0, 'existing_tables' => []];
+        require_once APP_PATH . 'install/views/step7.php';
     }
 
     /**
@@ -543,7 +511,7 @@ EOT;
     /**
      * 执行数据库迁移
      */
-    private function _runMigrations(\PDO $pdo, $prefix)
+    private function _runMigrations(\PDO $pdo, $prefix, ?callable $logger = null)
     {
         $migrations_dir = realpath(APP_PATH . '../database/migrations');
         if (!$migrations_dir || !is_dir($migrations_dir)) {
@@ -559,6 +527,9 @@ EOT;
 
         foreach ($sql_files as $schema_file) {
             $filename = basename($schema_file);
+            if ($logger) {
+                $logger("执行迁移文件: {$filename}");
+            }
             if (!file_exists($schema_file) || !is_readable($schema_file)) {
                 throw new \Exception("关键错误：数据库迁移文件 ({$filename}) 丢失或不可读。");
             }
@@ -576,14 +547,162 @@ EOT;
                     try {
                         $pdo->exec($statement);
                     } catch (\PDOException $e) {
+                        // 忽略常见的“已存在”/重复错误，方便重复执行迁移：
                         // 42S01: Table already exists; 42S21: Column already exists
                         // 42000/1091: Index/duplicate key already exists
-                        if (!in_array($e->getCode(), ['42S01', '42S21', '42000', '1091'])) {
+                        // 23000: Integrity constraint violation (这里主要是 Duplicate entry)
+                        $code = $e->getCode();
+                        $msg = $e->getMessage();
+                        $isDuplicate =
+                            $code === '23000' &&
+                            (stripos($msg, 'Duplicate entry') !== false || stripos($msg, 'duplicate key') !== false);
+
+                        if (!in_array($code, ['42S01', '42S21', '42000', '1091'], true) && !$isDuplicate) {
                             throw $e;
                         }
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * 获取当前前缀下已存在的表
+     */
+    private function _getExistingProjectTables(\PDO $pdo, $db_name, $prefix)
+    {
+        $stmt = $pdo->prepare(
+            'SELECT table_name
+             FROM information_schema.tables
+             WHERE table_schema = :schema
+               AND table_name LIKE :prefix
+             ORDER BY table_name ASC'
+        );
+        $stmt->execute([
+            ':schema' => $db_name,
+            ':prefix' => $prefix . '%',
+        ]);
+        return $stmt->fetchAll(\PDO::FETCH_COLUMN) ?: [];
+    }
+
+    /**
+     * 删除当前前缀下的表（全新安装模式）
+     */
+    private function _dropProjectTables(\PDO $pdo, $db_name, $prefix, ?callable $logger = null)
+    {
+        $tables = $this->_getExistingProjectTables($pdo, $db_name, $prefix);
+        if (empty($tables)) {
+            if ($logger) {
+                $logger('未检测到需要清理的旧表。');
+            }
+            return;
+        }
+
+        if ($logger) {
+            $logger('检测到旧表 ' . count($tables) . ' 张，开始清理...');
+        }
+
+        $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
+        foreach ($tables as $table) {
+            $pdo->exec("DROP TABLE IF EXISTS `{$table}`");
+            if ($logger) {
+                $logger("已删除表: {$table}");
+            }
+        }
+        $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
+    }
+
+    /**
+     * 流式执行安装，便于前端实时展示日志
+     */
+    private function _executeInstallStream()
+    {
+        @set_time_limit(0);
+
+        while (ob_get_level() > 0) {
+            @ob_end_clean();
+        }
+
+        header('Content-Type: text/plain; charset=utf-8');
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Pragma: no-cache');
+        header('X-Accel-Buffering: no');
+
+        $log = function ($message) {
+            $line = '[' . date('H:i:s') . '] ' . $message . PHP_EOL;
+            echo $line;
+            flush();
+        };
+
+        $config = $_SESSION['install_config'] ?? [];
+        $admin_info = $_SESSION['install_admin_info'] ?? [];
+        $site_name = $_SESSION['install_site_name'] ?? '';
+        $install_mode = $_POST['install_mode'] ?? 'patch';
+
+        if (empty($config['db']) || empty($admin_info) || $site_name === '') {
+            $log('__INSTALL_ERROR__ 安装会话已失效，请返回上一步重新填写。');
+            return;
+        }
+
+        if (!in_array($install_mode, ['fresh', 'patch'], true)) {
+            $log('__INSTALL_ERROR__ 无效的安装模式。');
+            return;
+        }
+
+        // 自动获取当前站点 URL
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $site_url = $protocol . '://' . $host;
+
+        try {
+            $log('开始执行安装流程...');
+            $log('连接数据库...');
+            $dsn = "mysql:host={$config['db']['host']};port={$config['db']['port']};charset=utf8mb4";
+            $pdo = new \PDO($dsn, $config['db']['user'], $config['db']['pass'], [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+            ]);
+            $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$config['db']['name']}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+            $pdo->exec("USE `{$config['db']['name']}`");
+            $log('数据库连接成功。');
+
+            if ($install_mode === 'fresh') {
+                $log('安装模式: 全新安装（清理旧表并重建）');
+                $this->_dropProjectTables($pdo, $config['db']['name'], $config['db']['prefix'], $log);
+            } else {
+                $log('安装模式: 跳过已有数据，仅补齐缺失表');
+            }
+
+            $log('写入 .env 配置...');
+            $this->_createEnvFile($config, $site_name, $site_url);
+            $log('.env 配置写入完成。');
+
+            $log('开始执行数据库迁移...');
+            $this->_runMigrations($pdo, $config['db']['prefix'], $log);
+            $log('数据库迁移完成。');
+
+            $log('写入管理员账号...');
+            $this->_createAdminUser($pdo, $config['db']['prefix'], $admin_info);
+            $log('管理员账号处理完成。');
+
+            file_put_contents(APP_PATH . 'install/install.lock', 'installed at ' . date('Y-m-d H:i:s'));
+            $log('install.lock 创建成功。');
+
+            $_SESSION['install_admin_path'] = $config['admin_path'];
+            $_SESSION['install_final_site_url'] = $site_url;
+            $_SESSION['install_admin_username'] = $admin_info['username'];
+            unset(
+                $_SESSION['install_config'],
+                $_SESSION['install_admin_info'],
+                $_SESSION['install_site_name'],
+                $_SESSION['install_error'],
+                $_SESSION['install_admin_draft'],
+                $_SESSION['install_db_detect']
+            );
+
+            $log('__INSTALL_DONE__ 安装成功');
+        } catch (\Exception $e) {
+            $log('__INSTALL_ERROR__ ' . $e->getMessage());
         }
     }
 

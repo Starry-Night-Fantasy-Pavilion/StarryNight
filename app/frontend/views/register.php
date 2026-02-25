@@ -23,9 +23,10 @@ $defaultTab = $registerDefaultMethod === 'phone' ? 'phone' : 'email';
     $activeThemeId = $themeManager->getActiveThemeId('web') ?? FrontendConfig::THEME_DEFAULT;
     $themeBasePath = FrontendConfig::getThemePath($activeThemeId);
     $staticJsPath = FrontendConfig::PATH_STATIC_FRONTEND_WEB_JS;
+    // 注册页样式统一走当前启用的前台主题包
+    $registerCssUrl = FrontendConfig::getThemeCssUrl('style.css', $activeThemeId, FrontendConfig::CACHE_VERSION);
     ?>
-    <!-- 主题样式 - 从静态资源目录加载 -->
-    <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getAssetUrl(FrontendConfig::PATH_STATIC_FRONTEND_WEB_CSS . '/style.css')) ?>">
+    <link rel="stylesheet" href="<?= htmlspecialchars($registerCssUrl) ?>">
 </head>
 <body class="page-register">
     <div class="auth-container">

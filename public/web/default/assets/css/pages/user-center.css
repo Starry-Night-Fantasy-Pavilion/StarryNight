@@ -1,16 +1,25 @@
-/* 用户中心独立样式 */
+/* 用户中心独立样式：使用与首页一致的大图背景，避免底部一整块黑色 */
 
-body {
-    background-color: #0b1020;
+body.page-user-center {
+    background-image: url('/web/default/assets/images/IMG_20260217_233007.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #000; /* 图片未加载时的过渡底色 */
 }
 
+/* 左侧菜单栏：改成更浅、更透明的渐变，底部不再是一整块黑色 */
 .sidebar {
-    background: radial-gradient(circle at top left, #1f2937 0, #020617 55%);
+    background:
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.25) 45%, rgba(15, 23, 42, 0.05) 75%, transparent 100%);
 }
 
+/* 主内容区域：顶部做一层渐变，底部完全透出主题背景 */
 .main-content {
     min-height: 100vh;
-    background: radial-gradient(circle at top right, rgba(79, 70, 229, 0.2), transparent 55%) #020617;
+    background:
+        radial-gradient(circle at top right, rgba(79, 70, 229, 0.18), transparent 60%);
 }
 
 .top-bar {
@@ -19,7 +28,7 @@ body {
     margin-top: 12px; /* 让顶部导航胶囊的“中线”与 sidebar logo 胶囊中线对齐 */
     z-index: 20;
     backdrop-filter: blur(16px);
-    background: linear-gradient(to right, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7));
+    background: transparent; /* 不再盖一整条深色背景，透出底图 */
 }
 
 .content-container {
@@ -442,9 +451,9 @@ body {
 
 .notice-pill-label {
     flex: 0 0 auto;
-    padding: 3px 10px;
+    padding: 4px 12px;
     border-radius: 999px;
-    font-size: 11px;
+    font-size: 13px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     font-weight: 600;
@@ -455,7 +464,7 @@ body {
     flex: 1 1 auto;
     min-width: 0;
     max-width: 100%;
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     overflow: hidden;
     white-space: nowrap;
     position: relative;
@@ -465,11 +474,10 @@ body {
     display: inline-block;
     white-space: nowrap;
     padding-left: 100%;
-    animation: top-bar-notice-marquee 16s linear;
 }
 
 .notice-marquee-running {
-    animation: top-bar-notice-marquee 16s linear;
+    animation: top-bar-notice-marquee 12s linear;
 }
 
 @keyframes top-bar-notice-marquee {
@@ -611,7 +619,7 @@ body {
     visibility: hidden;
     transform: translateY(-6px);
     transition: all 0.18s ease;
-    z-index: 50;
+    z-index: 10010;
 }
 
 .mode-switch-menu.visible {
@@ -652,7 +660,7 @@ body {
 
 /* 顶部按钮文字：小号、单行，控制整体占位 */
 .top-bar > .icon-btn .icon-btn-text {
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1;
 }
 .top-bar > .icon-btn:hover { background: linear-gradient(135deg, rgba(59, 130, 246, 0.35), rgba(59, 130, 246, 0.25)); color: var(--text-primary, #f8fafc); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3); border-color: rgba(59, 130, 246, 0.4); }
@@ -660,14 +668,28 @@ body {
 .top-bar > .icon-btn-text { font-size: 0.8125rem; font-weight: 500; line-height: 1; }
 .top-bar > .icon-btn[title="通知"]::after { content: ''; position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; border: 2px solid var(--bg-sidebar, rgba(15, 23, 42, 0.7)); }
 
-/* 桌面端：顶部右侧按钮只展示图标，文字通过 title 提示，减小视觉拥挤感 */
+/* 桌面端：顶部右侧按钮显示图标和文字 */
 @media (min-width: 1024px) {
     .user-actions .icon-btn {
-        width: 40px;
-        padding: 6px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        width: 50px;
+        padding: 4px 6px;
+        border-radius: 8px;
     }
     .user-actions .icon-btn .icon-btn-text {
-        display: none;
+        display: block;
+        font-size: 11px;
+        line-height: 1;
+        font-weight: 500;
+        color: var(--text-light, rgba(255, 255, 255, 0.7));
+        white-space: nowrap;
+    }
+    .user-actions .icon-btn:hover .icon-btn-text {
+        color: var(--text-primary, #ffffff);
     }
 }
 
@@ -678,10 +700,26 @@ body {
     .top-bar-logo-img { width: 24px; height: 24px; }
     .top-bar-logo-name { font-size: 0.85rem; }
     .top-bar-left { flex: 0 0 auto; }
-    .top-bar > .icon-btn { height: 34px; padding: 0 10px; gap: 4px; border-radius: 17px; margin-left: 4px; }
-    .top-bar > .icon-btn svg { width: 16px; height: 16px; }
-    .top-bar > .icon-btn-text { font-size: 0.75rem; }
-    .top-bar > .icon-btn:nth-child(n+6) { display: none; } /* 移动端只显示前5个按钮（对话、消息、通知、充值、历史） */
+    .user-actions .icon-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        height: 50px;
+        width: 44px;
+        padding: 4px 4px;
+        border-radius: 8px;
+    }
+    .user-actions .icon-btn svg { width: 18px; height: 18px; }
+    .user-actions .icon-btn .icon-btn-text {
+        display: block;
+        font-size: 10px;
+        line-height: 1;
+        font-weight: 500;
+        color: var(--text-light, rgba(255, 255, 255, 0.7));
+    }
+    .user-actions .icon-btn:nth-child(n+6) { display: none; } /* 移动端只显示前5个按钮（对话、消息、通知、充值、历史） */
     .top-bar-user { margin-left: 4px; }
     .top-bar-user-trigger { padding: 0 10px; height: var(--topbar-height); gap: 6px; }
     .top-bar-user-avatar { width: 30px; height: 30px; }

@@ -18,6 +18,10 @@ $modalCssVersion = asset_version('/static/admin/css/modal.css');
     <link rel="stylesheet" href="/static/admin/css/style.css?v=<?= $assetVersion ?>">
     <link rel="stylesheet" href="/static/admin/css/responsive-tables.css?v=<?= $assetVersion ?>">
     <link rel="stylesheet" href="/static/admin/css/responsive-forms.css?v=<?= $assetVersion ?>">
+    <?php if (strpos((string)$currentPage, 'content-review') === 0 || $currentPage === 'ai-audits'): ?>
+    <?php $contentReviewCssVersion = asset_version('/static/admin/css/content-review.css'); ?>
+    <link rel="stylesheet" href="/static/admin/css/content-review.css?v=<?= $contentReviewCssVersion ?>">
+    <?php endif; ?>
     <?php if (strpos((string)$currentPage, 'ai-') === 0): ?>
     <link rel="stylesheet" href="/static/admin/css/ai-resources.css?v=<?= $assetVersion ?>">
     <?php endif; ?>
@@ -30,7 +34,7 @@ $modalCssVersion = asset_version('/static/admin/css/modal.css');
     <!-- 弹窗组件样式 -->
     <link rel="stylesheet" href="/static/admin/css/modal.css?v=<?= $modalCssVersion ?>">
     <?php endif; ?>
-    <?php if ($currentPage === 'dashboard' || $currentPage === 'operations' || strpos((string)$currentPage, 'finance') === 0 || strpos((string)$currentPage, 'system') === 0 || strpos((string)$currentPage, 'notice') === 0 || strpos((string)$currentPage, 'feedback') === 0 || strpos((string)$currentPage, 'announcement') === 0 || strpos((string)$currentPage, 'consistency') === 0): ?>
+    <?php if ($currentPage === 'dashboard' || $currentPage === 'operations' || strpos((string)$currentPage, 'content-review') === 0 || strpos((string)$currentPage, 'finance') === 0 || strpos((string)$currentPage, 'system') === 0 || strpos((string)$currentPage, 'notice') === 0 || strpos((string)$currentPage, 'feedback') === 0 || strpos((string)$currentPage, 'announcement') === 0 || strpos((string)$currentPage, 'consistency') === 0): ?>
     <!-- 模块化CSS文件 -->
     <link rel="stylesheet" href="/static/admin/css/dashboard-base.css?v=<?= $assetVersion ?>">
     <link rel="stylesheet" href="/static/admin/css/dashboard-cards.css?v=<?= $assetVersion ?>">

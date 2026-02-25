@@ -32,6 +32,9 @@ $current_step = isset($_GET['step']) ? (int)$_GET['step'] : 0;
             <li class="nav-step <?php echo ($current_step == 6) ? 'active' : ''; ?>">
                 数据库配置
             </li>
+            <li class="nav-step <?php echo ($current_step == 7) ? 'active' : ''; ?>">
+                执行安装
+            </li>
             <li class="nav-step <?php echo ($current_step == 8) ? 'active' : ''; ?>">
                 完成安装
             </li>
