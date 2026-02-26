@@ -49,23 +49,35 @@ try {
     echo "Table admin_plugins created successfully\n";
     
     // 插入SMTP服务插件配置
+    $envValue = static function (string $key, mixed $default = null): mixed {
+        if (defined('ENV_SETTINGS') && is_array(ENV_SETTINGS) && array_key_exists($key, ENV_SETTINGS)) {
+            return ENV_SETTINGS[$key];
+        }
+
+        return $default;
+    };
+
     $config = [
-        'host' => 'mail15.serv00.com',
-        'port' => 465,
-        'username' => 'fazyaldzvh@fazyaldzvh.serv00.net',
-        'password' => '0Y0dkjuLF(*#k5(ZhOu)',
-        'smtpsecure' => 'ssl',
-        'fromname' => '星夜阁',
-        'systememail' => 'fazyaldzvh@fazyaldzvh.serv00.net',
-        'charset' => 'utf-8',
-        'timeout' => 30,
-        'keepalive' => false,
-        'retry_attempts' => 3,
-        'retry_delay' => 5,
-        'verify_peer' => false,
-        'verify_peer_name' => false,
-        'debug' => 0
+        'host' => (string) $envValue('SMTP_HOST', ''),
+        'port' => (int) $envValue('SMTP_PORT', 465),
+        'username' => (string) $envValue('SMTP_USERNAME', ''),
+        'password' => (string) $envValue('SMTP_PASSWORD', ''),
+        'smtpsecure' => (string) $envValue('SMTP_SECURE', 'ssl'),
+        'fromname' => (string) $envValue('SMTP_FROM_NAME', '星夜阁'),
+        'systememail' => (string) $envValue('SMTP_FROM_EMAIL', ''),
+        'charset' => (string) $envValue('SMTP_CHARSET', 'utf-8'),
+        'timeout' => (int) $envValue('SMTP_TIMEOUT', 30),
+        'keepalive' => (bool) $envValue('SMTP_KEEPALIVE', false),
+        'retry_attempts' => (int) $envValue('SMTP_RETRY_ATTEMPTS', 3),
+        'retry_delay' => (int) $envValue('SMTP_RETRY_DELAY', 5),
+        'verify_peer' => (bool) $envValue('SMTP_VERIFY_PEER', false),
+        'verify_peer_name' => (bool) $envValue('SMTP_VERIFY_PEER_NAME', false),
+        'debug' => (int) $envValue('SMTP_DEBUG', 0),
     ];
+
+    if ($config['host'] === '' || $config['username'] === '' || $config['password'] === '' || $config['systememail'] === '') {
+        throw new RuntimeException('SMTP 配置缺失：请在 .env 中设置 SMTP_HOST/SMTP_USERNAME/SMTP_PASSWORD/SMTP_FROM_EMAIL');
+    }
     
     $stmt = $pdo->prepare("
         INSERT INTO `admin_plugins` (`plugin_id`, `status`, `config_json`) 

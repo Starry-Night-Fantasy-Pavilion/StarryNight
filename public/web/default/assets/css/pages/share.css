@@ -1,0 +1,359 @@
+/* 资源分享详情页样式（主题包 CSS：web/default/assets/css/pages/share.css） */
+
+.page-share,
+.page-share-detail {
+    padding: 40px 0;
+}
+
+.page-share .container,
+.page-share-detail .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+.page-share .page-header,
+.page-share-detail .page-header {
+    margin-bottom: 16px;
+}
+
+.page-share .page-title,
+.page-share-detail .page-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.page-share .page-subtitle,
+.page-share-detail .page-subtitle {
+    margin-top: 6px;
+    font-size: 0.95rem;
+    color: #9ca3af;
+}
+
+.share-detail-header {
+    margin-bottom: 24px;
+}
+
+.share-detail-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 8px 0;
+}
+
+.share-detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+.share-detail-meta .resource-type {
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+}
+
+.share-detail-content {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 32px;
+}
+
+@media (max-width: 768px) {
+    .share-detail-content {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.resource-description {
+    background: rgba(15, 23, 42, 0.85);
+    border-radius: 16px;
+    padding: 20px 24px;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+}
+
+.resource-description h2 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.resource-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.resource-actions-card,
+.resource-rating-card {
+    background: rgba(15, 23, 42, 0.9);
+    border-radius: 16px;
+    padding: 16px 18px;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.9);
+}
+
+.resource-price {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.resource-price-free {
+    color: #22c55e;
+}
+
+.resource-price-paid {
+    color: #facc15;
+}
+
+.resource-actions-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.resource-actions-buttons .btn {
+    flex: 1 1 auto;
+}
+
+.share-meta-secondary {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    margin-top: 8px;
+}
+
+.share-rating-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.share-rating-score {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.share-rating-count {
+    font-size: 0.9rem;
+    color: #9ca3af;
+}
+
+.share-rating-stars {
+    display: flex;
+    gap: 4px;
+}
+
+.share-rating-stars button {
+    background: none;
+    border: none;
+    color: #fbbf24;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0;
+}
+
+.share-rating-stars button.inactive {
+    color: #4b5563;
+}
+
+.share-rating-form textarea {
+    width: 100%;
+    min-height: 60px;
+    border-radius: 8px;
+    border: 1px solid rgba(55, 65, 81, 0.8);
+    background: rgba(15, 23, 42, 0.9);
+    color: #e5e7eb;
+    padding: 8px 10px;
+    font-size: 0.9rem;
+}
+
+.share-rating-form textarea:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.5);
+}
+
+.share-rating-form .btn {
+    margin-top: 8px;
+}
+
+.share-rating-list {
+    margin-top: 12px;
+    max-height: 260px;
+    overflow: auto;
+}
+
+.share-rating-item {
+    border-top: 1px solid rgba(31, 41, 55, 0.9);
+    padding: 8px 0;
+    font-size: 0.88rem;
+}
+
+.share-rating-item:first-child {
+    border-top: none;
+}
+
+.share-rating-item-header {
+    display: flex;
+    justify-content: space-between;
+    color: #9ca3af;
+    margin-bottom: 2px;
+}
+
+.share-rating-item-comment {
+    color: #e5e7eb;
+}
+
+/* 收藏按钮状态 */
+.btn-share-favorited {
+    background: rgba(244, 114, 182, 0.15);
+    border-color: rgba(244, 114, 182, 0.6);
+    color: #fb7185;
+}
+
+.btn-share-favorited:hover {
+    background: rgba(244, 114, 182, 0.25);
+    border-color: rgba(244, 114, 182, 0.6);
+    color: #fb7185;
+}
+
+/* 列表页通用布局 */
+.share-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.filter-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filter-tab {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    color: #9ca3af;
+    border: 1px solid rgba(51, 65, 85, 0.8);
+    text-decoration: none;
+}
+
+.filter-tab.active {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border-color: rgba(59, 130, 246, 0.7);
+}
+
+.share-search {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.share-search input[type="text"] {
+    min-width: 200px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(55, 65, 81, 0.85);
+    background: rgba(15, 23, 42, 0.9);
+    color: #e5e7eb;
+    font-size: 0.9rem;
+}
+
+.share-search select {
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(55, 65, 81, 0.85);
+    background: rgba(15, 23, 42, 0.9);
+    color: #e5e7eb;
+    font-size: 0.9rem;
+}
+
+.resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.resource-card {
+    background: rgba(15, 23, 42, 0.9);
+    border-radius: 16px;
+    padding: 14px 16px;
+    border: 1px solid rgba(51, 65, 85, 0.9);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.9);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.resource-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+}
+
+.resource-type-pill {
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+}
+
+.resource-price-tag {
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: rgba(250, 204, 21, 0.12);
+    color: #facc15;
+}
+
+.resource-price-free-tag {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.resource-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.resource-title a {
+    color: #e5e7eb;
+    text-decoration: none;
+}
+
+.resource-title a:hover {
+    color: #60a5fa;
+}
+
+.resource-description {
+    font-size: 0.9rem;
+    color: #cbd5f5;
+}
+
+.resource-meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+.resource-footer {
+    margin-top: 4px;
+    display: flex;
+    justify-content: flex-end;
+}

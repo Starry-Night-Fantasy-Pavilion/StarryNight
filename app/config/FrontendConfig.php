@@ -9,6 +9,38 @@ class FrontendConfig
     public const THEME_DEFAULT = 'default';
     public const THEME_TYPE_WEB = 'web';
     
+    /**
+     * 通用前台路由常量（避免在视图中硬编码路径）
+     */
+    public const ROUTE_HOME = '/';
+    public const ROUTE_NOVEL_CREATION = '/novel_creation';
+    public const ROUTE_AI_MUSIC = '/ai_music';
+    public const ROUTE_SHORT_DRAMA = '/novel_creation/short_drama';
+    public const ROUTE_COVER_GENERATOR = '/novel_creation/cover_generator';
+    
+    public const ROUTE_CHAT = '/chat';
+    public const ROUTE_NOTIFICATIONS = '/notifications';
+    public const ROUTE_USER_PROFILE = '/user_center/profile';
+    
+    public const ROUTE_LOGIN = '/login';
+    public const ROUTE_REGISTER = '/register';
+    
+    public const ROUTE_TUTORIAL = '/tutorial';
+    public const ROUTE_HELP = '/help';
+    public const ROUTE_FEEDBACK = '/feedback';
+    public const ROUTE_ABOUT = '/about';
+    
+    public const ROUTE_PRIVACY = '/privacy';
+    public const ROUTE_TERMS = '/terms';
+    public const ROUTE_CONTACT = '/contact';
+    
+    /**
+     * 前端静态资源及 PWA 相关常量
+     */
+    public const MANIFEST_PATH = '/manifest.json';
+    public const SERVICE_WORKER_PATH = '/sw.js';
+    public const META_THEME_COLOR = '#6366f1';
+    
     public const PATH_STATIC_ROOT = '/static';
     public const PATH_STATIC_ADMIN = '/static/admin';
     public const PATH_STATIC_FRONTEND = '/static/frontend';

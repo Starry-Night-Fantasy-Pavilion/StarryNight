@@ -8,6 +8,7 @@ use app\models\NovelOutline;
 use app\models\NovelCharacter;
 use app\services\NovelAIService;
 use app\services\StarryNightPermissionService;
+use app\config\FrontendConfig;
 
 /**
  * 小说创作工具控制器
@@ -74,14 +75,26 @@ class NovelCreationController
         // 使用layout
         $title = $data['title'] ?? '小说创作工具';
         $extra_css = $data['extra_css'] ?? [];
-        // 添加小说创作页面的CSS
+        $extra_js = $data['extra_js'] ?? [];
+
+        // 添加小说创作页面的CSS / JS
         if (strpos($view, 'novel_creation') !== false) {
             $themeManager = new \app\services\ThemeManager();
-            $activeThemeId = $themeManager->getActiveThemeId('web') ?? \app\config\FrontendConfig::THEME_DEFAULT;
+            $activeThemeId = $themeManager->getActiveThemeId('web') ?? FrontendConfig::THEME_DEFAULT;
+            $themeVersion = FrontendConfig::CACHE_VERSION;
+
             // 通过当前启用的前台主题加载小说创作相关样式
-            $extra_css[] = \app\config\FrontendConfig::getThemeCssUrl('pages/novel-creation.css', $activeThemeId);
+            $extra_css[] = FrontendConfig::getThemeCssUrl('pages/novel-creation.css', $activeThemeId, $themeVersion);
+
+            // 加载小说创作工具相关 JS 模块
+            $extra_js[] = FrontendConfig::getAssetUrl(
+                FrontendConfig::PATH_STATIC_FRONTEND_WEB_JS . '/modules/novel-creation.js',
+                $themeVersion
+            );
         }
+
         $data['extra_css'] = $extra_css;
+        $data['extra_js'] = $extra_js;
         extract($data);
         include $this->viewPath . '/layout.php';
     }

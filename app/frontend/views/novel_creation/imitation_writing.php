@@ -1,4 +1,9 @@
-<div class="page-header"><div class="container"><h1>仿写创作</h1><p>基于分析结果，仿照原文风格进行创作练习</p></div></div>
+<div class="page-header">
+    <div class="container">
+        <h1>仿写创作</h1>
+        <p>基于分析结果，仿照原文风格进行创作练习</p>
+    </div>
+</div>
 
 <div class="container">
     <form method="POST" action="/novel_creation/do_imitation_writing" class="analysis-form">
@@ -36,18 +41,3 @@
         </div>
     </form>
 </div>
-
-<style>
-.page-header{background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:2rem 0;text-align:center;margin-bottom:2rem;}
-.analysis-form{max-width:900px;margin:0 auto;}
-.form-section{background:white;border:1px solid #e9ecef;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;}
-.form-section h3{margin:0 0 1rem 0;color:#495057;border-bottom:2px solid #667eea;padding-bottom:0.5rem;}
-.reference-box,.analysis-box{background:#f8f9fa;border:1px solid #e9ecef;border-radius:8px;padding:1rem;white-space:pre-wrap;line-height:1.6;font-size:0.9rem;max-height:200px;overflow-y:auto;}
-.form-group{margin-bottom:1rem;}
-.form-group label{display:block;margin-bottom:0.5rem;font-weight:600;color:#495057;}
-.required{color:#dc3545;}
-.form-group input,.form-group textarea{width:100%;padding:0.75rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;}
-.form-actions{display:flex;gap:1rem;justify-content:center;margin:2rem 0;}
-.btn{padding:0.875rem 2rem;border:none;border-radius:8px;cursor:pointer;font-size:1rem;}
-.btn-primary{background:linear-gradient(135deg,#667eea,#764ba2);color:white;}
-</style>

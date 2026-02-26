@@ -36,6 +36,7 @@
     $topBarNotice = null;
     $topBarMarqueeText = '';
     $topBarNoticeItems = [];
+    $allNoticesForModal = []; // 所有通知的完整数据，用于弹窗显示
     try {
         $notices = NoticeBar::getAll(null, 'enabled');
         if (!empty($notices)) {
@@ -58,6 +59,15 @@
                     $topBarNotice = $row;
                     $maxPriority = $p;
                 }
+
+                // 收集所有通知的完整数据用于弹窗
+                $allNoticesForModal[] = [
+                    'id' => (int)($row['id'] ?? 0),
+                    'content' => (string)($row['content'] ?? ''),
+                    'priority' => $p,
+                    'link' => !empty($row['link']) ? (string)$row['link'] : null,
+                    'created_at' => !empty($row['created_at']) ? (string)$row['created_at'] : null,
+                ];
 
                 if ($p <= 0) {
                     continue;
@@ -108,6 +118,8 @@
     <!-- 用户中心页面专用样式 -->
     <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getThemeCssUrl('pages/user-center.css', $activeThemeId, $themeVersion)) ?>">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- 通知弹窗 JS -->
+    <script src="<?= htmlspecialchars(FrontendConfig::getAssetUrl(FrontendConfig::PATH_STATIC_FRONTEND_WEB_JS . '/modules/notice-modal.js', $themeVersion)) ?>"></script>
 </head>
 <body class="page-user-center">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -448,7 +460,7 @@
                         }
                         $noticeText = (string)($topBarMarqueeText ?? '');
                     ?>
-                    <div class="top-bar-notice-pill notice-level-<?= htmlspecialchars($noticeLevel) ?>" id="topBarNoticePill">
+                    <div class="top-bar-notice-pill notice-level-<?= htmlspecialchars($noticeLevel) ?>" id="topBarNoticePill" data-all-notices='<?= htmlspecialchars(json_encode($allNoticesForModal, JSON_UNESCAPED_UNICODE)) ?>' style="cursor: pointer;" title="点击查看所有通知">
                         <span class="notice-pill-label"><?= htmlspecialchars($noticeLabel) ?></span>
                         <span class="notice-pill-content">
                             <span class="notice-pill-content-inner" id="topBarNoticeMarqueeText" data-notice-items='<?= htmlspecialchars(json_encode($topBarNoticeItems, JSON_UNESCAPED_UNICODE)) ?>'>
@@ -717,6 +729,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!el) return;
 
     var pill = document.getElementById('topBarNoticePill');
+    var container = el.parentElement; // .notice-pill-content
 
     var raw = el.getAttribute('data-notice-items') || '[]';
     var list;
@@ -747,14 +760,92 @@ document.addEventListener('DOMContentLoaded', function () {
         pill.classList.add('notice-level-' + level);
     }
 
+    // ===== 跑马灯速度控制 =====
+    // 以固定像素/秒控制阅读速度：文字越长，动画越久 → 不会“单句话跑太快”
+    var PX_PER_SEC = 28;          // 越小越慢，只影响滚动速度
+    var MIN_MS = 18000;           // 最短一轮滚动时长
+    var MAX_MS = 90000;           // 最长一轮滚动时长
+    // 多条通知之间的切换等待时间（不读完整个滚动就可以切下一条）
+    var DEFAULT_SWITCH_MS = 8000; // 无需滚动（文字不超宽）时，单条通知大约停留 8 秒
+
+    function computeDurationMs() {
+        if (!container) return 30000;
+        // scrollWidth 是纯文本宽度；动画实际需要走过的距离≈文本宽度 + 容器宽度（对应 padding-left:100%）
+        var textW = el.scrollWidth || 0;
+        var boxW = container.getBoundingClientRect().width || 0;
+        if (textW <= 0 || boxW <= 0) return 30000;
+
+        // 文字没超出容器：不需要滚动
+        if (textW <= boxW + 2) return 0;
+
+        // keyframes 使用 translateX(calc(-100% - 100%))，等价于走 2 倍元素宽度
+        // 元素宽度≈文本宽度 + 容器宽度（padding-left:100%），因此这里乘 2 匹配真实滚动距离
+        var distance = (textW + boxW) * 2;
+        var ms = Math.round((distance / PX_PER_SEC) * 1000);
+        if (ms < MIN_MS) ms = MIN_MS;
+        if (ms > MAX_MS) ms = MAX_MS;
+        return ms;
+    }
+
+    // 根据滚动时长，换算“切到下一条”的等待时间
+    // 规则：大约用滚动时长的 60%，并限制在 [8s, 20s] 区间内，避免“等太久”
+    function getSwitchIntervalMs(scrollMs) {
+        if (!scrollMs || scrollMs <= 0) return DEFAULT_SWITCH_MS;
+        var MIN_SWITCH_MS = 8000;
+        var MAX_SWITCH_MS = 20000;
+        var interval = Math.round(scrollMs * 0.6);
+        if (interval < MIN_SWITCH_MS) interval = MIN_SWITCH_MS;
+        if (interval > MAX_SWITCH_MS) interval = MAX_SWITCH_MS;
+        return interval;
+    }
+
+    function applyMarqueeForCurrentText() {
+        var ms = computeDurationMs();
+
+        if (ms === 0) {
+            // 静态显示：必须把 padding-left 从 100% 改成 0，否则文字会被顶到右侧看不到
+            el.classList.remove('notice-marquee-running');
+            el.style.setProperty('--notice-marquee-duration', '');
+            el.style.paddingLeft = '0';
+            el.style.transform = 'none';
+            el.style.animation = 'none';
+            return 0;
+        }
+
+        // 恢复跑马灯样式（清掉静态显示的 inline 覆盖）
+        el.style.animation = '';
+        el.style.paddingLeft = '';
+        el.style.transform = '';
+        el.style.setProperty('--notice-marquee-duration', ms + 'ms');
+
+        // 重置动画让新 duration 立刻生效
+        el.classList.remove('notice-marquee-running');
+        void el.offsetWidth;
+        el.classList.add('notice-marquee-running');
+        return ms;
+    }
+
     // 如果只有一个通知，不需要轮播
     if (list.length === 1) {
-        el.classList.add('notice-marquee-running');
+        // 单条也要根据内容长度动态放慢速度；并且如果不需要滚动就静态显示
+        // 用 rAF 等布局完成，确保 scrollWidth / container width 可靠
+        requestAnimationFrame(function () {
+            applyMarqueeForCurrentText();
+        });
         return;
     }
 
     var idx = 0;
-    var animationDuration = 30000; // 30秒，与CSS动画时间一致，进一步减慢前端滚动速度
+    var timer = null;
+    var currentIntervalMs = 0;
+
+    function restartTimer(intervalMs) {
+        if (timer) clearInterval(timer);
+        currentIntervalMs = intervalMs;
+        timer = setInterval(function () {
+            nextNotice();
+        }, currentIntervalMs);
+    }
 
     function nextNotice() {
         idx = (idx + 1) % list.length;
@@ -764,11 +855,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (item.level) {
             applyLevel(item.level);
         }
-        // 重置动画
-        el.classList.remove('notice-marquee-running');
-        // 强制重排以触发动画重新开始
-        void el.offsetWidth;
-        el.classList.add('notice-marquee-running');
+
+        // 应用滚动速度（只调滚动，不调切换逻辑）
+        var scrollMs = applyMarqueeForCurrentText();
+        // 由滚动时长算出“切下一条”的等待时间（不必等整个滚动结束）
+        var intervalMs = getSwitchIntervalMs(scrollMs);
+        if (intervalMs !== currentIntervalMs) restartTimer(intervalMs);
     }
 
     // 初始显示第一个通知
@@ -777,17 +869,22 @@ document.addEventListener('DOMContentLoaded', function () {
     if (first.level) {
         applyLevel(first.level);
     }
-    el.classList.add('notice-marquee-running');
-
-    // 使用定时器确保轮播，同时监听动画结束事件作为备用
-    var timer = setInterval(function() {
-        nextNotice();
-    }, animationDuration);
+    // 初始应用跑马灯速度并启动轮播定时器
+    var firstScrollMs = applyMarqueeForCurrentText();
+    var firstIntervalMs = getSwitchIntervalMs(firstScrollMs);
+    restartTimer(firstIntervalMs);
 
     // 监听动画结束事件作为备用机制
     el.addEventListener('animationend', function () {
         // 如果定时器还在运行，这里不需要再次调用 nextNotice
         // 但可以确保动画正确结束
+    });
+
+    // 窗口尺寸变化时重新计算（只影响滚动速度）
+    window.addEventListener('resize', function () {
+        var scrollMs = applyMarqueeForCurrentText();
+        var intervalMs = getSwitchIntervalMs(scrollMs);
+        if (intervalMs !== currentIntervalMs) restartTimer(intervalMs);
     });
 
     // 页面卸载时清理定时器
@@ -798,5 +895,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
     </script>
+    
+    <!-- 通知弹窗 -->
+    <div id="noticeModal" class="notice-modal" style="display: none;">
+        <div class="notice-modal-overlay"></div>
+        <div class="notice-modal-content">
+            <div class="notice-modal-header">
+                <h2 class="notice-modal-title">所有通知</h2>
+                <button class="notice-modal-close" id="noticeModalClose" aria-label="关闭">&times;</button>
+            </div>
+            <div class="notice-modal-body" id="noticeModalBody">
+                <!-- 通知列表将在这里动态渲染 -->
+            </div>
+        </div>
+    </div>
 </body>
 </html>

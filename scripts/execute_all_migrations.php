@@ -37,8 +37,8 @@ try {
     $migrations = [
         '009_admin_plugins.sql' => '插件管理表',
         '012_extra_tables.sql' => '额外表（包含通知模板）',
-        '017_email_templates_init.sql' => '邮件模板初始数据',
-        '018_fix_plugin_tables.sql' => '修复插件表结构'
+        '018_fix_plugin_tables.sql' => '修复插件表结构',
+        '020_email_templates_init.sql' => '邮件模板初始数据'
     ];
     
     $migrationDir = __DIR__ . '/../database/migrations';

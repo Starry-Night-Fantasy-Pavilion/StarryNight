@@ -18,7 +18,7 @@ $migrationFiles = [
     '014_missing_core_tables.sql',
     '015_ai_agent_market.sql',
     '016_database_index_optimization.sql',
-    '017_email_templates_init.sql'
+    '020_email_templates_init.sql'
 ];
 
 $emailRelatedTables = [];
@@ -118,7 +118,7 @@ echo "2. 007_admin_system.sql - 管理员系统\n";
 echo "3. 008_settings_table.sql - 设置表\n";
 echo "4. 009_admin_plugins.sql - 插件管理表\n";
 echo "5. 012_extra_tables.sql - 额外表（包含 notification_templates）\n";
-echo "6. 017_email_templates_init.sql - 邮件模板初始数据\n";
+echo "6. 020_email_templates_init.sql - 邮件模板初始数据\n";
 echo "7. 其他迁移文件...\n";
 
 echo "\n=== 潜在问题检查 ===\n";

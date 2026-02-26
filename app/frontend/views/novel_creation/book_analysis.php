@@ -21,7 +21,7 @@
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary btn-lg">开始分析</button>
-            <button type="button" class="btn btn-outline" onclick="clearForm()">清空重填</button>
+            <button type="button" class="btn btn-outline js-clear-analysis-form">清空重填</button>
         </div>
     </form>
 
@@ -46,30 +46,3 @@
         </div>
     </div>
 </div>
-
-<script>function clearForm(){if(confirm('确定要清空所有输入内容吗？'))document.getElementById('analysisForm').reset();}</script>
-
-<style>
-.page-header{background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:2rem 0;text-align:center;margin-bottom:2rem;}
-.page-header h1{font-size:2rem;margin-bottom:0.5rem;}
-.analysis-form{max-width:900px;margin:0 auto 2rem;}
-.form-section{background:white;border:1px solid #e9ecef;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
-.form-section h3{margin:0 0 1.25rem 0;color:#495057;border-bottom:2px solid #667eea;padding-bottom:0.75rem;}
-.form-group{margin-bottom:1.25rem;}
-.form-group label{display:block;margin-bottom:0.5rem;font-weight:600;color:#495057;}
-.required{color:#dc3545;}
-.form-group textarea{width:100%;padding:1rem;border:1px solid #ddd;border-radius:8px;font-size:1rem;font-family:inherit;line-height:1.6;resize:vertical;}
-.form-help{display:block;margin-top:0.5rem;color:#6c757d;font-size:0.85rem;}
-.form-actions{display:flex;gap:1rem;justify-content:center;margin:2rem 0;}
-.btn{padding:0.875rem 2rem;border:none;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;cursor:pointer;transition:all 0.2s;font-size:1rem;}
-.btn-lg{padding:1rem 2.5rem;font-size:1.1rem;}
-.btn-primary{background:linear-gradient(135deg,#667eea,#764ba2);color:white;}
-.btn-outline{background:transparent;color:#667eea;border:2px solid #667eea;}
-.info-section{max-width:900px;margin:0 auto 3rem;}
-.info-section h3{text-align:center;margin-bottom:1.5rem;color:#495057;}
-.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.25rem;}
-.info-card{background:white;border:1px solid #e9ecef;border-radius:12px;padding:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
-.info-icon{font-size:2rem;margin-bottom:0.75rem;}
-.info-card h4{margin:0 0 0.75rem 0;color:#667eea;}
-.info-card ul{margin:0;padding-left:1.25rem;color:#6c757d;font-size:0.9rem;line-height:1.8;}
-</style>

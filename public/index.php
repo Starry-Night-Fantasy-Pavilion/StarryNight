@@ -388,6 +388,10 @@ $router->get('/share/prompts', ['app\frontend\controller\ShareController', 'prom
 $router->get('/share/templates', ['app\frontend\controller\ShareController', 'templates']);
 $router->get('/share/agents', ['app\frontend\controller\ShareController', 'agents']);
 $router->get('/share/{id}', ['app\frontend\controller\ShareController', 'show']);
+$router->post('/share/purchase', ['app\frontend\controller\ShareController', 'purchase']);
+$router->post('/share/rate', ['app\frontend\controller\ShareController', 'rate']);
+$router->post('/share/favorite', ['app\frontend\controller\ShareController', 'favorite']);
+$router->post('/share/import', ['app\frontend\controller\ShareController', 'import']);
 
 // 前端会员
 $router->get('/membership', ['app\frontend\controller\MembershipController', 'index']);

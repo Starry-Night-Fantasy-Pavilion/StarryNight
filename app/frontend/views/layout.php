@@ -22,7 +22,7 @@ $currentPage = $_SERVER['REQUEST_URI'] ?? '/';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#6366f1">
+    <meta name="theme-color" content="<?= htmlspecialchars(FrontendConfig::META_THEME_COLOR) ?>">
     <title><?= htmlspecialchars((string) ($title ?? $siteName)) ?></title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,12 +41,12 @@ $currentPage = $_SERVER['REQUEST_URI'] ?? '/';
         <?php endforeach; ?>
     <?php endif; ?>
     
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="<?= htmlspecialchars(FrontendConfig::MANIFEST_PATH) ?>">
 </head>
 <body>
     <header class="header" id="mainHeader">
         <div class="header-brand">
-            <a href="/" class="header-logo">
+            <a href="<?= htmlspecialchars(FrontendConfig::ROUTE_HOME) ?>" class="header-logo">
                 <?php if ($siteLogo): ?>
                     <img src="<?= htmlspecialchars($siteLogo) ?>" alt="<?= htmlspecialchars($siteName) ?>" class="header-logo-img">
                 <?php endif; ?>
@@ -62,27 +62,27 @@ $currentPage = $_SERVER['REQUEST_URI'] ?? '/';
         
         <nav class="header-nav" id="headerNav">
             <ul class="nav-menu">
-                <li><a href="/novel_creation" <?= str_contains($currentPage, '/novel_creation') ? 'class="active"' : '' ?>>小说创作</a></li>
-                <li><a href="/ai_music" <?= str_contains($currentPage, '/ai_music') ? 'class="active"' : '' ?>>AI音乐</a></li>
-                <li><a href="/novel_creation/short_drama" <?= str_contains($currentPage, '/short_drama') ? 'class="active"' : '' ?>>短剧创作</a></li>
-                <li><a href="/novel_creation/cover_generator" <?= str_contains($currentPage, '/cover_generator') ? 'class="active"' : '' ?>>图片生成</a></li>
+                <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_NOVEL_CREATION) ?>" <?= str_contains($currentPage, FrontendConfig::ROUTE_NOVEL_CREATION) ? 'class="active"' : '' ?>>小说创作</a></li>
+                <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_AI_MUSIC) ?>" <?= str_contains($currentPage, FrontendConfig::ROUTE_AI_MUSIC) ? 'class="active"' : '' ?>>AI音乐</a></li>
+                <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_SHORT_DRAMA) ?>" <?= str_contains($currentPage, '/short_drama') ? 'class="active"' : '' ?>>短剧创作</a></li>
+                <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_COVER_GENERATOR) ?>" <?= str_contains($currentPage, '/cover_generator') ? 'class="active"' : '' ?>>图片生成</a></li>
             </ul>
         </nav>
         
         <div class="header-actions">
             <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="/chat" class="icon-btn" title="对话">
+                <a href="<?= htmlspecialchars(FrontendConfig::ROUTE_CHAT) ?>" class="icon-btn" title="对话">
                     <?= icon('message-circle', ['width' => '18', 'height' => '18']) ?>
                 </a>
-                <a href="/notifications" class="icon-btn" title="通知">
+                <a href="<?= htmlspecialchars(FrontendConfig::ROUTE_NOTIFICATIONS) ?>" class="icon-btn" title="通知">
                     <?= icon('bell', ['width' => '18', 'height' => '18']) ?>
                 </a>
-                <a href="/user_center/profile" class="icon-btn" title="个人中心">
+                <a href="<?= htmlspecialchars(FrontendConfig::ROUTE_USER_PROFILE) ?>" class="icon-btn" title="个人中心">
                     <?= icon('user', ['width' => '18', 'height' => '18']) ?>
                 </a>
             <?php else: ?>
-                <a href="/login" class="btn btn-ghost btn-sm">登录</a>
-                <a href="/register" class="btn btn-primary btn-sm">注册</a>
+                <a href="<?= htmlspecialchars(FrontendConfig::ROUTE_LOGIN) ?>" class="btn btn-ghost btn-sm">登录</a>
+                <a href="<?= htmlspecialchars(FrontendConfig::ROUTE_REGISTER) ?>" class="btn btn-primary btn-sm">注册</a>
             <?php endif; ?>
         </div>
     </header>
@@ -117,20 +117,20 @@ $currentPage = $_SERVER['REQUEST_URI'] ?? '/';
             <div class="footer-section">
                 <h3>创作功能</h3>
                 <ul>
-                    <li><a href="/novel_creation">小说创作</a></li>
-                    <li><a href="/ai_music">AI音乐</a></li>
-                    <li><a href="/novel_creation/short_drama">短剧创作</a></li>
-                    <li><a href="/novel_creation/cover_generator">图片生成</a></li>
+                    <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_NOVEL_CREATION) ?>">小说创作</a></li>
+                    <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_AI_MUSIC) ?>">AI音乐</a></li>
+                    <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_SHORT_DRAMA) ?>">短剧创作</a></li>
+                    <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_COVER_GENERATOR) ?>">图片生成</a></li>
                 </ul>
             </div>
             
             <div class="footer-section">
                 <h3>帮助支持</h3>
                 <ul>
-                    <li><a href="/tutorial">使用教程</a></li>
-                    <li><a href="/help">帮助中心</a></li>
-                    <li><a href="/feedback">意见反馈</a></li>
-                    <li><a href="/about">关于我们</a></li>
+                    <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_TUTORIAL) ?>">使用教程</a></li>
+                    <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_HELP) ?>">帮助中心</a></li>
+                    <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_FEEDBACK) ?>">意见反馈</a></li>
+                    <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_ABOUT) ?>">关于我们</a></li>
                 </ul>
             </div>
         </div>
@@ -138,9 +138,9 @@ $currentPage = $_SERVER['REQUEST_URI'] ?? '/';
         <div class="footer-bottom">
             <p>&copy; <?= date('Y') ?> <?= htmlspecialchars($siteName) ?>. All rights reserved.</p>
             <div class="footer-links">
-                <a href="/privacy">隐私政策</a>
-                <a href="/terms">服务条款</a>
-                <a href="/contact">联系我们</a>
+                <a href="<?= htmlspecialchars(FrontendConfig::ROUTE_PRIVACY) ?>">隐私政策</a>
+                <a href="<?= htmlspecialchars(FrontendConfig::ROUTE_TERMS) ?>">服务条款</a>
+                <a href="<?= htmlspecialchars(FrontendConfig::ROUTE_CONTACT) ?>">联系我们</a>
             </div>
         </div>
     </footer>
@@ -176,7 +176,7 @@ $currentPage = $_SERVER['REQUEST_URI'] ?? '/';
     
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-            navigator.serviceWorker.register('/sw.js')
+            navigator.serviceWorker.register('<?= htmlspecialchars(FrontendConfig::SERVICE_WORKER_PATH) ?>')
                 .then(function(registration) {
                     console.log('Service Worker registered successfully:', registration.scope);
                 })

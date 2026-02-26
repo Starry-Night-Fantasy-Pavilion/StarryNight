@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars((string) ($title ?? '星夜阁')) ?></title>
-.    
+
     <!-- SEO Meta Tags -->
     <meta name="description" content="<?= htmlspecialchars((string) ($meta_description ?? '星夜阁 - 专为创作者打造的AI智能创作平台，提供AI小说写作、音乐生成、动画制作等功能，助力创作者提升效率10倍以上')) ?>">
     <meta name="keywords" content="<?= htmlspecialchars((string) ($meta_keywords ?? 'AI写作,AI创作,小说创作,AI小说,智能写作,创作工具,写作助手,星夜阁')) ?>">

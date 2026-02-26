@@ -1,89 +1,39 @@
 <?php
 namespace app\frontend\controller;
 
-use app\services\PluginManager;
 use app\models\Setting;
-use app\services\ThemeManager;
 use app\services\FrontendMapper;
+use app\services\PluginManager;
+use app\services\ThemeManager;
 
 class IndexController
 {
     public function index()
     {
         try {
-        header('Content-Type: text/html; charset=utf-8');
+            header('Content-Type: text/html; charset=utf-8');
 
-        $pluginManager = new PluginManager();
-        $plugins = $pluginManager->getPlugins();
+            $pluginManager = new PluginManager();
+            $plugins = $pluginManager->getPlugins();
 
-        $adminPrefix = trim((string) get_env('ADMIN_PATH', 'admin'), '/');
-        $siteName = Setting::get('site_name') ?: (string) get_env('APP_NAME', '星夜阁');
-        $siteLogo = Setting::get('site_logo');
+            $siteName = Setting::get('site_name') ?: (string) get_env('APP_NAME', '星夜阁');
+            $siteLogo = Setting::get('site_logo');
 
-        // 初始化多语言支持
-        $themeManager = new ThemeManager();
-        $frontendMapper = new FrontendMapper($themeManager, $pluginManager);
+            // 初始化多语言支持
+            $themeManager = new ThemeManager();
+            $frontendMapper = new FrontendMapper($themeManager, $pluginManager);
 
-        $navItems = [
-            ['title' => $frontendMapper->translate('common.home'), 'url' => '/', 'active' => true],
-            ['title' => $frontendMapper->translate('common.login'), 'url' => '/login', 'active' => false],
-            ['title' => $frontendMapper->translate('common.register'), 'url' => '/register', 'active' => false],
-        ];
+            $navItems = $this->buildBaseNavItems($frontendMapper);
+            $navItems = $this->appendPluginNavItems($navItems, $plugins);
 
-        foreach ($plugins as $pluginKey => $plugin) {
-            $config = $plugin['config'] ?? [];
-            $frontendEntry = $config['frontend_entry'] ?? null;
-            if (!is_string($frontendEntry) || trim($frontendEntry) === '') {
-                continue;
+            $theme = $themeManager->loadActiveThemeInstance();
+
+            if (!$theme) {
+                $this->renderWithoutTheme($plugins);
+                return;
             }
 
-            $navItems[] = [
-                'title' => (string) ($config['name'] ?? $pluginKey),
-                'url' => $frontendEntry,
-                'active' => false,
-            ];
-        }
-
-        $theme = $themeManager->loadActiveThemeInstance();
-
-        if (!$theme) {
-            // 如果没有主题，使用默认视图
-            // 原来指向 home.php，但实际存在的是 index.php，这里改为加载 index.php
-            ob_start();
-            $pluginsForView = $plugins;
-            require __DIR__ . '/../views/index.php';
-            $content = ob_get_clean();
-            echo $content;
-            return;
-        }
-
-        // 获取当前启用的主题ID，用于生成CSS/JS资源路径
-        // Web服务器根目录是public，所以路径不需要/public前缀
-        $activeThemeId = $themeManager->getActiveThemeId('web') ?? 'default';
-        $themeBasePath = '/web/' . $activeThemeId;
-
-        // 获取统计数据
-        $stats = $this->getHomeStats();
-        
-        // 使用主题系统渲染首页模板（企业官网风格），并通过 ThemeManager 统一调度
-        $homeContent = $theme->renderTemplate('home', [
-            'site_name' => $siteName,
-            'site_logo' => $siteLogo,
-            'plugins' => $plugins,
-            'nav_items' => $navItems,
-            'stats' => $stats,
-        ]);
-
-        echo $theme->renderTemplate('layout', [
-            'title'        => $siteName,
-            'site_name'    => $siteName,
-            'site_logo'    => $siteLogo,
-            'page_class'   => 'page-home',
-            'current_page' => 'home',
-            'content'      => $homeContent,
-            'nav_items'    => $navItems,
-            'theme_base_path' => $themeBasePath, // 传递给layout用于生成CSS/JS路径
-        ]);
+            $this->renderWithTheme($themeManager, $theme, $plugins, $siteName, $siteLogo, $navItems);
         } catch (\Exception $e) {
             // 记录错误日志
             error_log('Controller Error in IndexController::index: ' . $e->getMessage());
@@ -105,6 +55,95 @@ class IndexController
                 exit;
             }
         }
+    }
+
+    /**
+     * 构建基础导航菜单（首页 / 登录 / 注册）
+     */
+    private function buildBaseNavItems(FrontendMapper $frontendMapper): array
+    {
+        return [
+            ['title' => $frontendMapper->translate('common.home'), 'url' => '/', 'active' => true],
+            ['title' => $frontendMapper->translate('common.login'), 'url' => '/login', 'active' => false],
+            ['title' => $frontendMapper->translate('common.register'), 'url' => '/register', 'active' => false],
+        ];
+    }
+
+    /**
+     * 将插件导航项追加到基础导航菜单后面
+     */
+    private function appendPluginNavItems(array $navItems, array $plugins): array
+    {
+        foreach ($plugins as $pluginKey => $plugin) {
+            $config = $plugin['config'] ?? [];
+            $frontendEntry = $config['frontend_entry'] ?? null;
+
+            if (!is_string($frontendEntry) || trim($frontendEntry) === '') {
+                continue;
+            }
+
+            $navItems[] = [
+                'title' => (string) ($config['name'] ?? $pluginKey),
+                'url' => $frontendEntry,
+                'active' => false,
+            ];
+        }
+
+        return $navItems;
+    }
+
+    /**
+     * 在未启用主题的情况下渲染首页（回退到内置视图）
+     */
+    private function renderWithoutTheme(array $plugins): void
+    {
+        // 如果没有主题，使用默认视图
+        // 原来指向 home.php，但实际存在的是 index.php，这里改为加载 index.php
+        ob_start();
+        $pluginsForView = $plugins;
+        require __DIR__ . '/../views/index.php';
+        $content = ob_get_clean();
+        echo $content;
+    }
+
+    /**
+     * 使用主题系统渲染首页
+     */
+    private function renderWithTheme(
+        ThemeManager $themeManager,
+        $theme,
+        array $plugins,
+        string $siteName,
+        ?string $siteLogo,
+        array $navItems
+    ): void {
+        // 获取当前启用的主题ID，用于生成CSS/JS资源路径
+        // Web服务器根目录是public，所以路径不需要/public前缀
+        $activeThemeId = $themeManager->getActiveThemeId('web') ?? 'default';
+        $themeBasePath = '/web/' . $activeThemeId;
+
+        // 获取统计数据
+        $stats = $this->getHomeStats();
+
+        // 使用主题系统渲染首页模板（企业官网风格），并通过 ThemeManager 统一调度
+        $homeContent = $theme->renderTemplate('home', [
+            'site_name' => $siteName,
+            'site_logo' => $siteLogo,
+            'plugins' => $plugins,
+            'nav_items' => $navItems,
+            'stats' => $stats,
+        ]);
+
+        echo $theme->renderTemplate('layout', [
+            'title'           => $siteName,
+            'site_name'       => $siteName,
+            'site_logo'       => $siteLogo,
+            'page_class'      => 'page-home',
+            'current_page'    => 'home',
+            'content'         => $homeContent,
+            'nav_items'       => $navItems,
+            'theme_base_path' => $themeBasePath, // 传递给layout用于生成CSS/JS路径
+        ]);
     }
     
     /**

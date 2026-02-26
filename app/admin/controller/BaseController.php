@@ -6,7 +6,7 @@ class BaseController
 {
     public function __construct()
     {
-        if (session_status() == PHP_SESSION_NONE) {
+        if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
@@ -19,11 +19,11 @@ class BaseController
         $adminPrefix = trim((string) get_env('ADMIN_PATH', 'admin'), '/');
 
         if (!$isLoggedIn) {
+            // 未登录管理员，统一跳转到后台登录页
             header('Location: /' . $adminPrefix . '/login');
             exit;
         }
 
-        // Session timeout logic
         // Session timeout logic
         $session_duration = (int)get_env('SESSION_LIFETIME', 1800); // 30 minutes default
         if (isset($_SESSION['admin_last_activity']) && (time() - $_SESSION['admin_last_activity'] > $session_duration)) {

@@ -11,7 +11,9 @@ require_once __DIR__ . '/../core/compat.php';
 // db
 try {
     // db
-    $pdo = db()->getPdo();
+
+
+    $pdo = app\services\Database::pdo();
     
     // 查询所有邮件相关插件
     $stmt = $pdo->prepare('

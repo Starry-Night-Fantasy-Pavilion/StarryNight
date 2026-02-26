@@ -946,8 +946,11 @@ a:hover {
 }
 
 .notice-marquee-running {
-    /* 跑马灯整体速度：30s 一轮，更慢更容易阅读 */
-    animation: top-bar-notice-marquee 30s linear;
+    /* 跑马灯整体速度：默认 30s 一轮；实际时长可由 JS 写入 CSS 变量动态控制 */
+    animation-name: top-bar-notice-marquee;
+    animation-duration: var(--notice-marquee-duration, 30s);
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
 }
 
 @keyframes top-bar-notice-marquee {

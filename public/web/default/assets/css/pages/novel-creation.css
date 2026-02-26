@@ -138,3 +138,243 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* 通用页面头部（章节分析 / 拆书分析 / 仿写等） */
+.page-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #ffffff;
+    padding: 2rem 0;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.page-header p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* 分析表单与信息块通用样式 */
+.analysis-form {
+    max-width: 900px;
+    margin: 0 auto 2rem;
+}
+
+.form-section {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.form-section h3 {
+    margin: 0 0 1.25rem 0;
+    color: #495057;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 0.75rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.required {
+    color: #dc3545;
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    line-height: 1.6;
+    resize: vertical;
+}
+
+.form-help {
+    display: block;
+    margin-top: 0.5rem;
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+.btn-lg {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.btn-outline:hover {
+    background: #667eea;
+    color: #ffffff;
+}
+
+.info-section {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+}
+
+.info-section h3 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #495057;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.25rem;
+}
+
+.info-card {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.info-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.info-card h4 {
+    margin: 0 0 0.75rem 0;
+    color: #667eea;
+}
+
+.info-card ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.8;
+}
+
+/* 通用结果展示块（章节分析结果 / 各类生成结果） */
+.result-section {
+    max-width: 900px;
+    margin: 0 auto 2rem;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.success-badge {
+    background: #d4edda;
+    color: #155724;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.error-badge {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.result-content {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    font-family: inherit;
+    margin-bottom: 1.5rem;
+}
+
+.error-message {
+    background: #fff5f5;
+    border: 1px solid #feb2b2;
+    border-radius: 8px;
+    padding: 1.5rem;
+    color: #c53030;
+    margin-bottom: 1.5rem;
+}
+
+.result-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.next-step {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+/* 仿写页面引用/分析展示块 */
+.reference-box,
+.analysis-box {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    font-size: 0.9rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* 仿写结果对比布局 */
+.imitation-compare {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 1.5rem;
+}
+
+.imitation-column h3 {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.95rem;
+    color: #495057;
+}
+
+.imitation-original {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    font-size: 0.9rem;
+    max-height: 320px;
+    overflow-y: auto;
+}
