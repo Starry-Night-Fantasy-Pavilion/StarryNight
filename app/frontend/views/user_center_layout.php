@@ -409,7 +409,7 @@
                     <span class="mode-toggle-icon">
                         <?= icon('grid', ['width' => '18', 'height' => '18']) ?>
                     </span>
-                    <span class="mode-toggle-text">创作场景</span>
+                    <span class="mode-toggle-text">创作中心</span>
                 </button>
                 <button class="mobile-menu-toggle" id="mobileMenuToggle">
                     <span></span>
@@ -418,27 +418,15 @@
                 </button>
                 <div class="mode-switch-menu" id="modeSwitchMenu" aria-hidden="true">
                     <a href="/novel_creation" class="mode-switch-item">
-                        <span class="mode-switch-item-icon">
-                            <?= icon('book', ['width' => '16', 'height' => '16']) ?>
-                        </span>
                         <span class="mode-switch-item-label">小说创作</span>
                     </a>
                     <a href="/ai_music" class="mode-switch-item">
-                        <span class="mode-switch-item-icon">
-                            <?= icon('music', ['width' => '16', 'height' => '16']) ?>
-                        </span>
                         <span class="mode-switch-item-label">音乐创作</span>
                     </a>
                     <a href="/novel_creation/short_drama" class="mode-switch-item">
-                        <span class="mode-switch-item-icon">
-                            <?= icon('film', ['width' => '16', 'height' => '16']) ?>
-                        </span>
-                        <span class="mode-switch-item-label">短剧创作</span>
+                        <span class="mode-switch-item-label">漫剧创作</span>
                     </a>
                     <a href="/novel_creation/cover_generator" class="mode-switch-item">
-                        <span class="mode-switch-item-icon">
-                            <?= icon('image', ['width' => '16', 'height' => '16']) ?>
-                        </span>
                         <span class="mode-switch-item-label">图片生成</span>
                     </a>
                 </div>
@@ -504,9 +492,9 @@
                     <?= icon('book-open', ['width' => '18', 'height' => '18']) ?>
                     <span class="icon-btn-text">教程</span>
                 </a>
-                <a href="/user_center/profile" class="icon-btn" title="个人中心">
-                    <?= icon('user', ['width' => '18', 'height' => '18']) ?>
-                    <span class="icon-btn-text">个人</span>
+                <a href="/user_center/profile" class="icon-btn" title="设置">
+                    <?= icon('settings', ['width' => '18', 'height' => '18']) ?>
+                    <span class="icon-btn-text">设置</span>
                 </a>
                 <div class="top-bar-user" id="topBarUserDropdown">
                     <div class="top-bar-user-trigger" id="topBarUserTrigger" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">

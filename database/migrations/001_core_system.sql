@@ -74,7 +74,7 @@ CREATE TABLE `sn_admin_plugin_configs` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `plugin_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `config_json` longtext COLLATE utf8mb4_unicode_ci,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_plugin_id` (`plugin_id`)

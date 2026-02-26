@@ -559,39 +559,40 @@ body.page-user-center {
     box-shadow: none;
 }
 
-/* 顶部模式切换按钮样式：更轻量的小胶囊按钮 */
+/* 顶部模式切换按钮样式：与右侧“个人信息容器”一致的胶囊尺寸 */
 .top-bar-mode-toggle {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    justify-content: flex-start;
+    gap: 10px;
     padding: 0 14px;
-    height: 38px;
-    border-radius: 999px;
-    border: 1px solid rgba(148, 163, 184, 0.6);
-    background: rgba(15, 23, 42, 0.85);
+    height: var(--topbar-height);
+    border-radius: 50px;
+    border: 1px solid var(--glass-border);
+    background: linear-gradient(135deg, var(--glass-bg-start), var(--glass-bg-end));
     color: var(--text-light);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
-    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.65);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
     transition: all var(--transition-fast);
+    outline: none;
 }
 
 .top-bar-mode-toggle:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.85);
-    border-color: var(--primary-color);
+    transform: scale(1.02);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+    border-color: rgba(59, 130, 246, 0.45);
 }
 
 .top-bar-mode-toggle .mode-toggle-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 26px;
-    height: 26px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--primary-color), var(--info-color));
     flex-shrink: 0;
@@ -599,7 +600,7 @@ body.page-user-center {
 
 .top-bar-mode-toggle .mode-toggle-text {
     white-space: nowrap;
-    color: var(--text-secondary);
+    color: var(--text-light);
 }
 
 /* 模式切换图标尺寸：进一步放大，保证足够显眼 */
@@ -635,22 +636,18 @@ body.page-user-center {
 .mode-switch-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 14px;
-    font-size: 13px;
+    justify-content: center;
+    margin: 4px 10px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(148, 163, 184, 0.55);
+    font-size: 0.9rem;
+    font-weight: 500;
     color: #e5e7eb;
     text-decoration: none;
     cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
-}
-
-.mode-switch-item-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    color: #a5b4fc;
+    transition: all 0.18s ease;
 }
 
 .mode-switch-item-label {
@@ -658,8 +655,10 @@ body.page-user-center {
 }
 
 .mode-switch-item:hover {
-    background: rgba(30, 64, 175, 0.75);
+    background: rgba(30, 64, 175, 0.9);
     color: #f9fafb;
+    box-shadow: 0 8px 22px rgba(30, 64, 175, 0.55);
+    border-color: rgba(129, 140, 248, 0.85);
 }
 
 /* 顶部按钮文字：小号、单行，控制整体占位 */

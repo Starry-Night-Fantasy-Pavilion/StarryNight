@@ -50,7 +50,8 @@ $appConfig = [
     ],
     'queue' => [
         'driver' => 'database',
-        'table' => 'jobs',
+        // 队列任务表名应与数据库迁移保持一致（见 database/migrations/*queue_jobs*）
+        'table' => 'queue_jobs',
         'connection' => 'default',
     ],
     'csrf' => [
@@ -69,6 +70,11 @@ $app = new Application($appConfig);
 
 // 启动应用（初始化Session、执行中间件等）
 $app->boot();
+
+// 前台自动登录：根据 remember_login Cookie 恢复“保持30天登录”的用户会话
+if (function_exists('frontend_auto_login_from_cookie')) {
+    frontend_auto_login_from_cookie();
+}
 
 // 注册应用层异常处理器（处理错误页面渲染）
 use app\services\ErrorHandler;

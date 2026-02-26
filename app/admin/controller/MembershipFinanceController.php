@@ -423,7 +423,12 @@ class MembershipFinanceController extends BaseController
                                 } else {
                                     $subject = (string)($tpl['title'] ?? ('模板测试：' . $code));
                                     $err = '';
-                                    $ok = send_system_mail($target, $subject, $body, $err);
+                                    // 后台测试邮件也应快速返回，避免 SMTP 重试/超时造成管理页面卡死
+                                    $ok = send_system_mail($target, $subject, $body, $err, [
+                                        'timeout' => 10,
+                                        'retry_attempts' => 1,
+                                        'retry_delay' => 0,
+                                    ]);
                                     if ($ok) {
                                         $successMessage = '测试邮件已发送至：' . $target;
                                     } else {

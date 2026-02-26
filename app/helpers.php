@@ -55,9 +55,13 @@ if (!function_exists('send_system_mail')) {
      * @param string $subject
      * @param string $content
      * @param string|null $errorMsg 输出参数，用于返回错误信息
+     * @param array $options 可选发送参数（仅对部分插件生效）：
+     *                       - timeout: int SMTP 连接/读写超时（秒）
+     *                       - retry_attempts: int 重试次数
+     *                       - retry_delay: int 重试延迟（秒）
      * @return bool
      */
-    function send_system_mail(string $to, string $subject, string $content, ?string &$errorMsg = null): bool
+    function send_system_mail(string $to, string $subject, string $content, ?string &$errorMsg = null, array $options = []): bool
     {
         $errorMsg = null;
 
@@ -104,10 +108,80 @@ if (!function_exists('send_system_mail')) {
                             }
                             if (is_file($pluginFile)) {
                                 $oldArchPlugins[] = $plugin;
-                            }
-                        }
-                    }
-                }
+            }
+        }
+    }
+}
+
+if (!function_exists('frontend_auto_login_from_cookie')) {
+    /**
+     * 前台自动登录逻辑：根据 remember_login Cookie 恢复会话（用于“保持30天登录”）
+     *
+     * - 仅在当前 Session 未登录时尝试
+     * - Cookie 内容: base64_encode("user_id|hmac")
+     * - hmac = hash_hmac('sha256', user_id . '|' . password_hash, APP_KEY)
+     */
+    function frontend_auto_login_from_cookie(): void
+    {
+        // 已有登录会话则不处理
+        if (!empty($_SESSION['user_logged_in']) && !empty($_SESSION['user_id'])) {
+            return;
+        }
+
+        if (php_sapi_name() === 'cli') {
+            return;
+        }
+
+        if (empty($_COOKIE['remember_login'])) {
+            return;
+        }
+
+        $raw = base64_decode((string)$_COOKIE['remember_login'], true);
+        if ($raw === false) {
+            return;
+        }
+
+        $parts = explode('|', $raw, 2);
+        if (count($parts) !== 2) {
+            return;
+        }
+
+        $userId = (int)$parts[0];
+        $token  = $parts[1] ?? '';
+        if ($userId <= 0 || $token === '') {
+            return;
+        }
+
+        // 加载用户信息
+        try {
+            $user = \app\models\User::find($userId);
+        } catch (\Throwable $e) {
+            return;
+        }
+
+        if (!$user || empty($user['password'])) {
+            return;
+        }
+
+        $secret = (string)(get_env('APP_KEY', '') ?: 'starry-remember-secret');
+        $expected = hash_hmac('sha256', $userId . '|' . $user['password'], $secret);
+
+        if (!hash_equals($expected, $token)) {
+            return;
+        }
+
+        // 恢复会话
+        $_SESSION['user_logged_in'] = true;
+        $_SESSION['user_id'] = (int)$user['id'];
+        $_SESSION['username'] = (string)($user['username'] ?? '');
+        $_SESSION['user_last_activity'] = time();
+
+        // 刷新 Cookie 过期时间（继续保持 30 天）
+        $cookieValue = base64_encode($userId . '|' . $expected);
+        $secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+        setcookie('remember_login', $cookieValue, time() + 30 * 24 * 60 * 60, '/', '', $secure, true);
+    }
+}
                 
                 // 优先使用新架构插件
                 if (!empty($newArchPlugins)) {
@@ -200,10 +274,21 @@ if (!function_exists('send_system_mail')) {
                     
                     if ($isNewArchitecture) {
                         // 新架构插件接口
+                        // 对“验证码/测试邮件”等交互请求：允许覆盖短超时与重试策略，避免请求卡死导致 502
+                        if (isset($options['timeout'])) {
+                            $config['timeout'] = (int)$options['timeout'];
+                        }
+                        if (isset($options['retry_attempts'])) {
+                            $config['retry_attempts'] = (int)$options['retry_attempts'];
+                        }
+                        if (isset($options['retry_delay'])) {
+                            $config['retry_delay'] = (int)$options['retry_delay'];
+                        }
                         if (!empty($config) && method_exists($plugin, 'updateConfig')) {
                             $plugin->updateConfig($config);
                         }
-                        $ok = $plugin->send($to, $subject, $content, ['config' => $config]);
+                        $sendOptions = array_merge($options, ['config' => $config]);
+                        $ok = $plugin->send($to, $subject, $content, $sendOptions);
                     } else {
                         // 旧架构插件接口
                         $params = [

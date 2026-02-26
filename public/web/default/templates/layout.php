@@ -88,8 +88,10 @@ body.page-login {
     background-position: center;
     background-attachment: fixed;
     color: var(--admin-login-text);
-    /* 隐藏页面滚动条，登录卡片内内容全部收紧显示 */
-    overflow: hidden;
+    /* 允许垂直滚动，避免底部协议/第三方登录被裁掉 */
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 body.page-login * {
@@ -277,6 +279,35 @@ body.page-login * {
     text-decoration: underline;
 }
 
+.login-remember {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: rgba(248, 250, 252, 0.9);
+}
+
+.login-remember-title {
+    font-size: 0.8rem;
+    color: var(--admin-login-text-muted);
+}
+
+.remember-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: rgba(248, 250, 252, 0.88);
+    cursor: pointer;
+}
+
+.remember-option input[type="radio"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #3b82f6;
+}
+
 .login-legal {
     margin-top: 12px;
     text-align: center;
@@ -320,8 +351,8 @@ body.page-login * {
 
 .third-party-buttons a,
 .third-party-buttons button {
-    width: 36px;
-    height: 36px;
+    width: 46px;
+    height: 46px;
     border-radius: 999px;
     display: inline-flex;
     align-items: center;
@@ -334,8 +365,8 @@ body.page-login * {
 
 .third-party-buttons img,
 .third-party-buttons svg {
-    width: 20px;
-    height: 20px;
+    width: 26px;
+    height: 26px;
 }
 
 .link-forgot {

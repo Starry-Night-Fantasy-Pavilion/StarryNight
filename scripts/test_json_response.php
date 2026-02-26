@@ -42,7 +42,12 @@ try {
     $content = '这是一封测试邮件';
     
     $errorMsg = null;
-    $result = send_system_mail($testEmail, $subject, $content, $errorMsg);
+    // 测试脚本也采用短超时+不重试，避免 SMTP 连接异常时卡住很久（线上会导致 502）
+    $result = send_system_mail($testEmail, $subject, $content, $errorMsg, [
+        'timeout' => 10,
+        'retry_attempts' => 1,
+        'retry_delay' => 0,
+    ]);
     
     // 清除所有输出（包括调试信息）
     ob_clean();

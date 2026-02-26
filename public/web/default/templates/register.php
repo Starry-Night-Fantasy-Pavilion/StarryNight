@@ -293,6 +293,7 @@ body.page-register * {
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
+    min-width: 96px;
 }
 
 .btn-send-code:hover {
@@ -303,6 +304,52 @@ body.page-register * {
 .btn-send-code:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* 发送中：圆球动态加载（3 个小圆点） */
+.btn-send-code.sending {
+    opacity: 0.8;
+    pointer-events: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-loading-dots {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 1em;
+}
+
+.btn-loading-dots span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    animation: btn-dot-bounce 0.9s infinite ease-in-out;
+}
+
+.btn-loading-dots span:nth-child(2) {
+    animation-delay: 0.12s;
+}
+
+.btn-loading-dots span:nth-child(3) {
+    animation-delay: 0.24s;
+}
+
+@keyframes btn-dot-bounce {
+    0%,
+    80%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.6;
+    }
+    40% {
+        transform: translateY(-4px);
+        opacity: 1;
+    }
 }
 
 .field-optional {
@@ -630,9 +677,11 @@ body.page-register * {
         }
 
         sending = true;
-        var originalText = sendBtn.textContent;
+        var originalHtml = sendBtn.innerHTML;
         sendBtn.disabled = true;
-        sendBtn.textContent = '发送中...';
+        sendBtn.classList.add('sending');
+        sendBtn.setAttribute('aria-busy', 'true');
+        sendBtn.innerHTML = '<span class="btn-loading-dots" role="status" aria-label="发送中"><span></span><span></span><span></span></span>';
 
         var body = 'method=' + encodeURIComponent(method) + '&target=' + encodeURIComponent(target);
 
@@ -659,6 +708,8 @@ body.page-register * {
                 // 启动 60 秒倒计时（仅在成功时）
                 countdown = 60;
                 sendBtn.disabled = true;
+                sendBtn.classList.remove('sending');
+                sendBtn.removeAttribute('aria-busy');
                 sendBtn.textContent = countdown + ' 秒后可重发';
                 if (timerId) {
                     clearInterval(timerId);
@@ -669,7 +720,7 @@ body.page-register * {
                         clearInterval(timerId);
                         timerId = null;
                         sendBtn.disabled = false;
-                        sendBtn.textContent = originalText;
+                        sendBtn.innerHTML = originalHtml;
                         showMsg('', null);
                     } else {
                         sendBtn.textContent = countdown + ' 秒后可重发';
@@ -680,13 +731,17 @@ body.page-register * {
                 var errorMsg = (data && data.message) ? data.message : '发送失败，请稍后重试';
                 showMsg(errorMsg, 'error');
                 sendBtn.disabled = false;
-                sendBtn.textContent = originalText;
+                sendBtn.classList.remove('sending');
+                sendBtn.removeAttribute('aria-busy');
+                sendBtn.innerHTML = originalHtml;
             }
         }).catch(function(err) {
             console.error('发送验证码错误:', err);
             showMsg('网络错误，请检查网络连接后重试', 'error');
             sendBtn.disabled = false;
-            sendBtn.textContent = originalText;
+            sendBtn.classList.remove('sending');
+            sendBtn.removeAttribute('aria-busy');
+            sendBtn.innerHTML = originalHtml;
         }).finally(function() {
             sending = false;
         });

@@ -667,6 +667,7 @@ class AuthController
     {
         $username = $_POST['username'] ?? '';
         $password = $_POST['password'] ?? '';
+        $rememberMode = $_POST['remember_mode'] ?? 'session';
 
         if (empty($username) || empty($password)) {
             header('Location: /login?error=1');
@@ -741,6 +742,26 @@ class AuthController
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['user_last_activity'] = time();
+
+                // 记录用户选择的登录有效期偏好（30天）
+                $rememberCookieValue = ($rememberMode === '30d') ? '30d' : 'session';
+                setcookie('remember_mode', $rememberCookieValue, time() + 30 * 24 * 60 * 60, '/', '', false, true);
+
+                // 记住登录（30天），通过安全 Cookie 自动恢复会话
+                $secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+                if ($rememberMode === '30d') {
+                    $userId = (int)$user['id'];
+                    $secret = (string)(get_env('APP_KEY', '') ?: 'starry-remember-secret');
+                    $passwordHash = (string)($user['password'] ?? '');
+                    $hmac = hash_hmac('sha256', $userId . '|' . $passwordHash, $secret);
+                    $cookieValue = base64_encode($userId . '|' . $hmac);
+                    setcookie('remember_login', $cookieValue, time() + 30 * 24 * 60 * 60, '/', '', $secure, true);
+                } else {
+                    // 仅本次登录：清除长期登录 Cookie
+                    if (isset($_COOKIE['remember_login'])) {
+                        setcookie('remember_login', '', time() - 3600, '/', '', $secure, true);
+                    }
+                }
                 
                 // 触发登录成功钩子
                 $pluginManager->triggerHook('user_login_success', $user);
@@ -1524,7 +1545,12 @@ class AuthController
                         $content = '您的注册验证码为：' . $code . '，' . $expireMinutes . ' 分钟内有效。';
                     }
                     
-                    $ok = send_system_mail($target, $subject, $content, $errorMessage);
+                    // 验证码邮件必须快速失败/快速返回，避免 SMTP 重试把请求卡满导致 502
+                    $ok = send_system_mail($target, $subject, $content, $errorMessage, [
+                        'timeout' => 10,
+                        'retry_attempts' => 1,
+                        'retry_delay' => 0,
+                    ]);
                     if (!$ok) {
                         error_log('发送注册验证码邮件失败: method=email, target=' . $target . ', error=' . $errorMessage);
                         // 优化错误信息显示，将技术性错误转换为用户友好的提示
@@ -1600,7 +1626,12 @@ class AuthController
             }
             
             $errorMessage = null;
-            $ok = send_system_mail($email, $subject, $content, $errorMessage);
+            // 重置验证码也走短超时，避免接口卡死导致 502
+            $ok = send_system_mail($email, $subject, $content, $errorMessage, [
+                'timeout' => 10,
+                'retry_attempts' => 1,
+                'retry_delay' => 0,
+            ]);
             if (!$ok) {
                 error_log('发送重置邮件失败: ' . ($errorMessage ?: '未知错误'));
                 // 优化错误信息显示

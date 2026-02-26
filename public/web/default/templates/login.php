@@ -1,6 +1,8 @@
 <?php
 $siteNameForAuth = (string)($site_name ?? '');
 $siteLogoForAuth = (string)($site_logo ?? '');
+// 从 Cookie 中读取上次登录偏好
+$rememberModeFromCookie = $_COOKIE['remember_mode'] ?? 'session';
 ?>
 
 <div class="login-wrapper">
@@ -60,6 +62,18 @@ $siteLogoForAuth = (string)($site_logo ?? '');
                 </div>
             </div>
             <?php endif; ?>
+
+            <div class="login-remember">
+                <span class="login-remember-title">登录有效期：</span>
+                <label class="remember-option">
+                    <input type="radio" name="remember_mode" value="session" <?= $rememberModeFromCookie === '30d' ? '' : 'checked' ?>>
+                    <span>仅本次登录</span>
+                </label>
+                <label class="remember-option">
+                    <input type="radio" name="remember_mode" value="30d" <?= $rememberModeFromCookie === '30d' ? 'checked' : '' ?>>
+                    <span>记住账号密码，保持30天登录</span>
+                </label>
+            </div>
 
             <button type="submit" class="btn-login">登录</button>
         </form>
@@ -143,24 +157,12 @@ $siteLogoForAuth = (string)($site_logo ?? '');
         </script>
         <?php endif; ?>
 
-        <?php
-        $uaPath = trim((string)($user_agreement_txt_path ?? ''));
-        $ppPath = trim((string)($privacy_policy_txt_path ?? ''));
-        ?>
-        <?php if ($uaPath !== '' || $ppPath !== ''): ?>
         <div class="login-legal">
             <span>登录即表示同意</span>
-            <?php if ($uaPath !== ''): ?>
-                <a href="javascript:void(0)" data-legal="user">《用户协议》</a>
-            <?php endif; ?>
-            <?php if ($uaPath !== '' && $ppPath !== ''): ?>
-                <span class="auth-legal-sep">和</span>
-            <?php endif; ?>
-            <?php if ($ppPath !== ''): ?>
-                <a href="javascript:void(0)" data-legal="privacy">《隐私政策》</a>
-            <?php endif; ?>
+            <a href="javascript:void(0)" data-legal="user">《用户协议》</a>
+            <span class="auth-legal-sep">和</span>
+            <a href="javascript:void(0)" data-legal="privacy">《隐私政策》</a>
         </div>
-        <?php endif; ?>
 
         <div class="login-footer">
         </div>

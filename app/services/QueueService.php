@@ -37,26 +37,15 @@ class QueueService
     public static function push(string $jobClass, array $data = [], string $queue = self::DEFAULT_QUEUE, int $delay = 0): ?string
     {
         try {
-            $pdo = Database::pdo();
-            $prefix = Database::prefix();
-            
-            $jobId = self::generateJobId();
-            $payload = json_encode([
-                'job' => $jobClass,
-                'data' => $data,
-                'max_tries' => 3,
-                'timeout' => 60,
-            ], JSON_UNESCAPED_UNICODE);
+            // 统一使用核心队列服务（Core\Queue\QueueService），确保与 scripts/queue_worker.php 一致
+            // 注：core/helpers.php 通过 Composer files 自动加载，提供全局 app() 方法
+            $queueService = app('queue');
 
-            $availableAt = $delay > 0 ? date('Y-m-d H:i:s', time() + $delay) : date('Y-m-d H:i:s');
+            if ($delay > 0) {
+                return (string) $queueService->later($delay, $jobClass, $data, $queue);
+            }
 
-            $sql = "INSERT INTO `{$prefix}jobs` (id, queue, payload, attempts, available_at, created_at) 
-                    VALUES (?, ?, ?, 0, ?, NOW())";
-            
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([$jobId, $queue, $payload, $availableAt]);
-
-            return $jobId;
+            return (string) $queueService->push($jobClass, $data, $queue);
         } catch (\Throwable $e) {
             error_log("队列推送失败: " . $e->getMessage());
             return null;
@@ -112,7 +101,8 @@ class QueueService
      */
     public static function sendEmail(string $to, string $subject, string $content, int $delay = 0): ?string
     {
-        return self::push(\app\jobs\SendEmailJob::class, [
+        // PSR-4：App\ => app/，因此应使用 App\Jobs\SendEmailJob
+        return self::push(\App\Jobs\SendEmailJob::class, [
             'to' => $to,
             'subject' => $subject,
             'content' => $content,
@@ -207,19 +197,22 @@ class QueueService
         try {
             $pdo = Database::pdo();
             $prefix = Database::prefix();
+            $table = $prefix . 'queue_jobs';
 
-            $sql = "SELECT queue, COUNT(*) as count, 
-                    SUM(CASE WHEN available_at > NOW() THEN 1 ELSE 0 END) as delayed,
+            $sql = "SELECT queue, COUNT(*) as count,
+                    SUM(CASE WHEN available_at > :now THEN 1 ELSE 0 END) as delayed,
                     SUM(CASE WHEN attempts > 0 THEN 1 ELSE 0 END) as retried
-                    FROM `{$prefix}jobs` 
+                    FROM `{$table}`
+                    WHERE status = 'pending'
                     GROUP BY queue";
-            
-            $stmt = $pdo->query($sql);
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([':now' => time()]);
             $stats = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
             return [
                 'queues' => $stats,
-                'total' => array_sum(array_column($stats, 'count')),
+                'total' => (int) array_sum(array_map(static fn ($r) => (int)($r['count'] ?? 0), $stats)),
             ];
         } catch (\Throwable $e) {
             return [
@@ -239,32 +232,29 @@ class QueueService
     public static function cleanup(int $days = 7): int
     {
         try {
+            // 核心队列队列表是 queue_jobs，成功任务会被 ack() 删除。
+            // 这里清理 processing 状态且超出保留天数的任务（防止异常中断导致积压）。
             $pdo = Database::pdo();
             $prefix = Database::prefix();
+            $table = $prefix . 'queue_jobs';
 
-            $sql = "DELETE FROM `{$prefix}jobs` 
-                    WHERE reserved_at IS NOT NULL 
-                    AND reserved_at < DATE_SUB(NOW(), INTERVAL ? DAY)";
-            
+            $threshold = time() - ($days * 86400);
+            $sql = "DELETE FROM `{$table}`
+                    WHERE status = 'processing'
+                      AND reserved_at IS NOT NULL
+                      AND reserved_at < :threshold";
+
             $stmt = $pdo->prepare($sql);
-            $stmt->execute([$days]);
+            $stmt->execute([':threshold' => $threshold]);
 
-            return $stmt->rowCount();
+            return (int) $stmt->rowCount();
         } catch (\Throwable $e) {
             error_log("队列清理失败: " . $e->getMessage());
             return 0;
         }
     }
 
-    /**
-     * 生成任务ID
-     *
-     * @return string
-     */
-    private static function generateJobId(): string
-    {
-        return uniqid('job_', true) . '_' . bin2hex(random_bytes(4));
-    }
+    // generateJobId() 不再需要：核心队列服务使用自增ID
 
     /**
      * 渲染邮件模板

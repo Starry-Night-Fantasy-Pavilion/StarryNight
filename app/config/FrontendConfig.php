@@ -56,7 +56,8 @@ class FrontendConfig
     public const PATH_THEME_TEMPLATES = 'templates';
     public const PATH_THEME_LANGUAGE = 'language';
     
-    public const CACHE_VERSION = '20260226';
+    // 前端静态资源版本号，每次改动样式/脚本时可手动递增，避免浏览器缓存老文件
+    public const CACHE_VERSION = '20260227';
     public const CACHE_VERSION_PARAM = 'v';
     
     public const LANG_ZH_CN = 'zh-cn';
