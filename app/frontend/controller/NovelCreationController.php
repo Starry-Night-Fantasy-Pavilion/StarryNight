@@ -78,7 +78,8 @@ class NovelCreationController
         $extra_js = $data['extra_js'] ?? [];
 
         // 添加小说创作页面的CSS / JS
-        if (strpos($view, 'novel_creation') !== false) {
+        // 统一为小说创作相关视图（novel_tools/* 和 novel/project/*）加载
+        if (strpos($view, 'novel_tools/') === 0 || strpos($view, 'novel/project/') === 0) {
             $themeManager = new \app\services\ThemeManager();
             $activeThemeId = $themeManager->getActiveThemeId('web') ?? FrontendConfig::THEME_DEFAULT;
             $themeVersion = FrontendConfig::CACHE_VERSION;
@@ -117,14 +118,14 @@ class NovelCreationController
             }
             
             if (!$availableVersion) {
-                $this->render('novel_creation/no_permission', [
+                $this->render('novel_tools/no_permission', [
                     'title' => '无权限访问 - 星夜阁',
                     'message' => '您当前没有权限使用星夜创作引擎，请升级会员后使用。'
                 ]);
                 return;
             }
 
-            $this->render('novel_creation/index', [
+            $this->render('novel_tools/index', [
                 'title' => 'AI小说创作工具 - 星夜阁',
                 'available_version' => $availableVersion
             ]);
@@ -140,7 +141,7 @@ class NovelCreationController
     public function chapterAnalysis()
     {
         $this->checkAuth();
-        $this->render('novel_creation/chapter_analysis', ['title' => '章节分析 - 星夜阁']);
+        $this->render('novel_tools/chapter_analysis/index', ['title' => '章节分析 - 星夜阁']);
     }
 
     /**
@@ -164,7 +165,7 @@ class NovelCreationController
          
          $result = NovelAIService::analyzeChapter($params);
          
-         $this->render('novel_creation/result', [
+         $this->render('novel_tools/result', [
              'title' => '章节分析结果 - 星夜阁',
              'tool_name' => '章节分析',
              'params' => $params,
@@ -179,7 +180,7 @@ class NovelCreationController
     public function bookAnalysis()
     {
         $this->checkAuth();
-        $this->render('novel_creation/book_analysis', ['title' => '拆书分析 - 星夜阁']);
+        $this->render('novel_tools/book_analysis/index', ['title' => '拆书分析 - 星夜阁']);
     }
 
     /**
@@ -204,7 +205,7 @@ class NovelCreationController
         $_SESSION['book_analysis_result'] = $result['content'] ?? '';
         $_SESSION['reference_text'] = $params['reference_text'];
         
-        $this->render('novel_creation/book_analysis_result', [
+        $this->render('novel_tools/book_analysis/result', [
             'title' => '拆书分析结果 - 星夜阁',
             'params' => $params,
             'result' => $result
@@ -226,7 +227,7 @@ class NovelCreationController
             exit;
         }
         
-        $this->render('novel_creation/imitation_writing', [
+        $this->render('novel_tools/rewriting/index', [
             'title' => '仿写创作 - 星夜阁',
             'analysis_result' => $analysisResult,
             'reference_text' => $referenceText
@@ -256,7 +257,7 @@ class NovelCreationController
         
         $result = NovelAIService::generateImitation($params);
         
-        $this->render('novel_creation/result', [
+        $this->render('novel_tools/result', [
             'title' => '仿写创作结果 - 星夜阁',
             'tool_name' => '仿写创作',
             'params' => $params,
@@ -271,7 +272,7 @@ class NovelCreationController
     public function openingGenerator()
     {
         $this->checkAuth();
-        $this->render('novel_creation/opening_generator', ['title' => '黄金开篇 - 星夜阁']);
+        $this->render('novel_tools/opening_generator/index', ['title' => '黄金开篇 - 星夜阁']);
     }
 
     /**
@@ -296,7 +297,7 @@ class NovelCreationController
         
         $result = NovelAIService::generateOpening($params);
         
-        $this->render('novel_creation/result', [
+        $this->render('novel_tools/result', [
             'title' => '黄金开篇结果 - 星夜阁',
             'tool_name' => '黄金开篇',
             'params' => $params,
@@ -311,7 +312,7 @@ class NovelCreationController
     public function titleGenerator()
     {
         $this->checkAuth();
-        $this->render('novel_creation/title_generator', ['title' => '书名生成 - 星夜阁']);
+        $this->render('novel_tools/title_generator/index', ['title' => '书名生成 - 星夜阁']);
     }
 
     /**
@@ -335,7 +336,7 @@ class NovelCreationController
         
         $result = NovelAIService::generateTitle($params);
         
-        $this->render('novel_creation/result', [
+        $this->render('novel_tools/result', [
             'title' => '书名生成结果 - 星夜阁',
             'tool_name' => '书名生成',
             'params' => $params,
@@ -350,7 +351,7 @@ class NovelCreationController
     public function descriptionGenerator()
     {
         $this->checkAuth();
-        $this->render('novel_creation/description_generator', ['title' => '简介生成 - 星夜阁']);
+        $this->render('novel_tools/description_generator/index', ['title' => '简介生成 - 星夜阁']);
     }
 
     /**
@@ -375,7 +376,7 @@ class NovelCreationController
         
         $result = NovelAIService::generateDescription($params);
         
-        $this->render('novel_creation/result', [
+        $this->render('novel_tools/result', [
             'title' => '简介生成结果 - 星夜阁',
             'tool_name' => '简介生成',
             'params' => $params,
@@ -390,7 +391,7 @@ class NovelCreationController
     public function cheatGenerator()
     {
         $this->checkAuth();
-        $this->render('novel_creation/cheat_generator', ['title' => '金手指生成 - 星夜阁']);
+        $this->render('novel_tools/cheat_generator/index', ['title' => '金手指生成 - 星夜阁']);
     }
 
     /**
@@ -413,7 +414,7 @@ class NovelCreationController
         
         $result = NovelAIService::generateCheat($params);
         
-        $this->render('novel_creation/result', [
+        $this->render('novel_tools/result', [
             'title' => '金手指生成结果 - 星夜阁',
             'tool_name' => '金手指生成',
             'params' => $params,
@@ -428,7 +429,7 @@ class NovelCreationController
     public function nameGenerator()
     {
         $this->checkAuth();
-        $this->render('novel_creation/name_generator', ['title' => '名字生成 - 星夜阁']);
+        $this->render('novel_tools/name_generator/index', ['title' => '名字生成 - 星夜阁']);
     }
 
     /**
@@ -452,7 +453,7 @@ class NovelCreationController
         
         $result = NovelAIService::generateName($params);
         
-        $this->render('novel_creation/result', [
+        $this->render('novel_tools/result', [
             'title' => '名字生成结果 - 星夜阁',
             'tool_name' => '名字生成',
             'params' => $params,
@@ -467,7 +468,7 @@ class NovelCreationController
     public function coverGenerator()
     {
         $this->checkAuth();
-        $this->render('novel_creation/cover_generator', ['title' => '封面描述 - 星夜阁']);
+        $this->render('novel_tools/cover_generator/index', ['title' => '封面描述 - 星夜阁']);
     }
 
     /**
@@ -491,7 +492,7 @@ class NovelCreationController
         
         $result = NovelAIService::generateCoverDescription($params);
         
-        $this->render('novel_creation/result', [
+        $this->render('novel_tools/result', [
             'title' => '封面描述结果 - 星夜阁',
             'tool_name' => '封面描述',
             'params' => $params,
@@ -506,7 +507,7 @@ class NovelCreationController
     public function shortStory()
     {
         $this->checkAuth();
-        $this->render('novel_creation/short_story', ['title' => '短篇创作 - 星夜阁']);
+        $this->render('novel_tools/short_story/index', ['title' => '短篇创作 - 星夜阁']);
     }
 
     /**
@@ -531,7 +532,7 @@ class NovelCreationController
         
         $result = NovelAIService::writeShortStory($params);
         
-        $this->render('novel_creation/result', [
+        $this->render('novel_tools/result', [
             'title' => '短篇创作结果 - 星夜阁',
             'tool_name' => '短篇创作',
             'params' => $params,
@@ -546,7 +547,7 @@ class NovelCreationController
     public function shortDrama()
     {
         $this->checkAuth();
-        $this->render('novel_creation/short_drama', ['title' => '短剧剧本 - 星夜阁']);
+        $this->render('novel_tools/short_drama/index', ['title' => '短剧剧本 - 星夜阁']);
     }
 
     /**
@@ -571,7 +572,7 @@ class NovelCreationController
         
         $result = NovelAIService::writeShortDrama($params);
         
-        $this->render('novel_creation/result', [
+        $this->render('novel_tools/result', [
             'title' => '短剧剧本结果 - 星夜阁',
             'tool_name' => '短剧剧本',
             'params' => $params,
@@ -613,7 +614,7 @@ class NovelCreationController
             }
         }
         
-        $this->render('novel_creation/editor', [
+        $this->render('novel/project/editor', [
             'title' => '智能编辑器 - 星夜阁',
             'novels' => $novels,
             'current_novel' => $currentNovel,
@@ -791,7 +792,7 @@ class NovelCreationController
             $outlines = NovelOutline::findByNovel($novelId, $outlineType);
         }
         
-        $this->render('novel_creation/outline_generator', [
+        $this->render('novel_tools/outline/index', [
             'title' => '大纲生成 - 星夜阁',
             'novels' => $novels,
             'novel_id' => $novelId,
@@ -823,7 +824,7 @@ class NovelCreationController
         
         $result = NovelAIService::generateOutline($params);
         
-        $this->render('novel_creation/outline_result', [
+        $this->render('novel_tools/outline/result', [
             'title' => '大纲生成结果 - 星夜阁',
             'tool_name' => '大纲生成',
             'params' => $params,
@@ -918,7 +919,7 @@ class NovelCreationController
             $relationships = NovelCharacter::getRelationships($novelId);
         }
         
-        $this->render('novel_creation/character_manager', [
+        $this->render('novel_tools/characters/manager', [
             'title' => '角色管理 - 星夜阁',
             'novels' => $novels,
             'novel_id' => $novelId,
@@ -936,7 +937,7 @@ class NovelCreationController
         
         $novelId = (int)($_GET['novel_id'] ?? 0);
         
-        $this->render('novel_creation/character_generator', [
+        $this->render('novel_tools/characters/generator', [
             'title' => 'AI角色生成 - 星夜阁',
             'novel_id' => $novelId
         ]);
@@ -963,7 +964,7 @@ class NovelCreationController
         
         $result = NovelAIService::generateCharacter($params);
         
-        $this->render('novel_creation/character_result', [
+        $this->render('novel_tools/characters/result', [
             'title' => '角色生成结果 - 星夜阁',
             'tool_name' => 'AI角色生成',
             'params' => $params,
@@ -1051,7 +1052,7 @@ class NovelCreationController
             $currentChapter = NovelChapter::find($chapterId);
         }
         
-        $this->render('novel_creation/character_consistency', [
+        $this->render('novel_tools/characters/consistency', [
             'title' => '角色一致性检查 - 星夜阁',
             'novels' => $novels,
             'novel_id' => $novelId,
@@ -1082,7 +1083,7 @@ class NovelCreationController
         
         $result = NovelAIService::checkCharacterConsistency($params);
         
-        $this->render('novel_creation/result', [
+        $this->render('novel_tools/result', [
             'title' => '角色一致性检查结果 - 星夜阁',
             'tool_name' => '角色一致性检查',
             'params' => $params,
@@ -1220,7 +1221,7 @@ class NovelCreationController
     {
         $userId = $this->checkAuth();
         
-        $this->render('novel_creation/worldview_generator', [
+        $this->render('novel_tools/worldview_generator/index', [
             'title' => '世界观生成器 - 小说创作工具',
         ]);
     }
@@ -1271,7 +1272,7 @@ class NovelCreationController
     {
         $userId = $this->checkAuth();
         
-        $this->render('novel_creation/brainstorm_generator', [
+        $this->render('novel_tools/brainstorm/index', [
             'title' => '脑洞生成器 - 小说创作工具',
         ]);
     }
