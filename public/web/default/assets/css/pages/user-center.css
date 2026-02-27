@@ -661,6 +661,13 @@ body.page-user-center {
     border-color: rgba(129, 140, 248, 0.85);
 }
 
+.mode-switch-divider {
+    height: 1px;
+    margin: 8px 12px;
+    background: rgba(148, 163, 184, 0.3);
+    border: none;
+}
+
 /* 顶部按钮文字：小号、单行，控制整体占位 */
 .top-bar > .icon-btn .icon-btn-text {
     font-size: 11px;

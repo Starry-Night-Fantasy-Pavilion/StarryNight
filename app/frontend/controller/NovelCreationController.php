@@ -13,28 +13,11 @@ use app\config\FrontendConfig;
 /**
  * 小说创作工具控制器
  * 处理智能编辑器、大纲生成、角色管理、章节分析等AI创作功能
+ * 使用用户中心布局（左侧菜单栏）
  */
-class NovelCreationController
+class NovelCreationController extends BaseUserController
 {
-    private $viewPath;
-
-    public function __construct()
-    {
-        $this->viewPath = dirname(__DIR__) . '/views';
-    }
-
-    /**
-     * 检查用户登录状态
-     */
-    private function checkAuth()
-    {
-        if (!isset($_SESSION['user_logged_in']) || !$_SESSION['user_logged_in']) {
-            $redirectUrl = $_SERVER['REQUEST_URI'] ?? '/novel_creation';
-            header('Location: /login?redirect=' . urlencode($redirectUrl));
-            exit;
-        }
-        return $_SESSION['user_id'];
-    }
+    protected $currentPage = 'novel_creation';
 
     /**
      * 检查用户是否有权限使用星夜创作引擎
@@ -55,49 +38,6 @@ class NovelCreationController
         $userId = $this->checkAuth();
         $permissionService = new StarryNightPermissionService();
         return $permissionService->getCurrentVersion($userId);
-    }
-
-    /**
-     * 渲染视图
-     */
-    private function render(string $view, array $data = [])
-    {
-        $viewFile = $this->viewPath . '/' . $view . '.php';
-        if (!file_exists($viewFile)) {
-            \app\services\ErrorHandler::handleNotFound('视图文件不存在');
-            return;
-        }
-        extract($data);
-        ob_start();
-        include $viewFile;
-        $content = ob_get_clean();
-        
-        // 使用layout
-        $title = $data['title'] ?? '小说创作工具';
-        $extra_css = $data['extra_css'] ?? [];
-        $extra_js = $data['extra_js'] ?? [];
-
-        // 添加小说创作页面的CSS / JS
-        // 统一为小说创作相关视图（novel_tools/* 和 novel/project/*）加载
-        if (strpos($view, 'novel_tools/') === 0 || strpos($view, 'novel/project/') === 0) {
-            $themeManager = new \app\services\ThemeManager();
-            $activeThemeId = $themeManager->getActiveThemeId('web') ?? FrontendConfig::THEME_DEFAULT;
-            $themeVersion = FrontendConfig::CACHE_VERSION;
-
-            // 通过当前启用的前台主题加载小说创作相关样式
-            $extra_css[] = FrontendConfig::getThemeCssUrl('pages/novel-creation.css', $activeThemeId, $themeVersion);
-
-            // 加载小说创作工具相关 JS 模块
-            $extra_js[] = FrontendConfig::getAssetUrl(
-                FrontendConfig::PATH_STATIC_FRONTEND_WEB_JS . '/modules/novel-creation.js',
-                $themeVersion
-            );
-        }
-
-        $data['extra_css'] = $extra_css;
-        $data['extra_js'] = $extra_js;
-        extract($data);
-        include $this->viewPath . '/layout.php';
     }
 
     /**
@@ -125,9 +65,20 @@ class NovelCreationController
                 return;
             }
 
+            // 获取用户最近的小说（最多2部）
+            $allNovels = Novel::findByUser($userId);
+            $recentNovels = array_slice($allNovels, 0, 2);
+            // 为每部小说获取章节数
+            foreach ($recentNovels as &$novel) {
+                $chapters = NovelChapter::findByNovel($novel['id']);
+                $novel['chapter_count'] = count($chapters);
+            }
+            
             $this->render('novel_tools/index', [
-                'title' => 'AI小说创作工具 - 星夜阁',
-                'available_version' => $availableVersion
+                'title' => '小说创作中心 - 星夜阁',
+                'available_version' => $availableVersion,
+                'user_id' => $userId,
+                'recent_novels' => $recentNovels
             ]);
         } catch (\Exception $e) {
             error_log('小说创作工具页面错误: ' . $e->getMessage());
@@ -468,6 +419,13 @@ class NovelCreationController
     public function coverGenerator()
     {
         $this->checkAuth();
+        if (!$this->checkStarryNightPermission('basic')) {
+            $this->render('novel_tools/no_permission', [
+                'title' => '无权限访问 - 星夜阁',
+                'message' => '您当前没有权限使用星夜创作引擎，请升级会员后使用。',
+            ]);
+            return;
+        }
         $this->render('novel_tools/cover_generator/index', ['title' => '封面描述 - 星夜阁']);
     }
 
@@ -477,6 +435,13 @@ class NovelCreationController
     public function doCoverGenerator()
     {
         $this->checkAuth();
+        if (!$this->checkStarryNightPermission('basic')) {
+            $this->render('novel_tools/no_permission', [
+                'title' => '无权限访问 - 星夜阁',
+                'message' => '您当前没有权限使用星夜创作引擎，请升级会员后使用。',
+            ]);
+            return;
+        }
         
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: /novel_creation/cover_generator');
@@ -547,6 +512,13 @@ class NovelCreationController
     public function shortDrama()
     {
         $this->checkAuth();
+        if (!$this->checkStarryNightPermission('basic')) {
+            $this->render('novel_tools/no_permission', [
+                'title' => '无权限访问 - 星夜阁',
+                'message' => '您当前没有权限使用星夜创作引擎，请升级会员后使用。',
+            ]);
+            return;
+        }
         $this->render('novel_tools/short_drama/index', ['title' => '短剧剧本 - 星夜阁']);
     }
 
@@ -556,6 +528,13 @@ class NovelCreationController
     public function doShortDrama()
     {
         $this->checkAuth();
+        if (!$this->checkStarryNightPermission('basic')) {
+            $this->render('novel_tools/no_permission', [
+                'title' => '无权限访问 - 星夜阁',
+                'message' => '您当前没有权限使用星夜创作引擎，请升级会员后使用。',
+            ]);
+            return;
+        }
         
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: /novel_creation/short_drama');

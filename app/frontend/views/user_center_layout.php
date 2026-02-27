@@ -117,6 +117,12 @@
     <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getThemeCssUrl('shared/dashboard-v2-cards.css', $activeThemeId, $themeVersion)) ?>">
     <!-- 用户中心页面专用样式 -->
     <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getThemeCssUrl('pages/user-center.css', $activeThemeId, $themeVersion)) ?>">
+    <!-- 创作中心页面样式（小说/动漫/音乐） -->
+    <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getThemeCssUrl('pages/creation-center.css', $activeThemeId, $themeVersion)) ?>">
+    <?php if ($currentPage === 'novel_creation'): ?>
+    <link rel="stylesheet" href="<?= htmlspecialchars(FrontendConfig::getThemeCssUrl('pages/novel-creation.css', $activeThemeId, $themeVersion)) ?>">
+    <script src="<?= htmlspecialchars(FrontendConfig::getAssetUrl(FrontendConfig::PATH_STATIC_FRONTEND_WEB_JS . '/modules/novel-creation.js', $themeVersion)) ?>"></script>
+    <?php endif; ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- 通知弹窗 JS -->
     <script src="<?= htmlspecialchars(FrontendConfig::getAssetUrl(FrontendConfig::PATH_STATIC_FRONTEND_WEB_JS . '/modules/notice-modal.js', $themeVersion)) ?>"></script>
@@ -230,8 +236,52 @@
         <div class="sidebar-menu-wrapper">
             <div class="sidebar-menu-card">
                 <nav>
+                <!-- 创作入口（所有页面都显示） -->
                 <div class="menu-section">
                     <div class="menu-section-title">创作</div>
+                    <?php if ($currentPage === 'novel' || $currentPage === 'novel_creation'): ?>
+                    <a href="/novel" class="menu-item <?= ($currentPage === 'novel') ? 'active' : '' ?>">
+                        <?= icon('book', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">我的小说<?= $isFestive ? ' 🏮' : '' ?></span>
+                    </a>
+                    <a href="/novel_creation" class="menu-item <?= ($currentPage === 'novel_creation') ? 'active' : '' ?>">
+                        <?= icon('pen-tool', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">小说工作台</span>
+                    </a>
+                    <?php endif; ?>
+                    <?php if ($currentPage === 'ai_music'): ?>
+                    <a href="/ai_music" class="menu-item active">
+                        <?= icon('music', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">AI音乐创作</span>
+                    </a>
+                    <a href="/music/project/list" class="menu-item">
+                        <?= icon('list', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">我的音乐项目</span>
+                    </a>
+                    <?php endif; ?>
+                    <?php if ($currentPage === 'anime_production'): ?>
+                    <a href="/anime_production" class="menu-item active">
+                        <?= icon('video', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">动漫制作</span>
+                    </a>
+                    <a href="/anime/project/list" class="menu-item">
+                        <?= icon('list', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">我的动漫项目</span>
+                    </a>
+                    <?php endif; ?>
+                    <?php if ($currentPage === 'general_features'): ?>
+                    <a href="/general_features" class="menu-item active">
+                        <?= icon('settings', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">通用功能</span>
+                    </a>
+                    <?php endif; ?>
+                    <?php if ($currentPage === 'community'): ?>
+                    <a href="/community" class="menu-item active">
+                        <?= icon('users', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">社区</span>
+                    </a>
+                    <?php endif; ?>
+                    <?php if (!in_array($currentPage, ['novel', 'novel_creation', 'ai_music', 'anime_production', 'general_features', 'community'])): ?>
                     <a href="/novel" class="menu-item <?= ($currentPage === 'novel') ? 'active' : '' ?>">
                         <?= icon('book', ['width' => '20', 'height' => '20']) ?>
                         <span class="nav-text">我的小说<?= $isFestive ? ' 🏮' : '' ?></span>
@@ -248,8 +298,240 @@
                         <?= icon('video', ['width' => '20', 'height' => '20']) ?>
                         <span class="nav-text">动漫制作</span>
                     </a>
+                    <?php endif; ?>
                 </div>
 
+                <?php if ($currentPage === 'novel_creation'): ?>
+                <!-- 小说创作中心专用菜单 -->
+                <div class="menu-section">
+                    <div class="menu-section-title">策划 & 设定</div>
+                    <a href="/novel_creation/outline_generator" class="menu-item">
+                        <?= icon('list', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">生成大纲</span>
+                    </a>
+                    <a href="/novel_creation/character_manager" class="menu-item">
+                        <?= icon('users', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">角色管理</span>
+                    </a>
+                    <a href="/knowledge" class="menu-item">
+                        <?= icon('database', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">世界观 / 设定库</span>
+                    </a>
+                    <a href="/novel_creation/character_consistency" class="menu-item">
+                        <?= icon('check-circle', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">一致性检查</span>
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-section-title">写作助手</div>
+                    <a href="/novel_creation/editor" class="menu-item">
+                        <?= icon('edit-3', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">智能续写</span>
+                    </a>
+                    <a href="/novel_creation/editor" class="menu-item">
+                        <?= icon('refresh-cw', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">改写 / 扩写 / 润色</span>
+                    </a>
+                    <a href="/novel_creation/chapter_analysis" class="menu-item">
+                        <?= icon('bar-chart-2', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">章节分析</span>
+                    </a>
+                    <a href="/novel_creation/book_analysis" class="menu-item">
+                        <?= icon('book-open', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">拆书仿写</span>
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-section-title">灵感小工具</div>
+                    <a href="/novel_creation/opening_generator" class="menu-item">
+                        <?= icon('star', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">黄金开篇生成</span>
+                    </a>
+                    <a href="/novel_creation/title_generator" class="menu-item">
+                        <?= icon('type', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">书名生成</span>
+                    </a>
+                    <a href="/novel_creation/description_generator" class="menu-item">
+                        <?= icon('file-text', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">简介生成</span>
+                    </a>
+                    <a href="/novel_creation/cheat_generator" class="menu-item">
+                        <?= icon('zap', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">金手指设定</span>
+                    </a>
+                    <a href="/novel_creation/name_generator" class="menu-item">
+                        <?= icon('tag', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">名字生成</span>
+                    </a>
+                    <a href="/novel_creation/short_story" class="menu-item">
+                        <?= icon('book-open', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">短篇创作</span>
+                    </a>
+                    <a href="/novel_creation/short_drama" class="menu-item">
+                        <?= icon('film', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">短剧剧本</span>
+                    </a>
+                </div>
+                <?php endif; ?>
+
+                <?php if ($currentPage === 'ai_music'): ?>
+                <!-- 音乐创作中心专用菜单 -->
+                <div class="menu-section">
+                    <div class="menu-section-title">灵感 & 歌词</div>
+                    <a href="/music/project/lyrics_generator" class="menu-item">
+                        <?= icon('file-text', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">歌词生成</span>
+                    </a>
+                    <a href="/music/project/lyrics_upload" class="menu-item">
+                        <?= icon('upload', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">歌词上传 & 情感分析</span>
+                    </a>
+                    <a href="/music/project/inspiration" class="menu-item">
+                        <?= icon('lightbulb', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">主题 / 情绪灵感板</span>
+                    </a>
+                    <a href="/music/project/sheet_upload" class="menu-item">
+                        <?= icon('music', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">曲谱上传识别</span>
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-section-title">旋律 & 编曲</div>
+                    <a href="/music/project/melody_generator" class="menu-item">
+                        <?= icon('music', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">旋律生成</span>
+                    </a>
+                    <a href="/music/project/humming_recognition" class="menu-item">
+                        <?= icon('mic', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">哼唱识别成旋律</span>
+                    </a>
+                    <a href="/music/project/auto_arrangement" class="menu-item">
+                        <?= icon('layers', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">自动编曲</span>
+                    </a>
+                    <a href="/music/project/chord_suggestion" class="menu-item">
+                        <?= icon('sliders', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">和弦进行优化</span>
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-section-title">音轨 & 人声</div>
+                    <a href="/music/project/multi_track" class="menu-item">
+                        <?= icon('sliders', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">多轨编辑器</span>
+                    </a>
+                    <a href="/music/project/vocal_synthesis" class="menu-item">
+                        <?= icon('mic', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">AI 歌声合成</span>
+                    </a>
+                    <a href="/music/project/vocal_tuning" class="menu-item">
+                        <?= icon('settings', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">人声修音 / 降噪</span>
+                    </a>
+                    <a href="/music/project/stem_separation" class="menu-item">
+                        <?= icon('git-branch', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">AI 音轨分离 / 融合</span>
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-section-title">混音 & 母带 & 导出</div>
+                    <a href="/music/project/auto_mix" class="menu-item">
+                        <?= icon('sliders', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">自动混音</span>
+                    </a>
+                    <a href="/music/project/mastering" class="menu-item">
+                        <?= icon('star', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">自动母带</span>
+                    </a>
+                    <a href="/music/project/export" class="menu-item">
+                        <?= icon('download', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">导出设置</span>
+                    </a>
+                    <a href="/music/project/mv_generator" class="menu-item">
+                        <?= icon('video', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">生成音乐视频</span>
+                    </a>
+                </div>
+                <?php endif; ?>
+
+                <?php if ($currentPage === 'anime_production'): ?>
+                <!-- 动漫创作中心专用菜单 -->
+                <div class="menu-section">
+                    <div class="menu-section-title">企划 & 结构</div>
+                    <a href="/anime/project/create" class="menu-item">
+                        <?= icon('file-text', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">企划方案生成</span>
+                    </a>
+                    <a href="/anime/project/script_generator" class="menu-item">
+                        <?= icon('edit', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">分集脚本生成</span>
+                    </a>
+                    <a href="/anime/project/storyline" class="menu-item">
+                        <?= icon('git-branch', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">主线 / 支线管理</span>
+                    </a>
+                    <a href="/anime/project/foreshadowing" class="menu-item">
+                        <?= icon('link', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">伏笔管理</span>
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-section-title">视觉设定</div>
+                    <a href="/anime/project/character_design" class="menu-item">
+                        <?= icon('user', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">角色设计</span>
+                    </a>
+                    <a href="/anime/project/scene_design" class="menu-item">
+                        <?= icon('image', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">场景设计</span>
+                    </a>
+                    <a href="/anime/project/storyboard" class="menu-item">
+                        <?= icon('film', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">分镜生成</span>
+                    </a>
+                    <a href="/anime/project/action_suggestion" class="menu-item">
+                        <?= icon('zap', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">动作 / 表情建议</span>
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-section-title">动画 & 音视频</div>
+                    <a href="/anime/project/keyframe" class="menu-item">
+                        <?= icon('image', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">动画关键帧方案</span>
+                    </a>
+                    <a href="/anime/project/audio" class="menu-item">
+                        <?= icon('music', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">配音 / 音效 / BGM方案</span>
+                    </a>
+                    <a href="/anime/project/video_synthesis" class="menu-item">
+                        <?= icon('video', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">视频合成方案</span>
+                    </a>
+                    <a href="/anime/project/review" class="menu-item">
+                        <?= icon('check-circle', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">审核与发布配置</span>
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-section-title">短剧快速生成</div>
+                    <a href="/anime/project/quick_generate" class="menu-item">
+                        <?= icon('zap', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">一键生成短剧</span>
+                    </a>
+                </div>
+                <?php endif; ?>
+
+                <?php if (!in_array($currentPage, ['novel_creation', 'ai_music', 'anime_production'])): ?>
+                <!-- 其他页面的通用菜单 -->
                 <div class="menu-section">
                     <div class="menu-section-title">小说助手</div>
                     <a href="/novel_creation/editor" class="menu-item">
@@ -361,7 +643,52 @@
                         <span class="nav-text">排行榜</span>
                     </a>
                 </div>
+                <?php endif; ?>
 
+                <?php if ($currentPage === 'general_features'): ?>
+                <!-- 通用功能专用菜单 -->
+                <div class="menu-section">
+                    <div class="menu-section-title">账户与配置</div>
+                    <a href="/membership" class="menu-item">
+                        <?= icon('award', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">会员 & 套餐</span>
+                    </a>
+                    <a href="/storage" class="menu-item">
+                        <?= icon('hard-drive', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">云存储空间</span>
+                    </a>
+                    <a href="/user_center/profile" class="menu-item">
+                        <?= icon('user', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">个人中心</span>
+                    </a>
+                    <a href="/user_center/starry_night_config" class="menu-item">
+                        <?= icon('sliders', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">引擎配置</span>
+                    </a>
+                </div>
+                <?php endif; ?>
+
+                <?php if ($currentPage === 'community'): ?>
+                <!-- 社区专用菜单 -->
+                <div class="menu-section">
+                    <div class="menu-section-title">社区功能</div>
+                    <a href="/announcement" class="menu-item">
+                        <?= icon('megaphone', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">站内公告</span>
+                    </a>
+                    <a href="/crowdfunding" class="menu-item">
+                        <?= icon('heart', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">创作众筹</span>
+                    </a>
+                    <a href="/feedback" class="menu-item">
+                        <?= icon('message-square', ['width' => '20', 'height' => '20']) ?>
+                        <span class="nav-text">意见反馈</span>
+                    </a>
+                </div>
+                <?php endif; ?>
+
+                <?php if (!in_array($currentPage, ['general_features', 'community'])): ?>
+                <!-- 通用功能菜单（所有页面都显示，除了通用功能和社区页面） -->
                 <div class="menu-section">
                     <div class="menu-section-title">账户与配置</div>
                     <a href="/membership" class="menu-item <?= ($currentPage === 'membership') ? 'active' : '' ?>">
@@ -397,6 +724,7 @@
                         <span class="nav-text">意见反馈</span>
                     </a>
                 </div>
+                <?php endif; ?>
                 </nav>
             </div>
         </div>
@@ -409,7 +737,7 @@
                     <span class="mode-toggle-icon">
                         <?= icon('grid', ['width' => '18', 'height' => '18']) ?>
                     </span>
-                    <span class="mode-toggle-text">创作中心</span>
+                    <span class="mode-toggle-text">创作模式</span>
                 </button>
                 <button class="mobile-menu-toggle" id="mobileMenuToggle">
                     <span></span>
@@ -423,11 +751,15 @@
                     <a href="/ai_music" class="mode-switch-item">
                         <span class="mode-switch-item-label">音乐创作</span>
                     </a>
-                    <a href="/novel_creation/short_drama" class="mode-switch-item">
-                        <span class="mode-switch-item-label">漫剧创作</span>
+                    <a href="/anime_production" class="mode-switch-item">
+                        <span class="mode-switch-item-label">动漫制作</span>
                     </a>
-                    <a href="/novel_creation/cover_generator" class="mode-switch-item">
-                        <span class="mode-switch-item-label">图片生成</span>
+                    <div class="mode-switch-divider"></div>
+                    <a href="/general_features" class="mode-switch-item">
+                        <span class="mode-switch-item-label">通用功能</span>
+                    </a>
+                    <a href="/community" class="mode-switch-item">
+                        <span class="mode-switch-item-label">社区</span>
                     </a>
                 </div>
             </div>

@@ -363,9 +363,17 @@ $router->post('/novel_creation/brainstorm_generator', ['app\frontend\controller\
 
 // 前端AI音乐
 $router->get('/ai_music', ['app\frontend\controller\AiMusicController', 'index']);
+$router->get('/music/project/list', ['app\frontend\controller\AiMusicController', 'projectList']);
 
 // 前端动画制作
 $router->get('/anime_production', ['app\frontend\controller\AnimeProductionController', 'index']);
+$router->get('/anime/project/list', ['app\frontend\controller\AnimeProductionController', 'projectList']);
+
+// 前端通用功能
+$router->get('/general_features', ['app\frontend\controller\GeneralFeaturesController', 'index']);
+
+// 前端社区
+$router->get('/community', ['app\frontend\controller\CommunityController', 'index']);
 
 // 前端知识库
 $router->get('/knowledge', ['app\frontend\controller\KnowledgeController', 'index']);

@@ -1,6 +1,9 @@
 <?php
 use app\models\Setting;
 $siteName = Setting::get('site_name') ?: (string)get_env('APP_NAME', '星夜阁');
+
+// 检查当前登录状态（支持 Session + 30天自动登录）
+$isLoggedIn = !empty($_SESSION['user_logged_in']) && !empty($_SESSION['user_id']);
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -36,7 +39,7 @@ $siteName = Setting::get('site_name') ?: (string)get_env('APP_NAME', '星夜阁'
 
                 <div class="sidebar-menu-card">
                     <div class="menu-section">
-                        <div class="menu-section-title">创作中心</div>
+                        <div class="menu-section-title">作品与创作</div>
                         <a href="/novel" class="menu-item">
                             <span class="menu-item-label">我的小说</span>
                         </a>
@@ -156,9 +159,15 @@ $siteName = Setting::get('site_name') ?: (string)get_env('APP_NAME', '星夜阁'
                     <div class="frontend-header-subtitle">以「后台管理」视角总览你的创作与资产，快速进入常用功能</div>
                 </div>
                 <div class="frontend-header-actions">
-                    <a href="/login" class="shortcut-link">登录</a>
-                    <a href="/register" class="shortcut-link">注册</a>
-                    <button class="btn-primary" onclick="location.href='/novel_creation'">开始创作</button>
+                    <?php if ($isLoggedIn): ?>
+                        <a href="/user_center" class="shortcut-link">进入用户中心</a>
+                        <a href="/novel_creation" class="shortcut-link">继续创作</a>
+                        <button class="btn-primary" onclick="location.href='/novel_creation'">开始创作</button>
+                    <?php else: ?>
+                        <a href="/login" class="shortcut-link">登录</a>
+                        <a href="/register" class="shortcut-link">注册</a>
+                        <button class="btn-primary" onclick="location.href='/novel_creation'">免费开始</button>
+                    <?php endif; ?>
                 </div>
             </header>
 

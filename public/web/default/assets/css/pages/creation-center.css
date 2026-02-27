@@ -1,0 +1,494 @@
+/**
+ * 创作中心页面样式 - 小说/动漫/音乐创作中心
+ * 与用户中心主题一致的液态玻璃风格
+ */
+
+/* ===== 创作中心通用容器 ===== */
+.page-novel-creation,
+.anime-center-page,
+.music-center-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+/* 创作中心内的 container */
+.page-novel-creation .container,
+.anime-center-page .container,
+.music-center-page .container {
+    max-width: 100%;
+}
+
+/* 顶部区域 flex 布局 */
+.page-novel-creation .center-header-row,
+.anime-center-page .center-header-row,
+.music-center-page .center-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.page-novel-creation .center-header-row .center-header-btns,
+.anime-center-page .center-header-row .center-header-btns,
+.music-center-page .center-header-row .center-header-btns {
+    display: flex;
+    gap: 12px;
+}
+
+/* ===== 顶部区域 ===== */
+.page-novel-creation .page-header,
+.anime-center-page .page-header,
+.music-center-page .page-header {
+    margin-bottom: 32px;
+    padding: 0;
+}
+
+.page-novel-creation .page-header .container,
+.anime-center-page .page-header .container,
+.music-center-page .page-header .container {
+    max-width: 100%;
+}
+
+.page-novel-creation .page-header h1,
+.anime-center-page .page-header h1,
+.music-center-page .page-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 8px;
+    text-shadow: 0 0 20px rgba(94, 234, 212, 0.2);
+}
+
+.page-novel-creation .page-header p,
+.anime-center-page .page-header p,
+.music-center-page .page-header p {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* ===== 按钮组 ===== */
+.page-novel-creation .btn,
+.anime-center-page .btn,
+.music-center-page .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.page-novel-creation .btn-primary,
+.anime-center-page .btn-primary,
+.music-center-page .btn-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+.page-novel-creation .btn-primary:hover,
+.anime-center-page .btn-primary:hover,
+.music-center-page .btn-primary:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    transform: translateY(-1px);
+}
+
+.page-novel-creation .btn-outline,
+.anime-center-page .btn-outline,
+.music-center-page .btn-outline {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.page-novel-creation .btn-outline:hover,
+.anime-center-page .btn-outline:hover,
+.music-center-page .btn-outline:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(148, 163, 184, 0.6);
+}
+
+.page-novel-creation .btn-sm,
+.anime-center-page .btn-sm,
+.music-center-page .btn-sm {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+}
+
+/* ===== 区块标题 ===== */
+.page-novel-creation .tool-section h2,
+.anime-center-page .tool-section h2,
+.music-center-page .tool-section h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+/* ===== 工具卡片网格 ===== */
+.page-novel-creation .tool-grid,
+.anime-center-page .tool-grid,
+.music-center-page .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* ===== 工具卡片 ===== */
+.page-novel-creation .tool-card,
+.anime-center-page .tool-card,
+.music-center-page .tool-card {
+    background: radial-gradient(circle at top left, rgba(96, 165, 250, 0.12), rgba(15, 23, 42, 0.85));
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 12px;
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+    display: block;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.4);
+}
+
+.page-novel-creation .tool-card:hover,
+.anime-center-page .tool-card:hover,
+.music-center-page .tool-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.5);
+    border-color: rgba(96, 165, 250, 0.35);
+    background: radial-gradient(circle at top left, rgba(96, 165, 250, 0.18), rgba(15, 23, 42, 0.9));
+}
+
+.page-novel-creation .tool-card .tool-icon,
+.anime-center-page .tool-card .tool-icon,
+.music-center-page .tool-card .tool-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.page-novel-creation .tool-card h3,
+.anime-center-page .tool-card h3,
+.music-center-page .tool-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 8px;
+}
+
+.page-novel-creation .tool-card p,
+.anime-center-page .tool-card p,
+.music-center-page .tool-card p {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ===== 项目卡片（最近在写 / 最近项目） ===== */
+.page-novel-creation .tool-section .card,
+.anime-center-page .tool-section .card,
+.music-center-page .tool-section .card {
+    background: radial-gradient(circle at top left, rgba(96, 165, 250, 0.15), rgba(15, 23, 42, 0.9));
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.4);
+    transition: all 0.2s ease;
+}
+
+.page-novel-creation .tool-section .card:hover,
+.anime-center-page .tool-section .card:hover,
+.music-center-page .tool-section .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.5);
+    border-color: rgba(96, 165, 250, 0.35);
+}
+
+.page-novel-creation .tool-section .card img,
+.anime-center-page .tool-section .card img,
+.music-center-page .tool-section .card img {
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.page-novel-creation .tool-section .card h3,
+.anime-center-page .tool-section .card h3,
+.music-center-page .tool-section .card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 8px;
+}
+
+.page-novel-creation .tool-section .card h3 a,
+.anime-center-page .tool-section .card h3 a,
+.music-center-page .tool-section .card h3 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.page-novel-creation .tool-section .card h3 a:hover,
+.anime-center-page .tool-section .card h3 a:hover,
+.music-center-page .tool-section .card h3 a:hover {
+    color: #60a5fa;
+}
+
+/* ===== 徽章 ===== */
+.page-novel-creation .badge,
+.anime-center-page .badge,
+.music-center-page .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: rgba(96, 165, 250, 0.25);
+    color: #93c5fd;
+}
+
+.badge-anime {
+    background: rgba(255, 165, 0, 0.25) !important;
+    color: #fbbf24 !important;
+}
+
+/* ===== 短剧大卡 ===== */
+.tool-grid-single {
+    grid-template-columns: 1fr !important;
+}
+
+.tool-card-large {
+    padding: 32px !important;
+    text-align: center;
+}
+
+.tool-icon-large {
+    font-size: 48px !important;
+    margin-bottom: 16px !important;
+}
+
+.tool-card-large h3 {
+    font-size: 1.25rem !important;
+    margin-bottom: 12px !important;
+}
+
+.tool-card-large p {
+    font-size: 0.95rem !important;
+    opacity: 0.9 !important;
+}
+
+/* ===== 音乐项目进度 ===== */
+.card-progress {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 12px;
+}
+
+/* ===== 区块间距 ===== */
+.page-novel-creation .tool-section,
+.anime-center-page .tool-section,
+.music-center-page .tool-section {
+    margin-bottom: 40px;
+}
+
+/* ===== 项目卡片网格（最近项目） ===== */
+.center-project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* 项目卡片内元素 */
+.center-project-grid .card-cover {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.center-project-grid .card-meta {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 12px;
+}
+
+.center-project-grid .card-meta span {
+    margin-left: 8px;
+}
+
+.center-project-grid .card-meta span:first-of-type {
+    margin-left: 0;
+}
+
+.center-project-grid .card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* ===== 短剧快速通道大卡 ===== */
+.anime-center-page .tool-card .tool-icon[style*="48px"] {
+    font-size: 48px !important;
+    margin-bottom: 16px;
+}
+
+/* ===== 项目列表页（我的小说/动漫/音乐） ===== */
+.novel-list-page,
+.anime-list-page,
+.music-list-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.list-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.novel-list-page h1,
+.anime-list-page h1,
+.music-list-page h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.list-project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.novel-list-page .card,
+.anime-list-page .card,
+.music-list-page .card {
+    background: radial-gradient(circle at top left, rgba(96, 165, 250, 0.12), rgba(15, 23, 42, 0.9));
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.4);
+}
+
+.novel-list-page .card:hover,
+.anime-list-page .card:hover,
+.music-list-page .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.5);
+    border-color: rgba(96, 165, 250, 0.35);
+}
+
+.card-cover-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+.novel-list-page .card-body,
+.anime-list-page .card-body,
+.music-list-page .card-body {
+    padding: 16px;
+}
+
+.novel-list-page .card h3,
+.anime-list-page .card h3,
+.music-list-page .card h3 {
+    font-size: 1.1rem;
+    margin: 0 0 8px;
+    color: var(--text-primary);
+}
+
+.novel-list-page .card h3 a,
+.anime-list-page .card h3 a,
+.music-list-page .card h3 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.novel-list-page .card h3 a:hover,
+.anime-list-page .card h3 a:hover,
+.music-list-page .card h3 a:hover {
+    color: #60a5fa;
+}
+
+.card-desc {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 12px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge-status {
+    background: rgba(0, 0, 0, 0.25) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.list-project-grid .card-meta span {
+    margin-left: 8px;
+}
+
+.list-project-grid .card-meta span:first-child {
+    margin-left: 0;
+}
+
+/* 空状态卡片 */
+.empty-state-card {
+    text-align: center;
+    padding: 48px !important;
+}
+
+.empty-state-card p {
+    opacity: 0.8;
+    margin-bottom: 16px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 768px) {
+    .page-novel-creation,
+    .anime-center-page,
+    .music-center-page {
+        padding: 16px;
+    }
+
+    .page-novel-creation .page-header > .container > div,
+    .anime-center-page .page-header > .container > div,
+    .music-center-page .page-header > .container > div {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 16px;
+    }
+
+    .page-novel-creation .tool-grid,
+    .anime-center-page .tool-grid,
+    .music-center-page .tool-grid {
+        grid-template-columns: 1fr;
+    }
+}

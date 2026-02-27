@@ -1,0 +1,74 @@
+[2026-02-28 05:43:34] [error] Uncaught exception: Cannot call constructor in G:\wwwroot\198.18.0.1\app\frontend\controller\AiMusicController.php:29
+[2026-02-28 06:34:35] [error] Warning: Undefined array key "permissions_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:34
+[2026-02-28 06:34:35] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:34
+[2026-02-28 06:34:35] [error] Warning: Undefined array key "quota_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:38
+[2026-02-28 06:34:35] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:38
+[2026-02-28 06:34:35] [error] Warning: Undefined array key "benefits_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:42
+[2026-02-28 06:34:35] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:42
+[2026-02-28 06:34:40] [error] Warning: Undefined array key "permissions_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:34
+[2026-02-28 06:34:40] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:34
+[2026-02-28 06:34:40] [error] Warning: Undefined array key "quota_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:38
+[2026-02-28 06:34:40] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:38
+[2026-02-28 06:34:40] [error] Warning: Undefined array key "benefits_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:42
+[2026-02-28 06:34:40] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:42
+[2026-02-28 06:34:43] [error] Warning: Undefined array key "permissions_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:34
+[2026-02-28 06:34:43] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:34
+[2026-02-28 06:34:43] [error] Warning: Undefined array key "quota_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:38
+[2026-02-28 06:34:43] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:38
+[2026-02-28 06:34:43] [error] Warning: Undefined array key "benefits_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:42
+[2026-02-28 06:34:43] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:42
+[2026-02-28 06:34:51] [error] Warning: Undefined array key "permissions_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:34
+[2026-02-28 06:34:51] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:34
+[2026-02-28 06:34:51] [error] Warning: Undefined array key "quota_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:38
+[2026-02-28 06:34:51] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:38
+[2026-02-28 06:34:51] [error] Warning: Undefined array key "benefits_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:42
+[2026-02-28 06:34:51] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:42
+[2026-02-28 06:34:53] [error] Warning: Undefined array key "permissions_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:34
+[2026-02-28 06:34:53] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:34
+[2026-02-28 06:34:53] [error] Warning: Undefined array key "quota_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:38
+[2026-02-28 06:34:53] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:38
+[2026-02-28 06:34:53] [error] Warning: Undefined array key "benefits_json" in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:42
+[2026-02-28 06:34:53] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\admin\views\membership_finance\membership_level_edit.php:42
+[2026-02-28 06:41:55] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:177
+[2026-02-28 06:41:55] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:178
+[2026-02-28 06:41:56] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:540
+[2026-02-28 06:41:56] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:541
+[2026-02-28 06:43:52] [error] Warning: Undefined variable $novel in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:7
+[2026-02-28 06:43:52] [error] Warning: Trying to access array offset on value of type null in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:7
+[2026-02-28 06:43:52] [error] Warning: Undefined variable $novel in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:12
+[2026-02-28 06:43:52] [error] Warning: Trying to access array offset on value of type null in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:12
+[2026-02-28 06:43:52] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:12
+[2026-02-28 06:43:52] [error] Warning: Undefined variable $novel in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:387
+[2026-02-28 06:43:52] [error] Warning: Trying to access array offset on value of type null in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:387
+[2026-02-28 06:44:11] [error] Warning: Undefined variable $novel in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:7
+[2026-02-28 06:44:11] [error] Warning: Trying to access array offset on value of type null in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:7
+[2026-02-28 06:44:11] [error] Warning: Undefined variable $novel in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:12
+[2026-02-28 06:44:11] [error] Warning: Trying to access array offset on value of type null in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:12
+[2026-02-28 06:44:11] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:12
+[2026-02-28 06:44:11] [error] Warning: Undefined variable $novel in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:387
+[2026-02-28 06:44:11] [error] Warning: Trying to access array offset on value of type null in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:387
+[2026-02-28 06:45:19] [error] Uncaught exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'engine_version' in 'where clause' in G:\wwwroot\198.18.0.1\app\services\StarryNightPermissionService.php:40
+[2026-02-28 06:47:27] [error] Uncaught exception: syntax error, unexpected token "public" in G:\wwwroot\198.18.0.1\app\frontend\controller\KnowledgeController.php:144
+[2026-02-28 06:47:39] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:177
+[2026-02-28 06:47:39] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:178
+[2026-02-28 06:47:39] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:805
+[2026-02-28 06:47:39] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:806
+[2026-02-28 06:47:55] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:177
+[2026-02-28 06:47:55] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:178
+[2026-02-28 06:47:55] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:805
+[2026-02-28 06:47:55] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:806
+[2026-02-28 06:49:54] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:177
+[2026-02-28 06:49:54] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:178
+[2026-02-28 06:49:54] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:805
+[2026-02-28 06:49:54] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:806
+[2026-02-28 06:50:11] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:177
+[2026-02-28 06:50:11] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:178
+[2026-02-28 06:50:11] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:805
+[2026-02-28 06:50:11] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:806
+[2026-02-28 06:59:12] [error] Warning: Undefined variable $novel in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:7
+[2026-02-28 06:59:12] [error] Warning: Trying to access array offset on value of type null in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:7
+[2026-02-28 06:59:12] [error] Warning: Undefined variable $novel in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:12
+[2026-02-28 06:59:12] [error] Warning: Trying to access array offset on value of type null in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:12
+[2026-02-28 06:59:12] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:12
+[2026-02-28 06:59:12] [error] Warning: Undefined variable $novel in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:387
+[2026-02-28 06:59:12] [error] Warning: Trying to access array offset on value of type null in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:387

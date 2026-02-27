@@ -1,0 +1,72 @@
+{
+  "version": "1.0.0",
+  "skills": [
+    {
+      "name": "backend-patterns",
+      "path": "backend-patterns/SKILL.md",
+      "description": "Backend architecture patterns, API design, database optimization, and server-side best practices"
+    },
+    {
+      "name": "code-reviewer",
+      "path": "code-reviewer/SKILL.md",
+      "description": "Code review and quality assurance skills"
+    },
+    {
+      "name": "coding-standards",
+      "path": "coding-standards/SKILL.md",
+      "description": "Universal coding standards, best practices, and patterns"
+    },
+    {
+      "name": "frontend-patterns",
+      "path": "frontend-patterns/SKILL.md",
+      "description": "Frontend development patterns for React, Next.js, state management, and UI best practices"
+    },
+    {
+      "name": "frontend-ui-ux",
+      "path": "frontend-ui-ux/SKILL.md",
+      "description": "Frontend UI/UX design patterns and best practices"
+    },
+    {
+      "name": "full-stack",
+      "path": "full-stack/SKILL.md",
+      "description": "Full-stack development skill that coordinates backend and frontend changes together"
+    },
+    {
+      "name": "fullstack-developer",
+      "path": "fullstack-developer/SKILL.md",
+      "description": "Modern web development expertise covering React, Node.js, databases, and full-stack architecture"
+    },
+    {
+      "name": "interaction-design",
+      "path": "interaction-design/SKILL.md",
+      "description": "Interaction design patterns and micro-interactions"
+    },
+    {
+      "name": "liquid-glass-design",
+      "path": "liquid-glass-design/SKILL.md",
+      "description": "Liquid glass design patterns and effects"
+    },
+    {
+      "name": "multimodal-gen",
+      "path": "multimodal-gen/SKILL.md",
+      "description": "Multimodal generation capabilities"
+    },
+    {
+      "name": "security-review",
+      "path": "security-review/SKILL.md",
+      "description": "Security review and best practices for authentication, input validation, and API security"
+    },
+    {
+      "name": "sql-optimization",
+      "path": "sql-optimization/SKILL.md",
+      "description": "SQL query optimization and database performance tuning"
+    },
+    {
+      "name": "sqlmap-database-penetration-testing",
+      "path": "sqlmap-database-penetration-testing/SKILL.md",
+      "description": "Database penetration testing and security assessment"
+    }
+  ],
+  "installed_at": "2026-02-28T07:01:24Z",
+  "total_skills": 13
+}

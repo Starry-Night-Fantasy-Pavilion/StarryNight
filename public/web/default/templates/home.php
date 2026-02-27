@@ -6,6 +6,14 @@ $siteName = Setting::get('site_name') ?: (string)get_env('APP_NAME', '星夜阁'
 $siteLogo = Setting::get('site_logo');
 $isFestive = FrontendConfig::isFestiveSeason();
 
+// 确保根据 remember_login Cookie 恢复“保持30天登录”的会话
+if (function_exists('frontend_auto_login_from_cookie')) {
+    frontend_auto_login_from_cookie();
+}
+
+// 当前登录状态
+$isLoggedIn = !empty($_SESSION['user_logged_in']) && !empty($_SESSION['user_id']);
+
 // 从后台获取首页设置
 $homeSettings = Setting::getMany([
     // 英雄区域
@@ -76,8 +84,13 @@ $socialBilibili = $homeSettings['site_social_bilibili'] ?: '#';
                 <a href="#about" class="nav-link">关于我们</a>
             </nav>
             <div class="nav-actions">
-                <a href="/login" class="btn btn-outline">登录</a>
-                <a href="/register" class="btn btn-primary">免费试用</a>
+                <?php if ($isLoggedIn): ?>
+                    <a href="/user_center" class="btn btn-outline">用户中心</a>
+                    <a href="/novel_creation" class="btn btn-primary">进入创作工作台</a>
+                <?php else: ?>
+                    <a href="/login" class="btn btn-outline">登录</a>
+                    <a href="/register" class="btn btn-primary">免费试用</a>
+                <?php endif; ?>
             </div>
             <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="打开菜单">
                 <i class="fas fa-bars"></i>
@@ -91,8 +104,13 @@ $socialBilibili = $homeSettings['site_social_bilibili'] ?: '#';
             <a href="#pricing" class="nav-link">价格方案</a>
             <a href="#about" class="nav-link">关于我们</a>
             <div class="nav-actions">
-                <a href="/login" class="btn btn-outline">登录</a>
-                <a href="/register" class="btn btn-primary">免费试用</a>
+                <?php if ($isLoggedIn): ?>
+                    <a href="/user_center" class="btn btn-outline">用户中心</a>
+                    <a href="/novel_creation" class="btn btn-primary">进入创作工作台</a>
+                <?php else: ?>
+                    <a href="/login" class="btn btn-outline">登录</a>
+                    <a href="/register" class="btn btn-primary">免费试用</a>
+                <?php endif; ?>
             </div>
         </nav>
     </header>
@@ -129,10 +147,17 @@ $socialBilibili = $homeSettings['site_social_bilibili'] ?: '#';
                 </h1>
                 <p class="hero-subtitle"><?= htmlspecialchars($heroSubtitle) ?></p>
                 <div class="hero-actions">
-                    <a href="/register" class="btn btn-primary btn-large">
-                        <i class="fas fa-rocket"></i>
-                        <?= htmlspecialchars($heroCtaPrimary) ?>
-                    </a>
+                    <?php if ($isLoggedIn): ?>
+                        <a href="/novel_creation" class="btn btn-primary btn-large">
+                            <i class="fas fa-rocket"></i>
+                            开始创作
+                        </a>
+                    <?php else: ?>
+                        <a href="/register" class="btn btn-primary btn-large">
+                            <i class="fas fa-rocket"></i>
+                            <?= htmlspecialchars($heroCtaPrimary) ?>
+                        </a>
+                    <?php endif; ?>
                     <a href="#demo" class="btn btn-outline btn-large">
                         <i class="fas fa-play-circle"></i>
                         <?= htmlspecialchars($heroCtaSecondary) ?>

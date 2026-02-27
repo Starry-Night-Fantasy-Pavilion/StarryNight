@@ -17,54 +17,63 @@ use app\models\AnimeAIGeneration;
 /**
  * 动漫制作综合控制器
  */
-class AnimeProductionController
+class AnimeProductionController extends BaseUserController
 {
+    protected $currentPage = 'anime_production';
+    
     /**
-     * 动漫制作首页
+     * 动漫制作首页 - 创作中心
      */
     public function index()
     {
         try {
-            header('Content-Type: text/html; charset=utf-8');
-            
-            $siteName = (string) get_env('APP_NAME', '星夜阁');
-            $userId = $this->getCurrentUserId();
-            
-            // 使用主题系统渲染页面
-            $themeManager = new \app\services\ThemeManager();
-            $theme = $themeManager->loadActiveThemeInstance();
-            
-            if ($theme) {
-                $content = $theme->renderTemplate('anime_production', [
-                    'site_name' => $siteName,
-                    'user_id' => $userId,
-                ]);
-                
-                echo $theme->renderTemplate('layout', [
-                    'title' => '动漫制作工坊 - ' . $siteName,
-                    'site_name' => $siteName,
-                    'page_class' => 'page-anime-production',
-                    'current_page' => 'anime_production',
-                    'content' => $content,
-                ]);
-            } else {
-                // 如果没有主题，使用简单视图
-                echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>动漫制作工坊</title></head><body><h1>动漫制作工坊</h1><p>功能开发中...</p></body></html>';
-            }
+            $userId = $this->checkAuth();
+            $user = $this->getCurrentUser();
+
+            // 获取用户最近的项目（最多2个）
+            $allProjects = AnimeProject::getList(['user_id' => $userId], 100, 0);
+            $recentProjects = array_slice($allProjects, 0, 2);
+
+            $this->render('anime/project/center', [
+                'title' => '动漫 / 短剧创作中心',
+                'projects' => $recentProjects,
+            ]);
         } catch (\Exception $e) {
             error_log('动漫制作页面错误: ' . $e->getMessage());
             \app\services\ErrorHandler::handleServerError($e);
         }
     }
-
+    
     /**
-     * 获取当前用户ID
+     * 我的动漫项目列表
      */
-    private function getCurrentUserId(): ?int
+    public function projectList()
     {
-        // 这里应该从会话或JWT中获取用户ID
-        // 暂时返回模拟数据
-        return 1;
+        try {
+            $userId = $this->checkAuth();
+            $user = $this->getCurrentUser();
+
+            $filters = [];
+            if (isset($_GET['status'])) {
+                $filters['status'] = $_GET['status'];
+            }
+            if (isset($_GET['genre'])) {
+                $filters['genre'] = $_GET['genre'];
+            }
+            if (isset($_GET['production_mode'])) {
+                $filters['production_mode'] = $_GET['production_mode'];
+            }
+
+            $projects = AnimeProject::getList(['user_id' => $userId] + $filters, 100, 0);
+
+            $this->render('anime/project/index', [
+                'title' => '我的动漫项目',
+                'projects' => $projects,
+            ]);
+        } catch (\Exception $e) {
+            error_log('动漫项目列表页面错误: ' . $e->getMessage());
+            \app\services\ErrorHandler::handleServerError($e);
+        }
     }
 
     /**
@@ -108,7 +117,7 @@ class AnimeProductionController
         header('Content-Type: application/json; charset=utf-8');
         
         try {
-            $userId = $this->getCurrentUserId();
+            $userId = $this->checkAuth();
             if (!$userId) {
                 throw new \Exception('请先登录');
             }
@@ -153,7 +162,7 @@ class AnimeProductionController
         header('Content-Type: application/json; charset=utf-8');
         
         try {
-            $userId = $this->getCurrentUserId();
+            $userId = $this->checkAuth();
             if (!$userId) {
                 throw new \Exception('请先登录');
             }
@@ -208,7 +217,7 @@ class AnimeProductionController
         header('Content-Type: application/json; charset=utf-8');
         
         try {
-            $userId = $this->getCurrentUserId();
+            $userId = $this->checkAuth();
             if (!$userId) {
                 throw new \Exception('请先登录');
             }
@@ -245,7 +254,7 @@ class AnimeProductionController
         header('Content-Type: application/json; charset=utf-8');
         
         try {
-            $userId = $this->getCurrentUserId();
+            $userId = $this->checkAuth();
             if (!$userId) {
                 throw new \Exception('请先登录');
             }
@@ -315,7 +324,7 @@ class AnimeProductionController
         header('Content-Type: application/json; charset=utf-8');
         
         try {
-            $userId = $this->getCurrentUserId();
+            $userId = $this->checkAuth();
             if (!$userId) {
                 throw new \Exception('请先登录');
             }
@@ -385,7 +394,7 @@ class AnimeProductionController
         header('Content-Type: application/json; charset=utf-8');
         
         try {
-            $userId = $this->getCurrentUserId();
+            $userId = $this->checkAuth();
             if (!$userId) {
                 throw new \Exception('请先登录');
             }
@@ -455,7 +464,7 @@ class AnimeProductionController
         header('Content-Type: application/json; charset=utf-8');
         
         try {
-            $userId = $this->getCurrentUserId();
+            $userId = $this->checkAuth();
             if (!$userId) {
                 throw new \Exception('请先登录');
             }
@@ -510,7 +519,7 @@ class AnimeProductionController
         header('Content-Type: application/json; charset=utf-8');
         
         try {
-            $userId = $this->getCurrentUserId();
+            $userId = $this->checkAuth();
             if (!$userId) {
                 throw new \Exception('请先登录');
             }

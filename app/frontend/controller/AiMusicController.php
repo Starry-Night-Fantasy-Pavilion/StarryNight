@@ -11,13 +11,15 @@ use app\models\AiMusicMixMaster;
 use app\models\AiMusicExport;
 use app\models\User;
 use app\services\FrontendDataService;
+use app\services\StarryNightPermissionService;
 
 /**
  * AI音乐控制器
- * 已迁移到新的设计模式，使用统一的API响应和数据绑定
  */
-class AiMusicController extends Controller
+class AiMusicController extends BaseUserController
 {
+    protected $currentPage = 'ai_music';
+    
     private $projectModel;
     private $lyricsModel;
     private $trackModel;
@@ -35,59 +37,69 @@ class AiMusicController extends Controller
     }
 
     /**
-     * 检查用户登录状态
-     */
-    private function checkAuth(): int
-    {
-        if (!$this->isLoggedIn()) {
-            $redirectUrl = $_SERVER['REQUEST_URI'] ?? '/ai_music';
-            $this->redirect('/login?redirect=' . urlencode($redirectUrl));
-        }
-        return $this->getUserId();
-    }
-
-    /**
-     * 获取当前用户ID
-     */
-    private function getCurrentUserId(): int
-    {
-        return $this->checkAuth();
-    }
-
-    /**
-     * AI音乐首页
+     * AI音乐首页 - 创作中心
      */
     public function index()
     {
         try {
-            header('Content-Type: text/html; charset=utf-8');
-            
-            $siteName = (string) get_env('APP_NAME', '星夜阁');
-            $userId = $this->getCurrentUserId();
-            
-            // 使用主题系统渲染页面
-            $themeManager = new \app\services\ThemeManager();
-            $theme = $themeManager->loadActiveThemeInstance();
-            
-            if ($theme) {
-                $content = $theme->renderTemplate('ai_music', [
-                    'site_name' => $siteName,
-                    'user_id' => $userId,
-                ]);
-                
-                echo $theme->renderTemplate('layout', [
-                    'title' => 'AI音乐工坊 - ' . $siteName,
-                    'site_name' => $siteName,
-                    'page_class' => 'page-ai-music',
-                    'current_page' => 'ai_music',
-                    'content' => $content,
-                ]);
-            } else {
-                // 如果没有主题，使用简单视图
-                echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>AI音乐工坊</title></head><body><h1>AI音乐工坊</h1><p>功能开发中...</p></body></html>';
+            $userId = $this->checkAuth();
+            $user = $this->getCurrentUser();
+
+            // 检查星夜创作引擎权限
+            $permissionService = new StarryNightPermissionService();
+            try {
+                $availableVersion = $permissionService->getCurrentVersion($userId);
+            } catch (\Exception $e) {
+                error_log('权限检查失败: ' . $e->getMessage());
+                $availableVersion = null;
             }
+            if (!$availableVersion) {
+                $this->render('novel_tools/no_permission', [
+                    'title' => '无权限访问 - 星夜阁',
+                    'message' => '您当前没有权限使用星夜创作引擎，请升级会员后使用。',
+                ]);
+                return;
+            }
+
+            // 获取用户最近的项目（最多2个）
+            $allProjects = $this->projectModel->getByUserId($userId, 1, 100);
+            $recentProjects = array_slice($allProjects, 0, 2);
+
+            $this->render('music/project/center', [
+                'title' => '音乐创作中心',
+                'projects' => $recentProjects,
+            ]);
         } catch (\Exception $e) {
             error_log('AI音乐页面错误: ' . $e->getMessage());
+            \app\services\ErrorHandler::handleServerError($e);
+        }
+    }
+    
+    /**
+     * 我的音乐项目列表
+     */
+    public function projectList()
+    {
+        try {
+            $userId = $this->checkAuth();
+            $user = $this->getCurrentUser();
+
+            $filters = [];
+            if (isset($_GET['status'])) {
+                $filters['status'] = $_GET['status'];
+            }
+            if (isset($_GET['genre'])) {
+                $filters['genre'] = $_GET['genre'];
+            }
+
+            $projects = $this->projectModel->getByUserId($userId, 1, 100, $filters['status'] ?? null);
+
+            $this->render('music/project/index', [
+                'title' => '我的音乐项目',
+                'projects' => $projects,
+            ]);
+        } catch (\Exception $e) {
+            error_log('音乐项目列表页面错误: ' . $e->getMessage());
             \app\services\ErrorHandler::handleServerError($e);
         }
     }
@@ -128,7 +140,7 @@ class AiMusicController extends Controller
         $data = json_decode(file_get_contents('php://input'), true) ?? [];
         $data = $this->validateRequired($data, ['title']);
         
-        $data['user_id'] = $this->getCurrentUserId();
+        $data['user_id'] = $this->checkAuth();
         
         if ($this->projectModel->create($data)) {
             $projectId = $this->getDb()->lastInsertId();
@@ -145,7 +157,7 @@ class AiMusicController extends Controller
      */
     public function getProjects(): void
     {
-        $userId = $this->getCurrentUserId();
+        $userId = $this->checkAuth();
         $page = (int)($_GET['page'] ?? 1);
         $limit = (int)($_GET['limit'] ?? 20);
         $status = $_GET['status'] ?? null;
@@ -168,7 +180,7 @@ class AiMusicController extends Controller
         }
         
         // 检查权限
-        if ($project['user_id'] !== $this->getCurrentUserId() && !$project['is_public']) {
+        if ($project['user_id'] !== $this->checkAuth() && !$project['is_public']) {
             $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
@@ -199,7 +211,7 @@ class AiMusicController extends Controller
             $this->sendError(ErrorCode::RESOURCE_NOT_FOUND, '项目不存在');
         }
         
-        if ($project['user_id'] !== $this->getCurrentUserId()) {
+        if ($project['user_id'] !== $this->checkAuth()) {
             $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权修改此项目');
         }
         
@@ -224,7 +236,7 @@ class AiMusicController extends Controller
             $this->sendError(ErrorCode::RESOURCE_NOT_FOUND, '项目不存在');
         }
         
-        if ($project['user_id'] !== $this->getCurrentUserId()) {
+        if ($project['user_id'] !== $this->checkAuth()) {
             $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权删除此项目');
         }
         
@@ -245,7 +257,7 @@ class AiMusicController extends Controller
         
         // 检查项目权限
         $project = $this->projectModel->getById($data['project_id']);
-        if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
+        if (!$project || $project['user_id'] !== $this->checkAuth()) {
             $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
@@ -286,7 +298,7 @@ class AiMusicController extends Controller
         
         // 检查项目权限
         $project = $this->projectModel->getById($data['project_id']);
-        if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
+        if (!$project || $project['user_id'] !== $this->checkAuth()) {
             $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
@@ -334,7 +346,7 @@ class AiMusicController extends Controller
         
         // 检查项目权限
         $project = $this->projectModel->getById($data['project_id']);
-        if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
+        if (!$project || $project['user_id'] !== $this->checkAuth()) {
             $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
@@ -366,7 +378,7 @@ class AiMusicController extends Controller
         
         // 检查项目权限
         $project = $this->projectModel->getById($track['project_id']);
-        if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
+        if (!$project || $project['user_id'] !== $this->checkAuth()) {
             $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权修改此音轨');
         }
         
@@ -393,7 +405,7 @@ class AiMusicController extends Controller
         
         // 检查项目权限
         $project = $this->projectModel->getById($track['project_id']);
-        if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
+        if (!$project || $project['user_id'] !== $this->checkAuth()) {
             $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权删除此音轨');
         }
         
@@ -414,7 +426,7 @@ class AiMusicController extends Controller
         
         // 检查项目权限
         $project = $this->projectModel->getById($data['project_id']);
-        if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
+        if (!$project || $project['user_id'] !== $this->checkAuth()) {
             $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
@@ -437,7 +449,7 @@ class AiMusicController extends Controller
         
         // 检查项目权限
         $project = $this->projectModel->getById($data['project_id']);
-        if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
+        if (!$project || $project['user_id'] !== $this->checkAuth()) {
             $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
@@ -461,7 +473,7 @@ class AiMusicController extends Controller
         
         // 检查项目权限
         $project = $this->projectModel->getById($data['project_id']);
-        if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
+        if (!$project || $project['user_id'] !== $this->checkAuth()) {
             $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
@@ -485,7 +497,7 @@ class AiMusicController extends Controller
         
         // 检查项目权限
         $project = $this->projectModel->getById($data['project_id']);
-        if (!$project || $project['user_id'] !== $this->getCurrentUserId()) {
+        if (!$project || $project['user_id'] !== $this->checkAuth()) {
             $this->sendError(ErrorCode::AUTH_PERMISSION_DENIED, '无权访问此项目');
         }
         
@@ -512,7 +524,7 @@ class AiMusicController extends Controller
      */
     public function getUserStats(): void
     {
-        $userId = $this->getCurrentUserId();
+        $userId = $this->checkAuth();
         $stats = $this->projectModel->getUserProjectStats($userId);
         $this->sendSuccess($stats, '获取统计信息成功');
     }

@@ -534,6 +534,12 @@ class AuthController
 
     public function loginForm()
     {
+        // 如果已经登录，则直接跳转到用户中心，避免重复登录
+        if (!empty($_SESSION['user_logged_in']) && !empty($_SESSION['user_id'])) {
+            header('Location: /user_center');
+            exit;
+        }
+
         // 从后台设置读取站点信息（与后台登录保持一致），失败则回落到环境变量
         try {
             $siteName = Setting::get('site_name') ?: (string) get_env('APP_NAME', '');
