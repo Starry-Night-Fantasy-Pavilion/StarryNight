@@ -21,32 +21,37 @@ class AnimeProject
         $pdo = Database::pdo();
         $prefix = Database::prefix();
 
+        // 将额外字段存储到 meta_json 中
+        $metaData = [
+            'genre' => $data['genre'] ?? null,
+            'target_audience' => $data['target_audience'] ?? null,
+            'core_concept' => $data['core_concept'] ?? null,
+            'episode_count' => $data['episode_count'] ?? 12,
+            'episode_duration' => $data['episode_duration'] ?? 20,
+            'production_mode' => $data['production_mode'] ?? 'long',
+            'has_intro_outro' => $data['has_intro_outro'] ?? 1,
+            'intro_duration' => $data['intro_duration'] ?? 3,
+            'outro_duration' => $data['outro_duration'] ?? 3,
+            'main_content_duration' => $data['main_content_duration'] ?? 14,
+            'cover_image' => $data['cover_image'] ?? null,
+            'description' => $data['description'] ?? null,
+            'tags' => $data['tags'] ?? null,
+            'budget_estimate' => $data['budget_estimate'] ?? 0.00,
+            'timeline_days' => $data['timeline_days'] ?? 0,
+            'team_size' => $data['team_size'] ?? 0,
+            'ai_assistance_level' => $data['ai_assistance_level'] ?? 'partial'
+        ];
+
         $sql = "INSERT INTO `{$prefix}anime_projects` 
-                (user_id, title, genre, target_audience, core_concept, episode_count, episode_duration, production_mode, has_intro_outro, intro_duration, outro_duration, main_content_duration, status, cover_image, description, tags, budget_estimate, timeline_days, team_size, ai_assistance_level) 
-                VALUES (:user_id, :title, :genre, :target_audience, :core_concept, :episode_count, :episode_duration, :production_mode, :has_intro_outro, :intro_duration, :outro_duration, :main_content_duration, :status, :cover_image, :description, :tags, :budget_estimate, :timeline_days, :team_size, :ai_assistance_level)";
+                (user_id, title, status, meta_json) 
+                VALUES (:user_id, :title, :status, :meta_json)";
 
         $stmt = $pdo->prepare($sql);
         return $stmt->execute([
             ':user_id' => $data['user_id'],
             ':title' => $data['title'],
-            ':genre' => $data['genre'] ?? null,
-            ':target_audience' => $data['target_audience'] ?? null,
-            ':core_concept' => $data['core_concept'] ?? null,
-            ':episode_count' => $data['episode_count'] ?? 12,
-            ':episode_duration' => $data['episode_duration'] ?? 20,
-            ':production_mode' => $data['production_mode'] ?? 'long',
-            ':has_intro_outro' => $data['has_intro_outro'] ?? 1,
-            ':intro_duration' => $data['intro_duration'] ?? 3,
-            ':outro_duration' => $data['outro_duration'] ?? 3,
-            ':main_content_duration' => $data['main_content_duration'] ?? 14,
             ':status' => $data['status'] ?? 'draft',
-            ':cover_image' => $data['cover_image'] ?? null,
-            ':description' => $data['description'] ?? null,
-            ':tags' => $data['tags'] ?? null,
-            ':budget_estimate' => $data['budget_estimate'] ?? 0.00,
-            ':timeline_days' => $data['timeline_days'] ?? 0,
-            ':team_size' => $data['team_size'] ?? 0,
-            ':ai_assistance_level' => $data['ai_assistance_level'] ?? 'partial'
+            ':meta_json' => json_encode($metaData, JSON_UNESCAPED_UNICODE)
         ]) ? $pdo->lastInsertId() : false;
     }
 
@@ -68,7 +73,35 @@ class AnimeProject
 
         $stmt = $pdo->prepare($sql);
         $stmt->execute([':id' => $id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $project = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($project) {
+            // 解析 meta_json 并合并到结果中
+            if (!empty($project['meta_json'])) {
+                $meta = json_decode($project['meta_json'], true);
+                if (is_array($meta)) {
+                    $project = array_merge($project, $meta);
+                }
+            }
+            // 确保这些字段存在，即使 meta_json 为空
+            if (!isset($project['genre'])) {
+                $project['genre'] = null;
+            }
+            if (!isset($project['production_mode'])) {
+                $project['production_mode'] = null;
+            }
+            if (!isset($project['description'])) {
+                $project['description'] = null;
+            }
+            if (!isset($project['episode_count'])) {
+                $project['episode_count'] = null;
+            }
+            if (!isset($project['cover_image'])) {
+                $project['cover_image'] = null;
+            }
+        }
+        
+        return $project;
     }
 
     /**
@@ -92,23 +125,24 @@ class AnimeProject
             $params[':user_id'] = $filters['user_id'];
         }
 
-        if (!empty($filters['genre'])) {
-            $where[] = "ap.genre = :genre";
-            $params[':genre'] = $filters['genre'];
-        }
-
         if (!empty($filters['status'])) {
             $where[] = "ap.status = :status";
             $params[':status'] = $filters['status'];
         }
 
+        // 对于存储在 meta_json 中的字段，使用 JSON 查询
+        if (!empty($filters['genre'])) {
+            $where[] = "(ap.meta_json IS NOT NULL AND JSON_UNQUOTE(JSON_EXTRACT(ap.meta_json, '$.genre')) = :genre)";
+            $params[':genre'] = $filters['genre'];
+        }
+
         if (!empty($filters['production_mode'])) {
-            $where[] = "ap.production_mode = :production_mode";
+            $where[] = "(ap.meta_json IS NOT NULL AND JSON_UNQUOTE(JSON_EXTRACT(ap.meta_json, '$.production_mode')) = :production_mode)";
             $params[':production_mode'] = $filters['production_mode'];
         }
 
         if (!empty($filters['search'])) {
-            $where[] = "(ap.title LIKE :search OR ap.description LIKE :search OR ap.core_concept LIKE :search)";
+            $where[] = "(ap.title LIKE :search OR (ap.meta_json IS NOT NULL AND (JSON_UNQUOTE(JSON_EXTRACT(ap.meta_json, '$.description')) LIKE :search OR JSON_UNQUOTE(JSON_EXTRACT(ap.meta_json, '$.core_concept')) LIKE :search)))";
             $params[':search'] = '%' . $filters['search'] . '%';
         }
 
@@ -127,7 +161,36 @@ class AnimeProject
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // 解析 meta_json 并合并到结果中
+        foreach ($projects as &$project) {
+            if (!empty($project['meta_json'])) {
+                $meta = json_decode($project['meta_json'], true);
+                if (is_array($meta)) {
+                    $project = array_merge($project, $meta);
+                }
+            }
+            // 确保这些字段存在，即使 meta_json 为空
+            if (!isset($project['genre'])) {
+                $project['genre'] = null;
+            }
+            if (!isset($project['production_mode'])) {
+                $project['production_mode'] = null;
+            }
+            if (!isset($project['description'])) {
+                $project['description'] = null;
+            }
+            if (!isset($project['episode_count'])) {
+                $project['episode_count'] = null;
+            }
+            if (!isset($project['cover_image'])) {
+                $project['cover_image'] = null;
+            }
+        }
+        unset($project); // 取消引用，避免潜在问题
+        
+        return $projects;
     }
 
     /**
@@ -224,29 +287,59 @@ class AnimeProject
         $pdo = Database::pdo();
         $prefix = Database::prefix();
 
-        $fields = [];
+        // 获取现有项目数据
+        $project = self::getById($id);
+        if (!$project) {
+            return false;
+        }
+
+        // 解析现有的 meta_json
+        $metaData = [];
+        if ($project['meta_json']) {
+            $metaData = json_decode($project['meta_json'], true) ?: [];
+        }
+
+        // 更新基本字段
+        $updateFields = [];
         $params = [':id' => $id];
 
-        $allowedFields = [
-            'title', 'genre', 'target_audience', 'core_concept', 'episode_count', 
+        if (isset($data['title'])) {
+            $updateFields[] = "title = :title";
+            $params[':title'] = $data['title'];
+        }
+
+        if (isset($data['status'])) {
+            $updateFields[] = "status = :status";
+            $params[':status'] = $data['status'];
+        }
+
+        // 更新 meta_json 中的字段
+        $metaFields = [
+            'genre', 'target_audience', 'core_concept', 'episode_count', 
             'episode_duration', 'production_mode', 'has_intro_outro', 'intro_duration', 
-            'outro_duration', 'main_content_duration', 'status', 'cover_image', 
+            'outro_duration', 'main_content_duration', 'cover_image', 
             'description', 'tags', 'budget_estimate', 'timeline_days', 'team_size', 
             'ai_assistance_level'
         ];
 
-        foreach ($allowedFields as $field) {
+        $metaUpdated = false;
+        foreach ($metaFields as $field) {
             if (isset($data[$field])) {
-                $fields[] = "`{$field}` = :{$field}";
-                $params[":{$field}"] = $data[$field];
+                $metaData[$field] = $data[$field];
+                $metaUpdated = true;
             }
         }
 
-        if (empty($fields)) {
+        if ($metaUpdated) {
+            $updateFields[] = "meta_json = :meta_json";
+            $params[':meta_json'] = json_encode($metaData, JSON_UNESCAPED_UNICODE);
+        }
+
+        if (empty($updateFields)) {
             return false;
         }
 
-        $sql = "UPDATE `{$prefix}anime_projects` SET " . implode(', ', $fields) . " WHERE id = :id";
+        $sql = "UPDATE `{$prefix}anime_projects` SET " . implode(', ', $updateFields) . " WHERE id = :id";
         $stmt = $pdo->prepare($sql);
 
         return $stmt->execute($params);
@@ -365,8 +458,8 @@ class AnimeProject
                     COUNT(CASE WHEN status = 'in_production' THEN 1 END) as in_production_count,
                     COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_count,
                     COUNT(CASE WHEN status = 'cancelled' THEN 1 END) as cancelled_count,
-                    COALESCE(SUM(budget_estimate), 0) as total_budget,
-                    COALESCE(AVG(budget_estimate), 0) as avg_budget
+                    COALESCE(SUM(CAST(JSON_EXTRACT(meta_json, '$.budget_estimate') AS DECIMAL(10,2))), 0) as total_budget,
+                    COALESCE(AVG(CAST(JSON_EXTRACT(meta_json, '$.budget_estimate') AS DECIMAL(10,2))), 0) as avg_budget
                 FROM `{$prefix}anime_projects` 
                 WHERE user_id = :user_id";
 
@@ -394,10 +487,10 @@ class AnimeProject
                     COUNT(CASE WHEN status = 'in_production' THEN 1 END) as in_production_count,
                     COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_count,
                     COUNT(CASE WHEN status = 'cancelled' THEN 1 END) as cancelled_count,
-                    COUNT(CASE WHEN production_mode = 'long' THEN 1 END) as long_projects,
-                    COUNT(CASE WHEN production_mode = 'short' THEN 1 END) as short_projects,
-                    COALESCE(SUM(budget_estimate), 0) as total_budget,
-                    COALESCE(AVG(budget_estimate), 0) as avg_budget
+                    COUNT(CASE WHEN JSON_EXTRACT(meta_json, '$.production_mode') = 'long' THEN 1 END) as long_projects,
+                    COUNT(CASE WHEN JSON_EXTRACT(meta_json, '$.production_mode') = 'short' THEN 1 END) as short_projects,
+                    COALESCE(SUM(CAST(JSON_EXTRACT(meta_json, '$.budget_estimate') AS DECIMAL(10,2))), 0) as total_budget,
+                    COALESCE(AVG(CAST(JSON_EXTRACT(meta_json, '$.budget_estimate') AS DECIMAL(10,2))), 0) as avg_budget
                 FROM `{$prefix}anime_projects`";
 
         $stmt = $pdo->prepare($sql);

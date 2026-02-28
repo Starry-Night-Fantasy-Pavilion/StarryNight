@@ -39,7 +39,6 @@ class AnimeProductionController extends BaseUserController
                 'projects' => $recentProjects,
             ]);
         } catch (\Exception $e) {
-            error_log('动漫制作页面错误: ' . $e->getMessage());
             \app\services\ErrorHandler::handleServerError($e);
         }
     }
@@ -65,13 +64,16 @@ class AnimeProductionController extends BaseUserController
             }
 
             $projects = AnimeProject::getList(['user_id' => $userId] + $filters, 100, 0);
+            
+            if (!is_array($projects)) {
+                $projects = [];
+            }
 
             $this->render('anime/project/index', [
                 'title' => '我的动漫项目',
                 'projects' => $projects,
             ]);
-        } catch (\Exception $e) {
-            error_log('动漫项目列表页面错误: ' . $e->getMessage());
+        } catch (\Throwable $e) {
             \app\services\ErrorHandler::handleServerError($e);
         }
     }
