@@ -34,22 +34,26 @@ class StarryNightPermissionService
         $membershipLevelId = $membership ? $membership['level_id'] : null;
 
         // 检查用户是否有自定义配置
+        // 注意：user_starry_night_configs 表结构只有 user_id 和 config_json，没有 engine_version 和 is_enabled
         $userConfigSql = "SELECT * FROM `{$prefix}user_starry_night_configs` 
-                         WHERE user_id = :user_id AND engine_version = :version AND is_enabled = 1";
+                         WHERE user_id = :user_id";
         $userConfigStmt = $pdo->prepare($userConfigSql);
-        $userConfigStmt->execute([':user_id' => $userId, ':version' => $engineVersion]);
+        $userConfigStmt->execute([':user_id' => $userId]);
         $userConfig = $userConfigStmt->fetch(PDO::FETCH_ASSOC);
 
         // 如果有自定义配置，使用自定义配置
-        if ($userConfig) {
-            $customConfig = json_decode($userConfig['custom_config'], true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                return [
-                    'has_permission' => true,
-                    'version' => $engineVersion,
-                    'config' => $customConfig,
-                    'source' => 'user_custom'
-                ];
+        if ($userConfig && !empty($userConfig['config_json'])) {
+            $customConfig = json_decode($userConfig['config_json'], true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($customConfig)) {
+                // 如果配置中指定了版本，检查是否匹配
+                if (!isset($customConfig['engine_version']) || $customConfig['engine_version'] === $engineVersion) {
+                    return [
+                        'has_permission' => true,
+                        'version' => $engineVersion,
+                        'config' => $customConfig,
+                        'source' => 'user_custom'
+                    ];
+                }
             }
         }
 

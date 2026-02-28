@@ -244,28 +244,16 @@
                         <?= icon('book', ['width' => '20', 'height' => '20']) ?>
                         <span class="nav-text">我的小说<?= $isFestive ? ' 🏮' : '' ?></span>
                     </a>
-                    <a href="/novel_creation" class="menu-item <?= ($currentPage === 'novel_creation') ? 'active' : '' ?>">
-                        <?= icon('pen-tool', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">小说工作台</span>
-                    </a>
                     <?php endif; ?>
                     <?php if ($currentPage === 'ai_music'): ?>
-                    <a href="/ai_music" class="menu-item active">
+                    <a href="/music/project/list" class="menu-item active">
                         <?= icon('music', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">AI音乐创作</span>
-                    </a>
-                    <a href="/music/project/list" class="menu-item">
-                        <?= icon('list', ['width' => '20', 'height' => '20']) ?>
                         <span class="nav-text">我的音乐项目</span>
                     </a>
                     <?php endif; ?>
                     <?php if ($currentPage === 'anime_production'): ?>
-                    <a href="/anime_production" class="menu-item active">
+                    <a href="/anime/project/list" class="menu-item active">
                         <?= icon('video', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">动漫制作</span>
-                    </a>
-                    <a href="/anime/project/list" class="menu-item">
-                        <?= icon('list', ['width' => '20', 'height' => '20']) ?>
                         <span class="nav-text">我的动漫项目</span>
                     </a>
                     <?php endif; ?>
@@ -282,21 +270,17 @@
                     </a>
                     <?php endif; ?>
                     <?php if (!in_array($currentPage, ['novel', 'novel_creation', 'ai_music', 'anime_production', 'general_features', 'community'])): ?>
-                    <a href="/novel" class="menu-item <?= ($currentPage === 'novel') ? 'active' : '' ?>">
+                    <a href="/novel" class="menu-item <?= ($currentPage === 'novel' || $currentPage === 'novel_creation') ? 'active' : '' ?>">
                         <?= icon('book', ['width' => '20', 'height' => '20']) ?>
                         <span class="nav-text">我的小说<?= $isFestive ? ' 🏮' : '' ?></span>
                     </a>
-                    <a href="/novel_creation" class="menu-item <?= ($currentPage === 'novel_creation') ? 'active' : '' ?>">
-                        <?= icon('pen-tool', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">小说工作台</span>
-                    </a>
-                    <a href="/ai_music" class="menu-item <?= ($currentPage === 'ai_music') ? 'active' : '' ?>">
+                    <a href="/music/project/list" class="menu-item <?= ($currentPage === 'ai_music') ? 'active' : '' ?>">
                         <?= icon('music', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">AI音乐创作</span>
+                        <span class="nav-text">我的音乐项目</span>
                     </a>
-                    <a href="/anime_production" class="menu-item <?= ($currentPage === 'anime_production') ? 'active' : '' ?>">
+                    <a href="/anime/project/list" class="menu-item <?= ($currentPage === 'anime_production') ? 'active' : '' ?>">
                         <?= icon('video', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">动漫制作</span>
+                        <span class="nav-text">我的动漫项目</span>
                     </a>
                     <?php endif; ?>
                 </div>
@@ -745,13 +729,13 @@
                     <span></span>
                 </button>
                 <div class="mode-switch-menu" id="modeSwitchMenu" aria-hidden="true">
-                    <a href="/novel_creation" class="mode-switch-item">
+                    <a href="/novel" class="mode-switch-item">
                         <span class="mode-switch-item-label">小说创作</span>
                     </a>
-                    <a href="/ai_music" class="mode-switch-item">
+                    <a href="/music/project/list" class="mode-switch-item">
                         <span class="mode-switch-item-label">音乐创作</span>
                     </a>
-                    <a href="/anime_production" class="mode-switch-item">
+                    <a href="/anime/project/list" class="mode-switch-item">
                         <span class="mode-switch-item-label">动漫制作</span>
                     </a>
                     <div class="mode-switch-divider"></div>

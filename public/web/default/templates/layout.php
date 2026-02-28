@@ -777,9 +777,9 @@ body.page-login * {
             <div class="footer-section">
                 <h3>产品功能</h3>
                 <ul>
-                    <li><a href="/novel_creation">AI小说创作</a></li>
-                    <li><a href="/ai_music">AI音乐生成</a></li>
-                    <li><a href="/anime_production">动画制作</a></li>
+                    <li><a href="/novel">AI小说创作</a></li>
+                    <li><a href="/music/project/list">AI音乐生成</a></li>
+                    <li><a href="/anime/project/list">动画制作</a></li>
                     <li><a href="/knowledge">知识库管理</a></li>
                 </ul>
             </div>

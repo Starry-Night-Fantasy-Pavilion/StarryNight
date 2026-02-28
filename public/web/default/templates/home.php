@@ -86,7 +86,7 @@ $socialBilibili = $homeSettings['site_social_bilibili'] ?: '#';
             <div class="nav-actions">
                 <?php if ($isLoggedIn): ?>
                     <a href="/user_center" class="btn btn-outline">用户中心</a>
-                    <a href="/novel_creation" class="btn btn-primary">进入创作工作台</a>
+                    <a href="/novel" class="btn btn-primary">进入创作工作台</a>
                 <?php else: ?>
                     <a href="/login" class="btn btn-outline">登录</a>
                     <a href="/register" class="btn btn-primary">免费试用</a>
@@ -106,7 +106,7 @@ $socialBilibili = $homeSettings['site_social_bilibili'] ?: '#';
             <div class="nav-actions">
                 <?php if ($isLoggedIn): ?>
                     <a href="/user_center" class="btn btn-outline">用户中心</a>
-                    <a href="/novel_creation" class="btn btn-primary">进入创作工作台</a>
+                    <a href="/novel" class="btn btn-primary">进入创作工作台</a>
                 <?php else: ?>
                     <a href="/login" class="btn btn-outline">登录</a>
                     <a href="/register" class="btn btn-primary">免费试用</a>

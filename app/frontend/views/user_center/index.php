@@ -36,7 +36,7 @@ $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
             </div>
         </a>
 
-        <a href="/novel_creation" class="dashboard-card-v2">
+        <a href="/novel" class="dashboard-card-v2">
             <div class="card-icon-v2 bg-novel">
                 <?= render_icon('book', ['width' => '32', 'height' => '32']) ?>
             </div>
@@ -53,7 +53,7 @@ $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
             </div>
         </a>
 
-        <a href="/ai_music" class="dashboard-card-v2">
+        <a href="/music/project/list" class="dashboard-card-v2">
             <div class="card-icon-v2 bg-music">
                 <?= render_icon('music', ['width' => '32', 'height' => '32']) ?>
             </div>
@@ -71,7 +71,7 @@ $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
             </div>
         </a>
 
-        <a href="/anime_production" class="dashboard-card-v2">
+        <a href="/anime/project/list" class="dashboard-card-v2">
             <div class="card-icon-v2 bg-anime">
                 <?= render_icon('anime', ['width' => '32', 'height' => '32']) ?>
             </div>

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Services\Database;
+use app\services\Database;
 use PDO;
 
 class AiMusicProject
@@ -14,12 +14,24 @@ class AiMusicProject
         return Database::pdo();
     }
 
+    private function getTableName(): string
+    {
+        $prefix = Database::prefix();
+        return $prefix . $this->table;
+    }
+
+    private function getTableNameWithPrefix(string $table): string
+    {
+        $prefix = Database::prefix();
+        return $prefix . $table;
+    }
+
     /**
      * 创建音乐项目
      */
     public function create(array $data)
     {
-        $sql = "INSERT INTO {$this->table} (
+        $sql = "INSERT INTO `{$this->getTableName()}` (
             user_id, title, genre, description, status, bpm, key_signature,
             duration, cover_image, tags, is_public
         ) VALUES (
@@ -49,8 +61,8 @@ class AiMusicProject
     public function getById(int $id)
     {
         $sql = "SELECT p.*, u.username, u.avatar
-                FROM {$this->table} p
-                LEFT JOIN user u ON p.user_id = u.id
+                FROM `{$this->getTableName()}` p
+                LEFT JOIN `{$this->getTableNameWithPrefix('users')}` u ON p.user_id = u.id
                 WHERE p.id = :id";
         
         $stmt = $this->getDb()->prepare($sql);
@@ -73,9 +85,9 @@ class AiMusicProject
         }
         
         $sql = "SELECT p.*,
-                       (SELECT COUNT(*) FROM ai_music_track WHERE project_id = p.id) as track_count,
-                       (SELECT COUNT(*) FROM ai_music_export WHERE project_id = p.id) as export_count
-                FROM {$this->table} p
+                       (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_track')}` WHERE project_id = p.id) as track_count,
+                       (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_export')}` WHERE project_id = p.id) as export_count
+                FROM `{$this->getTableName()}` p
                 {$whereClause}
                 ORDER BY p.updated_at DESC
                 LIMIT :limit OFFSET :offset";
@@ -106,10 +118,10 @@ class AiMusicProject
         }
         
         $sql = "SELECT p.*, u.username, u.avatar,
-                       (SELECT COUNT(*) FROM ai_music_track WHERE project_id = p.id) as track_count,
-                       (SELECT COUNT(*) FROM ai_music_favorite WHERE project_id = p.id) as favorite_count
-                FROM {$this->table} p
-                LEFT JOIN user u ON p.user_id = u.id
+                       (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_track')}` WHERE project_id = p.id) as track_count,
+                       (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_favorite')}` WHERE project_id = p.id) as favorite_count
+                FROM `{$this->getTableName()}` p
+                LEFT JOIN `{$this->getTableNameWithPrefix('users')}` u ON p.user_id = u.id
                 {$whereClause}
                 ORDER BY p.like_count DESC, p.updated_at DESC
                 LIMIT :limit OFFSET :offset";
@@ -171,9 +183,9 @@ class AiMusicProject
     {
         $offset = ($page - 1) * $limit;
         $sql = "SELECT p.*, u.username, u.avatar,
-                       (SELECT COUNT(*) FROM ai_music_track WHERE project_id = p.id) as track_count
-                FROM {$this->table} p
-                LEFT JOIN user u ON p.user_id = u.id
+                       (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_track')}` WHERE project_id = p.id) as track_count
+                FROM `{$this->getTableName()}` p
+                LEFT JOIN `{$this->getTableNameWithPrefix('users')}` u ON p.user_id = u.id
                 WHERE p.is_public = 1 AND p.status = 3
                   AND (p.title LIKE :keyword OR p.description LIKE :keyword OR p.tags LIKE :keyword)
                 ORDER BY p.like_count DESC, p.updated_at DESC
@@ -195,14 +207,14 @@ class AiMusicProject
     public function getProjectStats(int $projectId)
     {
         $sql = "SELECT
-                    (SELECT COUNT(*) FROM ai_music_track WHERE project_id = :project_id) as track_count,
-                    (SELECT COUNT(*) FROM ai_music_lyrics WHERE project_id = :project_id) as lyrics_count,
-                    (SELECT COUNT(*) FROM ai_music_vocal WHERE project_id = :project_id) as vocal_count,
-                    (SELECT COUNT(*) FROM ai_music_export WHERE project_id = :project_id) as export_count,
-                    (SELECT COUNT(*) FROM ai_music_collaboration WHERE project_id = :project_id) as collaborator_count,
-                    (SELECT COUNT(*) FROM ai_music_comment WHERE project_id = :project_id) as comment_count,
-                    (SELECT COUNT(*) FROM ai_music_favorite WHERE project_id = :project_id) as favorite_count,
-                    (SELECT COUNT(*) FROM ai_music_share WHERE project_id = :project_id) as share_count
+                    (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_track')}` WHERE project_id = :project_id) as track_count,
+                    (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_lyrics')}` WHERE project_id = :project_id) as lyrics_count,
+                    (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_vocal')}` WHERE project_id = :project_id) as vocal_count,
+                    (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_export')}` WHERE project_id = :project_id) as export_count,
+                    (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_collaboration')}` WHERE project_id = :project_id) as collaborator_count,
+                    (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_comment')}` WHERE project_id = :project_id) as comment_count,
+                    (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_favorite')}` WHERE project_id = :project_id) as favorite_count,
+                    (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_share')}` WHERE project_id = :project_id) as share_count
                 FROM DUAL";
         
         $stmt = $this->getDb()->prepare($sql);
@@ -245,9 +257,9 @@ class AiMusicProject
         }
         
         $sql = "SELECT p.*, u.username, u.avatar,
-                       (SELECT COUNT(*) FROM ai_music_favorite WHERE project_id = p.id) as favorite_count
-                FROM {$this->table} p
-                LEFT JOIN user u ON p.user_id = u.id
+                       (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_favorite')}` WHERE project_id = p.id) as favorite_count
+                FROM `{$this->getTableName()}` p
+                LEFT JOIN `{$this->getTableNameWithPrefix('users')}` u ON p.user_id = u.id
                 {$whereClause}
                 ORDER BY p.like_count DESC, p.view_count DESC
                 LIMIT :limit";
@@ -276,9 +288,9 @@ class AiMusicProject
         }
         
         $sql = "SELECT p.*, u.username, u.avatar,
-                       (SELECT COUNT(*) FROM ai_music_favorite WHERE project_id = p.id) as favorite_count
-                FROM {$this->table} p
-                LEFT JOIN user u ON p.user_id = u.id
+                       (SELECT COUNT(*) FROM `{$this->getTableNameWithPrefix('ai_music_favorite')}` WHERE project_id = p.id) as favorite_count
+                FROM `{$this->getTableName()}` p
+                LEFT JOIN `{$this->getTableNameWithPrefix('users')}` u ON p.user_id = u.id
                 {$whereClause}
                 ORDER BY p.created_at DESC
                 LIMIT :limit";

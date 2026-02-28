@@ -43,13 +43,13 @@ $isLoggedIn = !empty($_SESSION['user_logged_in']) && !empty($_SESSION['user_id']
                         <a href="/novel" class="menu-item">
                             <span class="menu-item-label">我的小说</span>
                         </a>
-                        <a href="/novel_creation" class="menu-item">
+                        <a href="/novel" class="menu-item">
                             <span class="menu-item-label">小说创作工具</span>
                         </a>
-                        <a href="/ai_music" class="menu-item">
+                        <a href="/music/project/list" class="menu-item">
                             <span class="menu-item-label">AI音乐创作</span>
                         </a>
-                        <a href="/anime_production" class="menu-item">
+                        <a href="/anime/project/list" class="menu-item">
                             <span class="menu-item-label">动漫制作</span>
                         </a>
                     </div>
@@ -161,12 +161,12 @@ $isLoggedIn = !empty($_SESSION['user_logged_in']) && !empty($_SESSION['user_id']
                 <div class="frontend-header-actions">
                     <?php if ($isLoggedIn): ?>
                         <a href="/user_center" class="shortcut-link">进入用户中心</a>
-                        <a href="/novel_creation" class="shortcut-link">继续创作</a>
-                        <button class="btn-primary" onclick="location.href='/novel_creation'">开始创作</button>
+                        <a href="/novel" class="shortcut-link">继续创作</a>
+                        <button class="btn-primary" onclick="location.href='/novel'">开始创作</button>
                     <?php else: ?>
                         <a href="/login" class="shortcut-link">登录</a>
                         <a href="/register" class="shortcut-link">注册</a>
-                        <button class="btn-primary" onclick="location.href='/novel_creation'">免费开始</button>
+                        <button class="btn-primary" onclick="location.href='/novel'">免费开始</button>
                     <?php endif; ?>
                 </div>
             </header>
@@ -176,7 +176,7 @@ $isLoggedIn = !empty($_SESSION['user_logged_in']) && !empty($_SESSION['user_id']
                 <h2 class="frontend-section-title">创作与账户概览</h2>
                 <div class="dashboard-v2">
                     <div class="dashboard-grid-v2">
-                        <a href="/novel_creation" class="dashboard-card-v2">
+                        <a href="/novel" class="dashboard-card-v2">
                             <div class="card-icon-v2 bg-novel">
                                 <?= function_exists('render_icon') ? render_icon('book', ['width' => '32', 'height' => '32']) : '✒' ?>
                             </div>
@@ -191,7 +191,7 @@ $isLoggedIn = !empty($_SESSION['user_logged_in']) && !empty($_SESSION['user_id']
                             </div>
                         </a>
 
-                        <a href="/ai_music" class="dashboard-card-v2">
+                        <a href="/music/project/list" class="dashboard-card-v2">
                             <div class="card-icon-v2 bg-music">
                                 <?= function_exists('render_icon') ? render_icon('music', ['width' => '32', 'height' => '32']) : '♪' ?>
                             </div>
@@ -206,7 +206,7 @@ $isLoggedIn = !empty($_SESSION['user_logged_in']) && !empty($_SESSION['user_id']
                             </div>
                         </a>
 
-                        <a href="/anime_production" class="dashboard-card-v2">
+                        <a href="/anime/project/list" class="dashboard-card-v2">
                             <div class="card-icon-v2 bg-anime">
                                 <?= function_exists('render_icon') ? render_icon('film', ['width' => '32', 'height' => '32']) : '🎬' ?>
                             </div>
@@ -312,12 +312,12 @@ $isLoggedIn = !empty($_SESSION['user_logged_in']) && !empty($_SESSION['user_id']
                 <div class="frontend-panel">
                     <h3 class="frontend-section-title">快捷入口</h3>
                     <div class="shortcut-links">
-                        <a href="/novel_creation" class="shortcut-link">小说创作</a>
+                        <a href="/novel" class="shortcut-link">小说创作</a>
                         <a href="/novel_creation/editor" class="shortcut-link">智能编辑器</a>
                         <a href="/novel_creation/outline_generator" class="shortcut-link">大纲生成</a>
                         <a href="/novel_creation/character_manager" class="shortcut-link">角色管理</a>
-                        <a href="/ai_music" class="shortcut-link">AI 音乐</a>
-                        <a href="/anime_production" class="shortcut-link">动画制作</a>
+                        <a href="/music/project/list" class="shortcut-link">AI 音乐</a>
+                        <a href="/anime/project/list" class="shortcut-link">动画制作</a>
                         <a href="/knowledge" class="shortcut-link">知识库</a>
                         <a href="/prompts" class="shortcut-link">提示词工程</a>
                         <a href="/ranking" class="shortcut-link">排行榜</a>

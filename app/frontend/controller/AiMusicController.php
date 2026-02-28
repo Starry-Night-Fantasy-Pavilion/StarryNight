@@ -4,11 +4,11 @@ namespace app\frontend\controller;
 
 use Core\Controller;
 use Core\Exceptions\ErrorCode;
-use app\models\AiMusicProject;
-use app\models\AiMusicLyrics;
-use app\models\AiMusicTrack;
-use app\models\AiMusicMixMaster;
-use app\models\AiMusicExport;
+use App\Models\AiMusicProject;
+use App\Models\AiMusicLyrics;
+use App\Models\AiMusicTrack;
+use App\Models\AiMusicMixMaster;
+use App\Models\AiMusicExport;
 use app\models\User;
 use app\services\FrontendDataService;
 use app\services\StarryNightPermissionService;

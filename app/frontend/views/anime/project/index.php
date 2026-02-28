@@ -16,8 +16,8 @@
         <div class="list-project-grid">
             <?php foreach ($projects as $project): ?>
                 <div class="card">
-                    <?php if ($project['cover_image']): ?>
-                        <img src="<?= htmlspecialchars($project['cover_image']) ?>" alt="<?= htmlspecialchars($project['title']) ?>" class="card-cover-img">
+                    <?php if (!empty($project['cover_image'])): ?>
+                        <img src="<?= htmlspecialchars($project['cover_image']) ?>" alt="<?= htmlspecialchars($project['title'] ?? '') ?>" class="card-cover-img">
                     <?php endif; ?>
                     <div class="card-body">
                         <h3>
@@ -26,17 +26,17 @@
                             </a>
                         </h3>
                         <div class="card-meta">
-                            <?php if ($project['genre']): ?>
+                            <?php if (!empty($project['genre'])): ?>
                                 <span class="badge"><?= htmlspecialchars($project['genre']) ?></span>
                             <?php endif; ?>
-                            <?php if ($project['production_mode']): ?>
+                            <?php if (!empty($project['production_mode'])): ?>
                                 <span class="badge badge-anime"><?= $project['production_mode'] === 'long' ? '长篇' : '短剧' ?></span>
                             <?php endif; ?>
-                            <?php if ($project['episode_count']): ?>
+                            <?php if (!empty($project['episode_count'])): ?>
                                 <span><?= (int)$project['episode_count'] ?> 集</span>
                             <?php endif; ?>
                         </div>
-                        <?php if ($project['description']): ?>
+                        <?php if (!empty($project['description'])): ?>
                             <p class="card-desc"><?= htmlspecialchars($project['description']) ?></p>
                         <?php endif; ?>
                         <div class="card-footer">

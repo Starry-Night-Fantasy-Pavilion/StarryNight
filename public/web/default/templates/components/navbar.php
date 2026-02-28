@@ -18,9 +18,9 @@ $isLoggedIn = isset($_SESSION['user_id']);
 // 默认导航项（保持与旧 layout.php 一致）
 $navItems = $nav_items ?? [
     ['key' => 'home',            'href' => '/',                'label' => '首页'],
-    ['key' => 'novel_creation',  'href' => '/novel_creation',  'label' => '小说创作'],
-    ['key' => 'ai_music',        'href' => '/ai_music',        'label' => 'AI音乐'],
-    ['key' => 'anime_production','href' => '/anime_production','label' => '动画制作'],
+    ['key' => 'novel_creation',  'href' => '/novel',  'label' => '小说创作'],
+    ['key' => 'ai_music',        'href' => '/music/project/list',        'label' => 'AI音乐'],
+    ['key' => 'anime_production','href' => '/anime/project/list','label' => '动画制作'],
     ['key' => 'knowledge',       'href' => '/knowledge',       'label' => '知识库'],
     ['key' => 'templates',       'href' => '/templates',       'label' => '模板库'],
     ['key' => 'agents',          'href' => '/agents',          'label' => '智能体'],

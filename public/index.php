@@ -310,8 +310,11 @@ $router->post('/novel/generate-character', ['app\frontend\controller\NovelContro
 $router->get('/novel/chapter/{id}', ['app\frontend\controller\NovelController', 'getChapter']);
 $router->post('/novel/save-chapter', ['app\frontend\controller\NovelController', 'saveChapter']);
 
-// 前端小说创作工具
-$router->get('/novel_creation', ['app\frontend\controller\NovelCreationController', 'index']);
+// 前端小说创作工具 - 重定向到我的小说
+$router->get('/novel_creation', function() {
+    header('Location: /novel');
+    exit;
+});
 $router->get('/novel_creation/chapter_analysis', ['app\frontend\controller\NovelCreationController', 'chapterAnalysis']);
 $router->post('/novel_creation/chapter_analysis', ['app\frontend\controller\NovelCreationController', 'doChapterAnalysis']);
 $router->get('/novel_creation/book_analysis', ['app\frontend\controller\NovelCreationController', 'bookAnalysis']);
@@ -361,12 +364,18 @@ $router->post('/novel_creation/worldview_generator', ['app\frontend\controller\N
 $router->get('/novel_creation/brainstorm_generator', ['app\frontend\controller\NovelCreationController', 'brainstormGenerator']);
 $router->post('/novel_creation/brainstorm_generator', ['app\frontend\controller\NovelCreationController', 'doBrainstormGenerator']);
 
-// 前端AI音乐
-$router->get('/ai_music', ['app\frontend\controller\AiMusicController', 'index']);
+// 前端AI音乐 - 重定向到我的音乐项目
+$router->get('/ai_music', function() {
+    header('Location: /music/project/list');
+    exit;
+});
 $router->get('/music/project/list', ['app\frontend\controller\AiMusicController', 'projectList']);
 
-// 前端动画制作
-$router->get('/anime_production', ['app\frontend\controller\AnimeProductionController', 'index']);
+// 前端动画制作 - 重定向到我的动漫项目
+$router->get('/anime_production', function() {
+    header('Location: /anime/project/list');
+    exit;
+});
 $router->get('/anime/project/list', ['app\frontend\controller\AnimeProductionController', 'projectList']);
 
 // 前端通用功能
