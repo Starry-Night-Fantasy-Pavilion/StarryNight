@@ -43,7 +43,7 @@ class SystemConfigController extends BaseController
     public function basicSettings()
     {
         // 仅站点基础信息
-        $keys = ['site_name', 'site_logo', 'icp_info', 'contact_info', 'customer_service_config', 'currency_name'];
+        $keys = ['site_name', 'site_logo', 'icp_info', 'contact_info', 'customer_service_config', 'currency_name', 'tutorial_url'];
         $values = Setting::getMany($keys);
         $data = [];
         foreach ($keys as $k) $data[$k] = $values[$k] ?? '';

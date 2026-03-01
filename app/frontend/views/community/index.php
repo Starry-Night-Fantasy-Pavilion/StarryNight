@@ -18,11 +18,6 @@
         <div class="tool-section">
             <h2>社区功能</h2>
             <div class="tool-grid">
-                <a href="/announcement" class="tool-card">
-                    <div class="tool-icon">📢</div>
-                    <h3>站内公告</h3>
-                    <p>查看最新公告、系统通知、更新日志</p>
-                </a>
                 <a href="/crowdfunding" class="tool-card">
                     <div class="tool-icon">❤️</div>
                     <h3>创作众筹</h3>

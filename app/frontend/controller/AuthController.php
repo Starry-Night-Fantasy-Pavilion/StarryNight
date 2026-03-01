@@ -834,6 +834,7 @@ class AuthController
             '9' => '请填写邮箱地址',
             '10' => '请填写手机号',
             '11' => '安全验证失败，请重新完成验证码',
+            '12' => '昵称已存在，请更换其他昵称',
         ];
         $error = isset($_GET['error']) && isset($messages[$_GET['error']]) ? $messages[$_GET['error']] : '';
         $success = isset($_GET['success']) ? '注册成功！请登录' : '';
@@ -1057,22 +1058,41 @@ class AuthController
                 }
             }
 
+            // 检查昵称是否已存在（如果提供了昵称）
+            $nickname = trim((string)($_POST['nickname'] ?? ''));
+            if (!empty($nickname)) {
+                $stmt = $pdo->prepare("SELECT id FROM `{$table}` WHERE `nickname` = :nickname LIMIT 1");
+                $stmt->execute([':nickname' => $nickname]);
+                if ($stmt->fetch()) {
+                    header('Location: /register?error=12'); // 昵称已存在
+                    exit;
+                }
+            }
+
             // 获取客户端IP地址
             $registerIp = $this->getClientIp();
             
-            // 创建用户
+            // 生成用户ID：前9个为单数字ID（1-9），往后随机6-10位ID
+            $userId = $this->generateUserId($pdo, $table);
+            if ($userId === null) {
+                error_log('生成用户ID失败');
+                header('Location: /register?error=6');
+                exit;
+            }
+            
+            // 创建用户（使用指定的ID）
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO `{$table}` (username, email, phone, password, register_ip) VALUES (:username, :email, :phone, :password, :register_ip)";
+            $sql = "INSERT INTO `{$table}` (id, username, nickname, email, phone, password, register_ip) VALUES (:id, :username, :nickname, :email, :phone, :password, :register_ip)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
+                ':id' => $userId,
                 ':username' => $username,
+                ':nickname' => !empty($nickname) ? $nickname : null,
                 ':email' => !empty($email) ? $email : null,
                 ':phone' => !empty($phone) ? $phone : null,
                 ':password' => $hashedPassword,
                 ':register_ip' => $registerIp,
             ]);
-
-            $userId = $pdo->lastInsertId();
 
             // 触发注册成功钩子
             $pluginManager->triggerHook('user_register_success', $userId, $username, $email);
@@ -1094,6 +1114,67 @@ class AuthController
             error_log('User register database error: ' . $e->getMessage());
             header('Location: /register?error=6');
             exit;
+        }
+    }
+
+    /**
+     * 生成用户ID：前9个为单数字ID（1-9），往后随机6-10位ID
+     * 
+     * @param \PDO $pdo
+     * @param string $table
+     * @return int|null
+     */
+    private function generateUserId(\PDO $pdo, string $table): ?int
+    {
+        try {
+            // 获取当前用户总数
+            $stmt = $pdo->query("SELECT COUNT(*) as count FROM `{$table}`");
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $userCount = (int)($result['count'] ?? 0);
+            
+            // 前9个用户使用单数字ID（1-9）
+            if ($userCount < 9) {
+                $targetId = $userCount + 1;
+                // 检查该ID是否已被占用（可能因为删除等原因）
+                $checkStmt = $pdo->prepare("SELECT id FROM `{$table}` WHERE id = :id LIMIT 1");
+                $checkStmt->execute([':id' => $targetId]);
+                if (!$checkStmt->fetch()) {
+                    return $targetId;
+                }
+            }
+            
+            // 第10个及以后：生成随机6-10位数字ID
+            $maxAttempts = 100; // 最多尝试100次
+            for ($attempt = 0; $attempt < $maxAttempts; $attempt++) {
+                // 随机生成6-10位数字
+                $length = random_int(6, 10);
+                $min = (int)str_pad('1', $length, '0');
+                $max = (int)str_pad('9', $length, '9');
+                $randomId = random_int($min, $max);
+                
+                // 检查ID是否已被占用
+                $checkStmt = $pdo->prepare("SELECT id FROM `{$table}` WHERE id = :id LIMIT 1");
+                $checkStmt->execute([':id' => $randomId]);
+                if (!$checkStmt->fetch()) {
+                    return $randomId;
+                }
+            }
+            
+            // 如果100次都失败，使用时间戳+随机数作为后备方案
+            $fallbackId = (int)(time() . random_int(100, 999));
+            $checkStmt = $pdo->prepare("SELECT id FROM `{$table}` WHERE id = :id LIMIT 1");
+            $checkStmt->execute([':id' => $fallbackId]);
+            if (!$checkStmt->fetch()) {
+                return $fallbackId;
+            }
+            
+            // 最后的后备：使用更大的数字
+            $fallbackId = (int)(time() . random_int(1000, 9999));
+            return $fallbackId;
+            
+        } catch (\Exception $e) {
+            error_log('生成用户ID失败: ' . $e->getMessage());
+            return null;
         }
     }
 

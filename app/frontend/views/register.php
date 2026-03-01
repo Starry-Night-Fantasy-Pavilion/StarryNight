@@ -112,6 +112,12 @@ $defaultTab = $registerDefaultMethod === 'phone' ? 'phone' : 'email';
                         <input id="username" type="text" class="field-input" name="username" autocomplete="username" placeholder="请输入用户名" required autofocus>
                     </div>
                     
+                    <div class="form-field">
+                        <label for="nickname" class="field-label">昵称<span style="color:#f97373;"> *</span></label>
+                        <input id="nickname" type="text" class="field-input" name="nickname" autocomplete="nickname" placeholder="请输入昵称（唯一）" required>
+                        <small class="field-hint" style="color: rgba(255,255,255,0.6); font-size: 12px; margin-top: 4px;">昵称必须唯一，不能与其他用户重复</small>
+                    </div>
+                    
                     <?php if ($registerEmailEnabled): ?>
                     <div class="form-field register-email-field" style="<?= $showTabs && $defaultTab !== 'email' ? 'display:none;' : '' ?>">
                         <label for="email" class="field-label">邮箱<span style="color:#f97373;"> *</span></label>

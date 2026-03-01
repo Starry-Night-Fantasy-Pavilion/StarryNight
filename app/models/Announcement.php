@@ -302,13 +302,70 @@ class Announcement
         $pdo = Database::pdo();
         $prefix = Database::prefix();
 
-        $sql = "SELECT COUNT(DISTINCT announcement_id) FROM `{$prefix}user_announcement_reads` 
+        // 获取所有已发布的公告数量
+        $totalSql = "SELECT COUNT(*) FROM `{$prefix}announcements` 
+                     WHERE status = 1 AND (published_at IS NULL OR published_at <= NOW())";
+        $totalStmt = $pdo->prepare($totalSql);
+        $totalStmt->execute();
+        $total = (int)$totalStmt->fetchColumn();
+
+        // 获取已读公告数量
+        $readSql = "SELECT COUNT(DISTINCT announcement_id) FROM `{$prefix}user_announcement_reads` 
                     WHERE user_id = :user_id";
+        $readStmt = $pdo->prepare($readSql);
+        $readStmt->execute([':user_id' => $userId]);
+        $read = (int)$readStmt->fetchColumn();
+
+        // 未读数量 = 总数 - 已读数量
+        return max(0, $total - $read);
+    }
+
+    /**
+     * 获取用户公告列表（包含已读/未读状态）
+     *
+     * @param int $userId
+     * @param int $page
+     * @param int $perPage
+     * @return array
+     */
+    public static function getUserAnnouncements(int $userId, int $page = 1, int $perPage = 20): array
+    {
+        $pdo = Database::pdo();
+        $prefix = Database::prefix();
+        $offset = ($page - 1) * $perPage;
+
+        // 获取所有已发布的公告，并关联读取状态
+        $sql = "SELECT a.*, 
+                       CASE WHEN r.id IS NOT NULL THEN 1 ELSE 0 END as is_read,
+                       r.read_at
+                FROM `{$prefix}announcements` a
+                LEFT JOIN `{$prefix}user_announcement_reads` r 
+                    ON a.id = r.announcement_id AND r.user_id = :user_id
+                WHERE a.status = 1 AND (a.published_at IS NULL OR a.published_at <= NOW())
+                ORDER BY a.is_top DESC, a.published_at DESC
+                LIMIT :limit OFFSET :offset";
         
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([':user_id' => $userId]);
-        
-        return $stmt->fetchColumn();
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // 获取总数
+        $countSql = "SELECT COUNT(*) FROM `{$prefix}announcements` 
+                     WHERE status = 1 AND (published_at IS NULL OR published_at <= NOW())";
+        $countStmt = $pdo->prepare($countSql);
+        $countStmt->execute();
+        $total = (int)$countStmt->fetchColumn();
+
+        return [
+            'announcements' => $announcements,
+            'total' => $total,
+            'page' => $page,
+            'perPage' => $perPage,
+            'totalPages' => ceil($total / $perPage)
+        ];
     }
 
     /**
@@ -332,5 +389,73 @@ class Announcement
         $stmt->execute([':user_id' => $userId, ':limit' => $limit]);
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * 获取需要弹窗显示的未读公告
+     *
+     * @param int $userId
+     * @return array|null
+     */
+    public static function getPopupAnnouncement(int $userId): ?array
+    {
+        $pdo = Database::pdo();
+        $prefix = Database::prefix();
+
+        // 获取需要弹窗显示且用户未读的公告
+        $sql = "SELECT a.* 
+                FROM `{$prefix}announcements` a
+                LEFT JOIN `{$prefix}user_announcement_reads` r 
+                    ON a.id = r.announcement_id AND r.user_id = :user_id
+                WHERE a.status = 1 
+                    AND a.is_popup = 1
+                    AND (a.published_at IS NULL OR a.published_at <= NOW())
+                    AND r.id IS NULL
+                ORDER BY a.is_top DESC, a.published_at DESC
+                LIMIT 1";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':user_id' => $userId]);
+        $announcement = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $announcement ?: null;
+    }
+
+    /**
+     * 记录用户已查看弹窗公告（不标记为已读，只是记录已查看过弹窗）
+     *
+     * @param int $userId
+     * @param int $announcementId
+     * @return bool
+     */
+    public static function markPopupViewed(int $userId, int $announcementId): bool
+    {
+        $pdo = Database::pdo();
+        $prefix = Database::prefix();
+
+        try {
+            // 使用Session或Cookie记录已查看的弹窗公告ID
+            // 这里我们使用一个简单的表来记录，或者可以使用user_announcement_reads表
+            // 但为了区分"已读"和"已查看弹窗"，我们可以使用Session
+            
+            // 如果用户已经标记为已读，就不需要再记录了
+            $checkSql = "SELECT COUNT(*) FROM `{$prefix}user_announcement_reads` 
+                         WHERE user_id = :user_id AND announcement_id = :announcement_id";
+            $checkStmt = $pdo->prepare($checkSql);
+            $checkStmt->execute([
+                ':user_id' => $userId,
+                ':announcement_id' => $announcementId
+            ]);
+            
+            if ($checkStmt->fetchColumn() > 0) {
+                return true; // 已经标记为已读
+            }
+
+            // 记录到Session中（前端处理）
+            return true;
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+            return false;
+        }
     }
 }

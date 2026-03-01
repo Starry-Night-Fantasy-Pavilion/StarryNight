@@ -29,6 +29,11 @@
                 <label class="form-label">货币名称</label>
                 <input type="text" name="currency_name" class="form-control" value="<?= htmlspecialchars($data['currency_name'] ?? '星夜币') ?>" required>
             </div>
+            <div class="mb-3">
+                <label class="form-label">教程URL</label>
+                <input type="url" name="tutorial_url" class="form-control" value="<?= htmlspecialchars($data['tutorial_url'] ?? '') ?>" placeholder="例如：https://docs.example.com 或 /tutorial">
+                <small class="form-text text-muted">配置教程链接地址。如果留空，前端将使用默认的 /tutorial 路径。支持外部链接和内部路径。</small>
+            </div>
             <button type="submit" class="btn btn-primary">保存</button>
         </form>
     </div>

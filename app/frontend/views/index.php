@@ -135,9 +135,6 @@ $isLoggedIn = !empty($_SESSION['user_logged_in']) && !empty($_SESSION['user_id']
 
                     <div class="menu-section">
                         <div class="menu-section-title">互动与信息</div>
-                        <a href="/announcement" class="menu-item">
-                            <span class="menu-item-label">站内公告</span>
-                        </a>
                         <a href="/notice_bar" class="menu-item">
                             <span class="menu-item-label">通知栏</span>
                         </a>

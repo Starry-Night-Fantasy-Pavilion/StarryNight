@@ -72,3 +72,17 @@
 [2026-02-28 06:59:12] [error] Deprecated: htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:12
 [2026-02-28 06:59:12] [error] Warning: Undefined variable $novel in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:387
 [2026-02-28 06:59:12] [error] Warning: Trying to access array offset on value of type null in G:\wwwroot\198.18.0.1\app\frontend\views\novel\project\editor.php:387
+[2026-02-28 07:43:48] [error] Uncaught exception: Unmatched '}' in G:\wwwroot\198.18.0.1\app\models\AnimeProject.php:497
+[2026-02-28 07:43:49] [error] Uncaught exception: Unmatched '}' in G:\wwwroot\198.18.0.1\app\models\AnimeProject.php:497
+[2026-02-28 09:23:06] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:177
+[2026-02-28 09:23:06] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:178
+[2026-02-28 09:23:06] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:838
+[2026-02-28 09:23:06] [error] Warning: Undefined variable $dropdownMembership in G:\wwwroot\198.18.0.1\app\frontend\views\user_center_layout.php:839
+[2026-02-28 21:36:15] [error] Uncaught exception: Call to undefined method app\models\UserFeedback::getList() in G:\wwwroot\198.18.0.1\app\admin\controller\NoticeAnnouncementController.php:139
+[2026-02-28 21:36:19] [error] Uncaught exception: Call to undefined method app\models\Announcement::getAll() in G:\wwwroot\198.18.0.1\app\admin\controller\NoticeAnnouncementController.php:200
+[2026-02-28 21:38:12] [error] Uncaught exception: Call to undefined method app\models\UserFeedback::getList() in G:\wwwroot\198.18.0.1\app\admin\controller\NoticeAnnouncementController.php:139
+[2026-02-28 21:38:18] [error] Uncaught exception: Class "app\models\Community" not found in G:\wwwroot\198.18.0.1\app\admin\controller\CommunityController.php:23
+[2026-02-28 21:39:26] [error] Uncaught exception: Call to undefined method app\models\Announcement::getAll() in G:\wwwroot\198.18.0.1\app\admin\controller\NoticeAnnouncementController.php:200
+[2026-02-28 21:41:10] [error] Uncaught exception: app\models\UserFeedback::getByUserId(): Argument #5 ($status) must be of type ?int, string given, called in G:\wwwroot\198.18.0.1\app\frontend\controller\FeedbackController.php on line 30 in G:\wwwroot\198.18.0.1\app\models\UserFeedback.php:77
+[2026-02-28 21:49:39] [error] Uncaught exception: Call to undefined method app\models\UserFeedback::getList() in G:\wwwroot\198.18.0.1\app\admin\controller\NoticeAnnouncementController.php:139
+[2026-02-28 21:49:42] [error] Uncaught exception: Call to undefined method app\models\Announcement::getAll() in G:\wwwroot\198.18.0.1\app\admin\controller\NoticeAnnouncementController.php:200

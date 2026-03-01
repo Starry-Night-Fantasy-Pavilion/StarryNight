@@ -438,9 +438,6 @@ $router->post('/user_center/save_consistency_config', ['app\frontend\controller\
 // 前端存储
 $router->get('/storage', ['app\frontend\controller\StorageController', 'index']);
 
-// 前端公告
-$router->get('/announcement', ['app\frontend\controller\AnnouncementController', 'index']);
-
 // 前端通知栏（管理页 + 接口）
 // 兼容旧地址 /notice_bar 和新地址 /notice-bar
 $router->get('/notice_bar', ['app\frontend\controller\NoticeBarController', 'index']);
@@ -458,6 +455,15 @@ $router->get('/crowdfunding/{id}', ['app\frontend\controller\CrowdfundingControl
 
 // 前端反馈
 $router->get('/feedback', ['app\frontend\controller\FeedbackController', 'index']);
+
+// 前端消息接收（整合站内公告）
+$router->get('/messages', ['app\frontend\controller\MessageController', 'index']);
+$router->post('/messages/mark-read', ['app\frontend\controller\MessageController', 'markRead']);
+$router->get('/messages/unread-count', ['app\frontend\controller\MessageController', 'unreadCount']);
+$router->get('/messages/get', ['app\frontend\controller\MessageController', 'getMessages']);
+$router->get('/messages/unread-summary', ['app\frontend\controller\MessageController', 'getUnreadSummary']);
+$router->get('/messages/popup-announcement', ['app\frontend\controller\MessageController', 'getPopupAnnouncement']);
+$router->post('/messages/mark-popup-viewed', ['app\frontend\controller\MessageController', 'markPopupViewed']);
 
 // 语言切换
 $router->get('/language/switch', ['app\frontend\controller\LanguageController', 'switchLanguage']);

@@ -11,6 +11,7 @@
     <?php 
     use app\models\Setting;
     use app\models\NoticeBar;
+    use app\models\Announcement;
     use app\services\ThemeManager;
     use app\config\FrontendConfig;
     
@@ -107,6 +108,27 @@
         }
     } catch (\Throwable $e) {
         error_log('UserCenterLayout NoticeBar::getAll error: ' . $e->getMessage());
+    }
+    
+    // 获取站内公告未读数量
+    $announcementUnreadCount = 0;
+    if (!empty($user) && !empty($user['id'])) {
+        try {
+            $announcementUnreadCount = Announcement::getUnreadCount((int)$user['id']);
+        } catch (\Throwable $e) {
+            error_log('UserCenterLayout Announcement::getUnreadCount error: ' . $e->getMessage());
+        }
+    }
+    
+    // 获取教程URL配置
+    $tutorialUrl = '/tutorial'; // 默认值
+    try {
+        $configTutorialUrl = Setting::get('tutorial_url');
+        if (!empty($configTutorialUrl)) {
+            $tutorialUrl = $configTutorialUrl;
+        }
+    } catch (\Throwable $e) {
+        error_log('UserCenterLayout Setting::get tutorial_url error: ' . $e->getMessage());
     }
     ?>
     <!-- 用户中心统一使用当前主题包的样式，而不再依赖 /static/frontend/web/css -->
@@ -225,6 +247,7 @@
                 </div>
                 <div class="dropdown-actions dropdown-actions-bottom">
                     <a href="/user_center/profile" class="dropdown-item">个人中心</a>
+                    <a href="/membership" class="dropdown-item">会员与套餐</a>
                     <a href="/logout" class="dropdown-item dropdown-item-danger">退出登录</a>
                 </div>
             </div>
@@ -300,10 +323,6 @@
                     <a href="/knowledge" class="menu-item">
                         <?= icon('database', ['width' => '20', 'height' => '20']) ?>
                         <span class="nav-text">世界观 / 设定库</span>
-                    </a>
-                    <a href="/novel_creation/character_consistency" class="menu-item">
-                        <?= icon('check-circle', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">一致性检查</span>
                     </a>
                 </div>
 
@@ -614,14 +633,6 @@
                         <?= icon('book-open', ['width' => '20', 'height' => '20']) ?>
                         <span class="nav-text">拆书仿写</span>
                     </a>
-                    <a href="/novel_creation/character_consistency" class="menu-item">
-                        <?= icon('check-circle', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">一致性检查</span>
-                    </a>
-                    <a href="/user_center/consistency_config" class="menu-item <?= ($currentPage === 'consistency_config') ? 'active' : '' ?>">
-                        <?= icon('settings', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">一致性配置</span>
-                    </a>
                     <a href="/ranking" class="menu-item <?= ($currentPage === 'ranking') ? 'active' : '' ?>">
                         <?= icon('trending-up', ['width' => '20', 'height' => '20']) ?>
                         <span class="nav-text">排行榜</span>
@@ -633,17 +644,9 @@
                 <!-- 通用功能专用菜单 -->
                 <div class="menu-section">
                     <div class="menu-section-title">账户与配置</div>
-                    <a href="/membership" class="menu-item">
-                        <?= icon('award', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">会员 & 套餐</span>
-                    </a>
                     <a href="/storage" class="menu-item">
                         <?= icon('hard-drive', ['width' => '20', 'height' => '20']) ?>
                         <span class="nav-text">云存储空间</span>
-                    </a>
-                    <a href="/user_center/profile" class="menu-item">
-                        <?= icon('user', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">个人中心</span>
                     </a>
                     <a href="/user_center/starry_night_config" class="menu-item">
                         <?= icon('sliders', ['width' => '20', 'height' => '20']) ?>
@@ -656,10 +659,6 @@
                 <!-- 社区专用菜单 -->
                 <div class="menu-section">
                     <div class="menu-section-title">社区功能</div>
-                    <a href="/announcement" class="menu-item">
-                        <?= icon('megaphone', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">站内公告</span>
-                    </a>
                     <a href="/crowdfunding" class="menu-item">
                         <?= icon('heart', ['width' => '20', 'height' => '20']) ?>
                         <span class="nav-text">创作众筹</span>
@@ -675,17 +674,9 @@
                 <!-- 通用功能菜单（所有页面都显示，除了通用功能和社区页面） -->
                 <div class="menu-section">
                     <div class="menu-section-title">账户与配置</div>
-                    <a href="/membership" class="menu-item <?= ($currentPage === 'membership') ? 'active' : '' ?>">
-                        <?= icon('award', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">会员 & 套餐</span>
-                    </a>
                     <a href="/storage" class="menu-item <?= ($currentPage === 'storage') ? 'active' : '' ?>">
                         <?= icon('hard-drive', ['width' => '20', 'height' => '20']) ?>
                         <span class="nav-text">云存储空间</span>
-                    </a>
-                    <a href="/user_center/profile" class="menu-item <?= ($currentPage === 'profile') ? 'active' : '' ?>">
-                        <?= icon('user', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">个人中心</span>
                     </a>
                     <a href="/user_center/starry_night_config" class="menu-item <?= ($currentPage === 'starry_night_config') ? 'active' : '' ?>">
                         <?= icon('sliders', ['width' => '20', 'height' => '20']) ?>
@@ -694,11 +685,7 @@
                 </div>
 
                 <div class="menu-section">
-                    <div class="menu-section-title">社区与公告</div>
-                    <a href="/announcement" class="menu-item <?= ($currentPage === 'announcement') ? 'active' : '' ?>">
-                        <?= icon('megaphone', ['width' => '20', 'height' => '20']) ?>
-                        <span class="nav-text">站内公告</span>
-                    </a>
+                    <div class="menu-section-title">社区功能</div>
                     <a href="/crowdfunding" class="menu-item <?= ($currentPage === 'crowdfunding') ? 'active' : '' ?>">
                         <?= icon('heart', ['width' => '20', 'height' => '20']) ?>
                         <span class="nav-text">创作众筹</span>
@@ -745,6 +732,9 @@
                     <a href="/community" class="mode-switch-item">
                         <span class="mode-switch-item-label">社区</span>
                     </a>
+                    <a href="/user_center" class="mode-switch-item">
+                        <span class="mode-switch-item-label">用户中心</span>
+                    </a>
                 </div>
             </div>
             
@@ -788,14 +778,19 @@
                     <?= icon('message-circle', ['width' => '18', 'height' => '18']) ?>
                     <span class="icon-btn-text">对话</span>
                 </a>
-                <a href="/messages" class="icon-btn" title="消息">
+                <button type="button" class="icon-btn" id="messageModalBtn" title="消息" style="position: relative;">
                     <?= icon('mail', ['width' => '18', 'height' => '18']) ?>
                     <span class="icon-btn-text">消息</span>
-                </a>
-                <a href="/notifications" class="icon-btn" title="通知">
+                </button>
+                <button type="button" class="icon-btn" id="noticeModalBtn" title="通知" style="position: relative;">
                     <?= icon('bell', ['width' => '18', 'height' => '18']) ?>
                     <span class="icon-btn-text">通知</span>
-                </a>
+                    <?php if ($announcementUnreadCount > 0): ?>
+                        <span class="unread-count" style="position: absolute; top: 6px; right: 6px; width: 18px; height: 18px; background: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; font-weight: 600; border: 2px solid var(--bg-sidebar, rgba(15, 23, 42, 0.7));">
+                            <?= $announcementUnreadCount > 99 ? '99+' : $announcementUnreadCount ?>
+                        </span>
+                    <?php endif; ?>
+                </button>
                 <a href="/membership/recharge" class="icon-btn" title="充值">
                     <?= icon('credit-card', ['width' => '18', 'height' => '18']) ?>
                     <span class="icon-btn-text">充值</span>
@@ -804,14 +799,32 @@
                     <?= icon('clock', ['width' => '18', 'height' => '18']) ?>
                     <span class="icon-btn-text">历史</span>
                 </a>
-                <a href="/tutorial" class="icon-btn" title="教程">
+                <a href="<?= htmlspecialchars($tutorialUrl) ?>" class="icon-btn" title="教程" <?= strpos($tutorialUrl, 'http') === 0 ? 'target="_blank" rel="noopener noreferrer"' : '' ?>>
                     <?= icon('book-open', ['width' => '18', 'height' => '18']) ?>
                     <span class="icon-btn-text">教程</span>
                 </a>
-                <a href="/user_center/profile" class="icon-btn" title="设置">
-                    <?= icon('settings', ['width' => '18', 'height' => '18']) ?>
-                    <span class="icon-btn-text">设置</span>
-                </a>
+                <div class="top-bar-settings-wrapper" id="topBarSettingsDropdown">
+                    <button type="button" class="icon-btn" id="topBarSettingsBtn" title="设置">
+                        <?= icon('settings', ['width' => '18', 'height' => '18']) ?>
+                        <span class="icon-btn-text">设置</span>
+                    </button>
+                    <div class="uc-avatar-dropdown" id="topBarSettingsDropdownPanel" aria-hidden="true">
+                        <div class="dropdown-actions">
+                            <a href="/storage" class="dropdown-item">
+                                <?= icon('hard-drive', ['width' => '16', 'height' => '16']) ?>
+                                <span>云存储空间</span>
+                            </a>
+                            <a href="/user_center/starry_night_config" class="dropdown-item">
+                                <?= icon('sliders', ['width' => '16', 'height' => '16']) ?>
+                                <span>引擎配置</span>
+                            </a>
+                            <a href="/feedback" class="dropdown-item">
+                                <?= icon('message-square', ['width' => '16', 'height' => '16']) ?>
+                                <span>意见反馈</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <div class="top-bar-user" id="topBarUserDropdown">
                     <div class="top-bar-user-trigger" id="topBarUserTrigger" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
                         <div class="top-bar-user-avatar">
@@ -898,6 +911,7 @@
                         </div>
                         <div class="dropdown-actions dropdown-actions-bottom">
                             <a href="/user_center/profile" class="dropdown-item">个人中心</a>
+                            <a href="/membership" class="dropdown-item">会员与套餐</a>
                             <a href="/logout" class="dropdown-item dropdown-item-danger">退出登录</a>
                         </div>
                     </div>
@@ -928,6 +942,45 @@ document.addEventListener('DOMContentLoaded', function() {
     var sidebarPanel = document.getElementById('sidebarUserDropdownPanel');
     console.log('[Dropdown] sidebarTrigger:', sidebarTrigger, 'sidebarPanel:', sidebarPanel);
     
+    // 统一关闭所有下拉框的函数（必须在所有下拉框初始化之前定义）
+    function closeAllDropdowns(excludeId) {
+        // 关闭侧边栏用户下拉框
+        var sidebarPanel = document.getElementById('sidebarUserDropdownPanel');
+        if (sidebarPanel && sidebarPanel.id !== excludeId) {
+            sidebarPanel.classList.remove('visible');
+            sidebarPanel.setAttribute('aria-hidden', 'true');
+            var sidebarTrigger = document.getElementById('sidebarUserTrigger');
+            if (sidebarTrigger) {
+                sidebarTrigger.setAttribute('aria-expanded', 'false');
+            }
+        }
+        
+        // 关闭顶部栏个人信息下拉框
+        var topBarPanel = document.getElementById('topBarUserDropdownPanel');
+        if (topBarPanel && topBarPanel.id !== excludeId) {
+            topBarPanel.classList.remove('visible');
+            topBarPanel.setAttribute('aria-hidden', 'true');
+            var topBarTrigger = document.getElementById('topBarUserTrigger');
+            if (topBarTrigger) {
+                topBarTrigger.setAttribute('aria-expanded', 'false');
+            }
+        }
+        
+        // 关闭设置下拉框
+        var settingsPanel = document.getElementById('topBarSettingsDropdownPanel');
+        if (settingsPanel && settingsPanel.id !== excludeId) {
+            settingsPanel.classList.remove('visible');
+            settingsPanel.setAttribute('aria-hidden', 'true');
+        }
+        
+        // 关闭创作模式下拉框
+        var modeMenu = document.getElementById('modeSwitchMenu');
+        if (modeMenu && modeMenu.id !== excludeId) {
+            modeMenu.classList.remove('visible');
+            modeMenu.setAttribute('aria-hidden', 'true');
+        }
+    }
+    
     if (sidebarTrigger && sidebarPanel) {
         console.log('[Dropdown] Attaching sidebar event listeners');
         function toggleSidebar(e) {
@@ -936,6 +989,10 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('[Dropdown] Sidebar toggle, open:', open, 'classes:', sidebarPanel.className);
             sidebarTrigger.setAttribute('aria-expanded', open);
             sidebarPanel.setAttribute('aria-hidden', !open);
+            // 如果打开，关闭其他所有下拉框
+            if (open) {
+                closeAllDropdowns('sidebarUserDropdownPanel');
+            }
         }
         function closeSidebar() {
             sidebarPanel.classList.remove('visible');
@@ -951,7 +1008,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!e.target.closest('#sidebarUserDropdown')) closeSidebar();
         });
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeSidebar();
+            if (e.key === 'Escape') {
+                closeAllDropdowns();
+            }
         });
     }
     
@@ -968,6 +1027,10 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('[Dropdown] Topbar panel computed style:', window.getComputedStyle(topBarPanel).visibility, window.getComputedStyle(topBarPanel).opacity);
             topBarTrigger.setAttribute('aria-expanded', open);
             topBarPanel.setAttribute('aria-hidden', !open);
+            // 如果打开，关闭其他所有下拉框
+            if (open) {
+                closeAllDropdowns('topBarUserDropdownPanel');
+            }
         }
         function closeTopBar() {
             topBarPanel.classList.remove('visible');
@@ -980,12 +1043,56 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         topBarTrigger.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTopBar(); } });
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('#topBarUserDropdown')) closeTopBar();
+            if (!e.target.closest('#topBarUserDropdown') && !e.target.closest('#topBarSettingsDropdown')) closeTopBar();
         });
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeTopBar();
+            if (e.key === 'Escape') {
+                closeAllDropdowns();
+            }
         });
     }
+
+    // 设置按钮点击打开空的下拉框 - 统一处理所有页面
+    (function initSettingsDropdown() {
+        var settingsBtn = document.getElementById('topBarSettingsBtn');
+        var settingsPanel = document.getElementById('topBarSettingsDropdownPanel');
+        if (!settingsBtn || !settingsPanel) return;
+        
+        function toggleSettingsMenu(e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            var open = settingsPanel.classList.toggle('visible');
+            settingsPanel.setAttribute('aria-hidden', !open);
+            // 如果打开，关闭其他所有下拉框
+            if (open) {
+                closeAllDropdowns('topBarSettingsDropdownPanel');
+            }
+        }
+        
+        function closeSettingsMenu() {
+            settingsPanel.classList.remove('visible');
+            settingsPanel.setAttribute('aria-hidden', 'true');
+        }
+        
+        // 点击设置按钮
+        settingsBtn.addEventListener('click', function(e) {
+            toggleSettingsMenu(e);
+        });
+        
+        // 键盘支持
+        settingsBtn.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleSettingsMenu();
+            }
+        });
+        
+        // 点击外部关闭
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#topBarSettingsDropdown')) {
+                closeSettingsMenu();
+            }
+        });
+    })();
 
     var modeToggle = document.getElementById('topBarModeToggle');
     var modeMenu = document.getElementById('modeSwitchMenu');
@@ -999,6 +1106,10 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('[Dropdown] Mode toggle, open:', open, 'classes:', modeMenu.className);
             console.log('[Dropdown] Mode menu computed style:', window.getComputedStyle(modeMenu).visibility, window.getComputedStyle(modeMenu).opacity);
             modeMenu.setAttribute('aria-hidden', !open);
+            // 如果打开，关闭其他所有下拉框
+            if (open) {
+                closeAllDropdowns('modeSwitchMenu');
+            }
         }
         function closeModeMenu() {
             modeMenu.classList.remove('visible');
@@ -1021,7 +1132,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
-                closeModeMenu();
+                closeAllDropdowns();
             }
         });
     }
@@ -1205,13 +1316,563 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="notice-modal-overlay"></div>
         <div class="notice-modal-content">
             <div class="notice-modal-header">
-                <h2 class="notice-modal-title">所有通知</h2>
+                <h2 class="notice-modal-title">通知</h2>
                 <button class="notice-modal-close" id="noticeModalClose" aria-label="关闭">&times;</button>
+            </div>
+            <div class="notice-modal-tabs">
+                <button class="notice-tab active" data-category="notice">
+                    <span class="tab-name">通知栏</span>
+                </button>
+                <button class="notice-tab" data-category="announcement">
+                    <span class="tab-name">站内公告</span>
+                    <span class="tab-badge" id="noticeTabBadgeAnnouncement" style="display: none;">0</span>
+                </button>
             </div>
             <div class="notice-modal-body" id="noticeModalBody">
                 <!-- 通知列表将在这里动态渲染 -->
             </div>
         </div>
     </div>
+
+    <!-- 公告弹窗（自动弹出） -->
+    <div id="announcementPopupModal" class="announcement-popup-modal" style="display: none;">
+        <div class="announcement-popup-overlay"></div>
+        <div class="announcement-popup-content">
+            <div class="announcement-popup-header">
+                <div class="announcement-popup-title-row">
+                    <span class="announcement-popup-icon">📢</span>
+                    <h2 class="announcement-popup-title" id="announcementPopupTitle">站内公告</h2>
+                </div>
+                <button class="announcement-popup-close" id="announcementPopupClose" aria-label="关闭">&times;</button>
+            </div>
+            <div class="announcement-popup-body" id="announcementPopupBody">
+                <!-- 公告内容将在这里动态渲染 -->
+            </div>
+            <div class="announcement-popup-footer">
+                <button class="announcement-popup-btn-secondary" id="announcementPopupMarkRead">标记已读</button>
+                <button class="announcement-popup-btn-primary" id="announcementPopupCloseBtn">我知道了</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 消息弹窗（类似微信） -->
+    <div id="messageModal" class="message-modal" style="display: none;">
+        <div class="message-modal-overlay"></div>
+        <div class="message-modal-content">
+            <div class="message-modal-header">
+                <h2 class="message-modal-title">消息</h2>
+                <button class="message-modal-close" id="messageModalClose" aria-label="关闭">&times;</button>
+            </div>
+            <div class="message-modal-tabs">
+                <button class="message-tab active" data-category="friend">
+                    <span class="tab-name">好友消息</span>
+                    <span class="tab-badge" id="tabBadgeFriend" style="display: none;">0</span>
+                </button>
+            </div>
+            <div class="message-modal-body" id="messageModalBody">
+                <div class="message-loading">
+                    <div class="loading-spinner"></div>
+                    <p>加载中...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // 消息弹窗功能
+    (function() {
+        const messageModal = document.getElementById('messageModal');
+        const messageModalBtn = document.getElementById('messageModalBtn');
+        const messageModalClose = document.getElementById('messageModalClose');
+        const messageModalBody = document.getElementById('messageModalBody');
+        const messageTabs = document.querySelectorAll('.message-tab');
+        let currentCategory = 'friend';
+
+        // 打开弹窗
+        function openMessageModal() {
+            messageModal.style.display = 'block';
+            setTimeout(() => {
+                messageModal.classList.add('visible');
+            }, 10);
+            loadMessages(currentCategory);
+            loadUnreadSummary();
+        }
+
+        // 关闭弹窗
+        function closeMessageModal() {
+            messageModal.classList.remove('visible');
+            setTimeout(() => {
+                messageModal.style.display = 'none';
+            }, 300);
+        }
+
+        // 加载消息列表
+        function loadMessages(category) {
+            messageModalBody.innerHTML = '<div class="message-loading"><div class="loading-spinner"></div><p>加载中...</p></div>';
+            
+            fetch(`/messages/get?category=${category}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        renderMessages(data.data);
+                    } else {
+                        messageModalBody.innerHTML = '<div class="message-empty">加载失败</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('加载消息失败:', error);
+                    messageModalBody.innerHTML = '<div class="message-empty">加载失败，请稍后重试</div>';
+                });
+        }
+
+        // 渲染消息列表
+        function renderMessages(data) {
+            if (!data.items || data.items.length === 0) {
+                messageModalBody.innerHTML = '<div class="message-empty"><div class="empty-icon">📭</div><p>暂无消息</p></div>';
+                return;
+            }
+
+            let html = '<div class="message-list">';
+            data.items.forEach(item => {
+                const time = formatTime(item.time);
+                const isUnread = !item.is_read;
+                html += `
+                    <div class="message-item ${isUnread ? 'unread' : ''}" data-id="${item.id}">
+                        <div class="message-item-header">
+                            <div class="message-item-title-row">
+                                ${isUnread ? '<span class="unread-dot"></span>' : ''}
+                                ${item.is_top ? '<span class="top-badge">置顶</span>' : ''}
+                                <h3 class="message-item-title">${escapeHtml(item.title || '无标题')}</h3>
+                            </div>
+                            <div class="message-item-meta">
+                                <span class="message-item-time">${time}</span>
+                                ${isUnread ? '<span class="read-status unread">未读</span>' : '<span class="read-status">已读</span>'}
+                            </div>
+                        </div>
+                        <div class="message-item-content">${escapeHtml(item.content || '').substring(0, 100)}${item.content && item.content.length > 100 ? '...' : ''}</div>
+                        ${isUnread ? `<div class="message-item-actions"><button class="btn-mark-read" onclick="markMessageAsRead(${item.id}, '${data.category}')">标记已读</button></div>` : ''}
+                    </div>
+                `;
+            });
+            html += '</div>';
+            messageModalBody.innerHTML = html;
+        }
+
+        // 加载未读数量汇总
+        function loadUnreadSummary() {
+            fetch('/messages/unread-summary')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateTabBadges(data.data);
+                        updateTopBarBadge(data.data);
+                    }
+                })
+                .catch(error => {
+                    console.error('加载未读数量失败:', error);
+                });
+        }
+
+        // 更新标签页徽章
+        function updateTabBadges(summary) {
+            const badges = {
+                friend: document.getElementById('tabBadgeFriend')
+            };
+
+            Object.keys(badges).forEach(category => {
+                const count = summary[category] || 0;
+                const badge = badges[category];
+                if (count > 0) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.style.display = 'inline-flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            });
+        }
+
+        // 更新顶部导航栏徽章
+        function updateTopBarBadge(summary) {
+            const total = summary.friend || 0;
+            const badge = document.getElementById('messageUnreadBadge');
+            if (total > 0) {
+                if (badge) {
+                    badge.textContent = total > 99 ? '99+' : total;
+                } else {
+                    const btn = document.getElementById('messageModalBtn');
+                    if (btn) {
+                        const newBadge = document.createElement('span');
+                        newBadge.id = 'messageUnreadBadge';
+                        newBadge.className = 'unread-count';
+                        newBadge.style.cssText = 'position: absolute; top: 6px; right: 6px; width: 18px; height: 18px; background: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; font-weight: 600; border: 2px solid var(--bg-sidebar, rgba(15, 23, 42, 0.7));';
+                        newBadge.textContent = total > 99 ? '99+' : total;
+                        btn.appendChild(newBadge);
+                    }
+                }
+            } else {
+                if (badge) badge.remove();
+            }
+        }
+
+        // 格式化时间
+        function formatTime(timeStr) {
+            if (!timeStr) return '';
+            const time = new Date(timeStr);
+            const now = new Date();
+            const diff = now - time;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return '刚刚';
+            if (minutes < 60) return minutes + '分钟前';
+            if (hours < 24) return hours + '小时前';
+            if (days < 7) return days + '天前';
+            return time.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
+        }
+
+        // HTML转义
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 标记消息为已读
+        window.markMessageAsRead = function(id, category) {
+            fetch('/messages/mark-read', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'announcement_id=' + id
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 重新加载当前分类的消息
+                    loadMessages(category);
+                    // 更新未读数量
+                    loadUnreadSummary();
+                } else {
+                    alert(data.message || '操作失败');
+                }
+            })
+            .catch(error => {
+                console.error('标记已读失败:', error);
+                alert('操作失败，请稍后重试');
+            });
+        };
+
+        // 事件监听
+        if (messageModalBtn) {
+            messageModalBtn.addEventListener('click', openMessageModal);
+        }
+        if (messageModalClose) {
+            messageModalClose.addEventListener('click', closeMessageModal);
+        }
+        if (messageModal) {
+            messageModal.addEventListener('click', function(e) {
+                if (e.target === messageModal || e.target.classList.contains('message-modal-overlay')) {
+                    closeMessageModal();
+                }
+            });
+        }
+
+        // 标签页切换
+        messageTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                messageTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentCategory = this.dataset.category;
+                loadMessages(currentCategory);
+            });
+        });
+
+        // 定期更新未读数量
+        setInterval(loadUnreadSummary, 60000); // 每分钟更新一次
+    })();
+
+    // 通知弹窗功能
+    (function() {
+        const noticeModal = document.getElementById('noticeModal');
+        const noticeModalBtn = document.getElementById('noticeModalBtn');
+        const noticeModalClose = document.getElementById('noticeModalClose');
+        const noticeModalBody = document.getElementById('noticeModalBody');
+        const topBarNoticePill = document.getElementById('topBarNoticePill');
+        const noticeTabs = document.querySelectorAll('.notice-tab');
+        let currentNoticeCategory = 'notice';
+        
+        function toPlainText(html) {
+            const div = document.createElement('div');
+            div.innerHTML = html || '';
+            return (div.textContent || div.innerText || '').trim();
+        }
+
+        // 打开通知弹窗
+        function openNoticeModal() {
+            noticeModal.style.display = 'block';
+            setTimeout(() => {
+                noticeModal.classList.add('visible');
+            }, 10);
+            loadNoticeContent(currentNoticeCategory);
+            loadNoticeUnreadCount();
+        }
+
+        // 关闭通知弹窗
+        function closeNoticeModal() {
+            noticeModal.classList.remove('visible');
+            setTimeout(() => {
+                noticeModal.style.display = 'none';
+            }, 300);
+        }
+
+        // 加载通知内容
+        function loadNoticeContent(category) {
+            noticeModalBody.innerHTML = '<div class="notice-loading"><div class="loading-spinner"></div><p>加载中...</p></div>';
+            
+            if (category === 'notice') {
+                renderNoticeBarList();
+            } else if (category === 'announcement') {
+                loadAnnouncementList();
+            }
+        }
+
+        // 渲染通知栏列表
+        function renderNoticeBarList() {
+            const allNotices = topBarNoticePill ? JSON.parse(topBarNoticePill.dataset.allNotices || '[]') : [];
+            
+            if (allNotices.length === 0) {
+                noticeModalBody.innerHTML = '<div class="notice-modal-empty"><div class="empty-icon">📭</div><p>暂无通知</p></div>';
+                return;
+            }
+
+            let html = '<div class="notice-list">';
+            allNotices.forEach(notice => {
+                const time = formatNoticeTime(notice.created_at);
+                const plain = toPlainText(notice.content || '');
+                const preview = escapeHtml(plain).substring(0, 140) + (plain.length > 140 ? '…' : '');
+                html += `
+                    <div class="notice-item">
+                        <div class="notice-item-header">
+                            <span class="notice-item-priority notice-priority-${getPriorityLevel(notice.priority)}">${getPriorityLabel(notice.priority)}</span>
+                            <span class="notice-item-time">${time}</span>
+                        </div>
+                        <div class="notice-item-content">${preview || '—'}</div>
+                        ${notice.link ? `<div class="notice-item-link"><a href="${notice.link}" target="_blank" rel="noopener noreferrer">查看详情 →</a></div>` : ''}
+                    </div>
+                `;
+            });
+            html += '</div>';
+            noticeModalBody.innerHTML = html;
+        }
+
+        // 加载站内公告列表
+        function loadAnnouncementList() {
+            fetch('/messages/get?category=announcement')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('收到的公告数据:', data);
+                    if (data.success) {
+                        console.log('公告列表数据:', data.data);
+                        console.log('公告项:', data.data.items);
+                        renderAnnouncementList(data.data);
+                    } else {
+                        noticeModalBody.innerHTML = '<div class="notice-modal-empty"><div class="empty-icon">📭</div><p>加载失败</p></div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('加载站内公告失败:', error);
+                    noticeModalBody.innerHTML = '<div class="notice-modal-empty"><div class="empty-icon">📭</div><p>加载失败，请稍后重试</p></div>';
+                });
+        }
+
+        // 渲染站内公告列表
+        function renderAnnouncementList(data) {
+            if (!data.items || data.items.length === 0) {
+                noticeModalBody.innerHTML = '<div class="notice-modal-empty"><div class="empty-icon">📭</div><p>暂无公告</p></div>';
+                return;
+            }
+
+            // 分类映射
+            const categoryMap = {
+                'system_update': '系统更新',
+                'activity_notice': '活动通知',
+                'maintenance': '维护公告'
+            };
+
+            let html = '<div class="notice-list">';
+            data.items.forEach(item => {
+                const time = formatNoticeTime(item.time);
+                const isUnread = !item.is_read;
+                // 确保分类字段存在，如果为空则使用默认值
+                const itemCategory = item.category || 'system_update';
+                const categoryName = categoryMap[itemCategory] || '系统公告';
+                
+                // 调试：输出分类信息
+                console.log('公告分类:', itemCategory, '分类名称:', categoryName, '完整item:', item);
+                
+                html += `
+                    <div class="notice-item ${isUnread ? 'unread' : ''}" data-id="${item.id}">
+                        <div class="notice-item-header">
+                            <div class="notice-item-title-row">
+                                ${isUnread ? '<span class="unread-dot"></span>' : ''}
+                                ${item.is_top ? '<span class="top-badge">置顶</span>' : ''}
+                                <span class="notice-item-category">${categoryName}</span>
+                            </div>
+                            <h3 class="notice-item-title">${escapeHtml(item.title || '无标题')}</h3>
+                            <div class="notice-item-meta">
+                                <span class="notice-item-time">${time}</span>
+                                ${isUnread ? '<span class="read-status unread">未读</span>' : '<span class="read-status">已读</span>'}
+                            </div>
+                        </div>
+                        <div class="notice-item-content">${escapeHtml(item.content || '').substring(0, 200)}${item.content && item.content.length > 200 ? '...' : ''}</div>
+                        ${isUnread ? `<div class="notice-item-actions"><button class="btn-mark-read" onclick="markAnnouncementAsRead(${item.id})">标记已读</button></div>` : ''}
+                    </div>
+                `;
+            });
+            html += '</div>';
+            noticeModalBody.innerHTML = html;
+        }
+
+        // 加载未读数量
+        function loadNoticeUnreadCount() {
+            fetch('/messages/unread-summary')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateNoticeTabBadge(data.data.announcement || 0);
+                        updateNoticeTopBarBadge(data.data.announcement || 0);
+                    }
+                })
+                .catch(error => {
+                    console.error('加载未读数量失败:', error);
+                });
+        }
+
+        // 更新通知标签页徽章
+        function updateNoticeTabBadge(count) {
+            const badge = document.getElementById('noticeTabBadgeAnnouncement');
+            if (count > 0) {
+                if (badge) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.style.display = 'inline-flex';
+                }
+            } else {
+                if (badge) badge.style.display = 'none';
+            }
+        }
+
+        // 更新通知按钮徽章
+        function updateNoticeTopBarBadge(count) {
+            const btn = document.getElementById('noticeModalBtn');
+            let badge = btn ? btn.querySelector('.unread-count') : null;
+            if (count > 0) {
+                if (badge) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                } else if (btn) {
+                    badge = document.createElement('span');
+                    badge.className = 'unread-count';
+                    badge.style.cssText = 'position: absolute; top: 6px; right: 6px; width: 18px; height: 18px; background: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; font-weight: 600; border: 2px solid var(--bg-sidebar, rgba(15, 23, 42, 0.7));';
+                    badge.textContent = count > 99 ? '99+' : count;
+                    btn.appendChild(badge);
+                }
+            } else {
+                if (badge) badge.remove();
+            }
+        }
+
+        function formatNoticeTime(timeStr) {
+            if (!timeStr) return '';
+            const time = new Date(timeStr);
+            const now = new Date();
+            const diff = now - time;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return '刚刚';
+            if (minutes < 60) return minutes + '分钟前';
+            if (hours < 24) return hours + '小时前';
+            if (days < 7) return days + '天前';
+            return time.toLocaleString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function getPriorityLevel(priority) {
+            const p = parseInt(priority) || 0;
+            if (p >= 80) return 'high';
+            if (p >= 40) return 'medium';
+            return 'low';
+        }
+
+        function getPriorityLabel(priority) {
+            const p = parseInt(priority) || 0;
+            if (p >= 80) return '重要';
+            if (p >= 40) return '提醒';
+            return '提示';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 标记公告为已读
+        window.markAnnouncementAsRead = function(id) {
+            fetch('/messages/mark-read', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'announcement_id=' + id
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadAnnouncementList();
+                    loadNoticeUnreadCount();
+                } else {
+                    alert(data.message || '操作失败');
+                }
+            })
+            .catch(error => {
+                console.error('标记已读失败:', error);
+                alert('操作失败，请稍后重试');
+            });
+        };
+
+        // 事件监听
+        if (noticeModalBtn) {
+            noticeModalBtn.addEventListener('click', openNoticeModal);
+        }
+        if (topBarNoticePill) {
+            topBarNoticePill.addEventListener('click', openNoticeModal);
+        }
+        if (noticeModalClose) {
+            noticeModalClose.addEventListener('click', closeNoticeModal);
+        }
+        if (noticeModal) {
+            noticeModal.addEventListener('click', function(e) {
+                if (e.target === noticeModal || e.target.classList.contains('notice-modal-overlay')) {
+                    closeNoticeModal();
+                }
+            });
+        }
+
+        // 标签页切换
+        noticeTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                noticeTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentNoticeCategory = this.dataset.category;
+                loadNoticeContent(currentNoticeCategory);
+            });
+        });
+
+        // 定期更新未读数量
+        setInterval(loadNoticeUnreadCount, 60000);
+    })();
+    </script>
 </body>
 </html>

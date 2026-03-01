@@ -6,9 +6,11 @@ use app\config\FrontendConfig;
 try {
     $siteName = Setting::get('site_name') ?: (string)get_env('APP_NAME', '星夜阁');
     $siteLogo = Setting::get('site_logo');
+    $tutorialUrl = Setting::get('tutorial_url') ?: FrontendConfig::ROUTE_TUTORIAL;
 } catch (\Exception $e) {
     $siteName = (string)get_env('APP_NAME', '星夜阁');
     $siteLogo = null;
+    $tutorialUrl = FrontendConfig::ROUTE_TUTORIAL;
 }
 
 $themeManager = new ThemeManager();
@@ -127,7 +129,7 @@ $currentPage = $_SERVER['REQUEST_URI'] ?? '/';
             <div class="footer-section">
                 <h3>帮助支持</h3>
                 <ul>
-                    <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_TUTORIAL) ?>">使用教程</a></li>
+                    <li><a href="<?= htmlspecialchars($tutorialUrl) ?>" <?= strpos($tutorialUrl, 'http') === 0 ? 'target="_blank" rel="noopener noreferrer"' : '' ?>>使用教程</a></li>
                     <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_HELP) ?>">帮助中心</a></li>
                     <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_FEEDBACK) ?>">意见反馈</a></li>
                     <li><a href="<?= htmlspecialchars(FrontendConfig::ROUTE_ABOUT) ?>">关于我们</a></li>

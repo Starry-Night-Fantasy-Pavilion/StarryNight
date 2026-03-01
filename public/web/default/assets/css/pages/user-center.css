@@ -142,18 +142,22 @@ body.page-user-center {
     font-size: 0.9rem;
     color: #374151;
     text-decoration: none;
-    transition: background 0.15s;
+    transition: all 0.15s ease;
     border-bottom: 1px solid rgba(229,231,235,0.9);
+    border-radius: 999px;
+    margin: 2px 8px;
+    background: #f3f4f6;
 }
 .dropdown-item:hover {
-    background: #f3f4f6;
+    background: #e5e7eb;
     color: #111827;
 }
 .dropdown-item-danger {
     color: #ef4444;
+    background: #fee2e2;
 }
 .dropdown-item-danger:hover {
-    background: #fee2e2;
+    background: #fecaca;
 }
 .dropdown-section {
     padding: 10px 18px;
@@ -183,7 +187,12 @@ body.page-user-center {
 }
 .dropdown-link { color: #60a5fa; text-decoration: none; font-size: 0.8rem; }
 .dropdown-link:hover { text-decoration: underline; }
-.dropdown-actions { padding: 8px 0; }
+.dropdown-actions { 
+    padding: 8px 0; 
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
 .dropdown-actions .dropdown-item {
     border-bottom: none;
     display: flex;
@@ -191,6 +200,14 @@ body.page-user-center {
     justify-content: flex-start;
     gap: 8px;
     font-size: 0.88rem;
+    border-radius: 999px;
+    margin: 3px 8px;
+    padding: 10px 16px;
+    background: #f3f4f6;
+}
+.dropdown-actions .dropdown-item:hover {
+    background: #e5e7eb;
+    color: #111827;
 }
 
 /* 确保“个人中心 / 退出登录”始终在下拉最底部 */
@@ -253,6 +270,95 @@ body.page-user-center {
     z-index: 10000;
 }
 
+/* 设置下拉框样式 - 使用与个人信息下拉框相同的定位方式 */
+.user-actions .top-bar-settings-wrapper .uc-avatar-dropdown,
+.user-actions #topBarSettingsDropdownPanel {
+    top: calc(100% + 8px) !important;
+    bottom: auto !important;
+    right: 0 !important;
+    left: auto !important;
+    min-width: 280px !important;
+    width: auto !important;
+    z-index: 10011 !important; /* 确保在最上层，比模式切换菜单(10010)和个人信息下拉框(10000)更高 */
+}
+
+/* 设置下拉框菜单项样式 - 居中，无按钮样式 */
+#topBarSettingsDropdownPanel .dropdown-actions {
+    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#topBarSettingsDropdownPanel .dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 18px;
+    color: #374151;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    font-size: 0.9rem;
+    text-align: center;
+    background: #f3f4f6;
+    border: none;
+    border-radius: 999px;
+    margin: 3px 10px;
+    box-shadow: none;
+}
+
+#topBarSettingsDropdownPanel .dropdown-item:last-child {
+    border-bottom: none;
+}
+
+#topBarSettingsDropdownPanel .dropdown-item:hover {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+#topBarSettingsDropdownPanel .dropdown-item svg {
+    flex-shrink: 0;
+    color: #6b7280;
+    transition: color 0.15s ease;
+}
+
+#topBarSettingsDropdownPanel .dropdown-item:hover svg {
+    color: #3b82f6;
+}
+
+#topBarSettingsDropdownPanel .dropdown-item span {
+    text-align: center;
+}
+
+/* 个人信息下拉框中的会员与套餐样式 */
+.dropdown-actions-bottom .dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    color: #374151;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    font-size: 0.88rem;
+    text-align: center;
+    background: #e5e7eb;
+    border: none;
+    border-radius: 999px;
+    margin: 3px 10px;
+    box-shadow: none;
+}
+
+.dropdown-actions-bottom .dropdown-item:hover {
+    background: #d1d5db;
+    color: #111827;
+}
+
+#topBarSettingsDropdownPanel .dropdown-item span {
+    flex: 1;
+}
+
 /* 鼠标悬停个人信息时也展开下拉，作为 JS 的兜底 */
 .top-bar-user:hover .uc-avatar-dropdown {
     opacity: 1;
@@ -274,6 +380,13 @@ body.page-user-center {
 .top-bar-logo-img { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; }
 .top-bar-logo-name { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; }
 .user-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex: 0 0 auto; flex-wrap: nowrap; }
+
+/* 设置下拉框样式 */
+.top-bar-settings-wrapper {
+    position: relative;
+    display: inline-block;
+    overflow: visible !important;
+}
 
 /* 顶部导航胶囊通知栏样式（已注释停用，仅保留跑马灯逻辑用作备份）
 .top-bar-notice-pill {
@@ -772,15 +885,15 @@ body.page-user-center {
     left: 50%;
     transform: translate(-50%, -50%) scale(0.95);
     width: 90%;
-    max-width: 600px;
-    max-height: 80vh;
-    background: var(--bg-primary, #1e293b);
-    border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    max-width: 520px;
+    max-height: 85vh;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
     display: flex;
     flex-direction: column;
     transition: transform 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(229, 231, 235, 0.9);
 }
 
 .notice-modal.visible .notice-modal-content {
@@ -791,43 +904,227 @@ body.page-user-center {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 16px 18px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+.notice-modal-tabs {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+    padding: 0 10px;
+}
+
+.notice-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 16px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 0.9375rem;
+    color: #6b7280;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.notice-tab:hover {
+    color: #111827;
+    background: #f9fafb;
+}
+
+.notice-tab.active {
+    color: #07c160; /* 更接近微信强调色 */
+    font-weight: 600;
+}
+
+.notice-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #07c160;
+}
+
+.notice-tab .tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: #ef4444;
+    color: #ffffff;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.notice-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.notice-item-title-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.notice-item-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.notice-item-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.notice-item.unread {
+    background: #eff6ff;
+    border-bottom-color: #dbeafe;
+}
+
+.notice-item.unread:hover {
+    background: #dbeafe;
+}
+
+.notice-item-actions {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f3f4f6;
+}
+
+/* 通知弹窗中的未读标记点 */
+.notice-item-title-row .unread-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ef4444;
+    flex-shrink: 0;
+}
+
+/* 通知弹窗中的置顶标签 */
+.notice-item-title-row .top-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    background: #fef3c7;
+    color: #d97706;
+    font-weight: 600;
+}
+
+/* 通知弹窗中的分类标签 */
+/* 通知弹窗中的分类标签 - 强制显示 */
+.notice-item-title-row .notice-item-category,
+.notice-item .notice-item-category,
+.notice-item-category {
+    padding: 3px 10px !important;
+    border-radius: 4px !important;
+    font-size: 11px !important;
+    background: #dbeafe !important;
+    color: #1d4ed8 !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin-right: 4px !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: auto !important;
+    width: auto !important;
+    min-width: 50px !important;
+    text-align: center !important;
+    line-height: 1.2 !important;
+}
+
+/* 通知弹窗中的已读/未读状态 */
+.notice-item-meta .read-status {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    background: #d1fae5;
+    color: #059669;
+}
+
+.notice-item-meta .read-status.unread {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* 通知弹窗中的标记已读按钮 */
+.notice-item-actions .btn-mark-read {
+    padding: 4px 12px;
+    border-radius: 6px;
+    background: #eff6ff;
+    color: #3b82f6;
+    border: 1px solid #dbeafe;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    transition: all 0.2s ease;
+}
+
+.notice-item-actions .btn-mark-read:hover {
+    background: #dbeafe;
+    border-color: #93c5fd;
 }
 
 .notice-modal-title {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.125rem;
     font-weight: 600;
-    color: var(--text-primary, #f1f5f9);
+    color: #111827;
 }
 
 .notice-modal-close {
     background: none;
     border: none;
-    color: var(--text-secondary, #94a3b8);
-    font-size: 28px;
+    color: #6b7280;
+    font-size: 24px;
     line-height: 1;
     cursor: pointer;
-    padding: 0;
+    padding: 4px;
     width: 32px;
     height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 6px;
     transition: all 0.2s ease;
 }
 
 .notice-modal-close:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary, #f1f5f9);
+    background: #f3f4f6;
+    color: #111827;
 }
 
 .notice-modal-body {
     flex: 1;
     overflow-y: auto;
-    padding: 20px 24px;
+    padding: 0;
+    background: #f9fafb;
 }
 
 .notice-modal-body::-webkit-scrollbar {
@@ -835,50 +1132,75 @@ body.page-user-center {
 }
 
 .notice-modal-body::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(17, 24, 39, 0.06);
     border-radius: 4px;
 }
 
 .notice-modal-body::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(17, 24, 39, 0.18);
     border-radius: 4px;
 }
 
 .notice-modal-body::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(17, 24, 39, 0.28);
 }
 
 .notice-modal-empty {
     text-align: center;
     padding: 40px 20px;
-    color: var(--text-secondary, #94a3b8);
+    color: #6b7280;
     font-size: 1rem;
+    background: #ffffff;
+}
+
+.notice-modal-empty .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.notice-item-link {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.notice-item-link a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s ease;
+}
+
+.notice-item-link a:hover {
+    color: #2563eb;
+    text-decoration: underline;
 }
 
 .notice-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 0;
 }
 
 .notice-item {
-    padding: 16px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.2s ease;
+    padding: 14px 16px;
+    border-radius: 0;
+    background: #ffffff;
+    border: none;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.15s ease;
 }
 
 .notice-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.12);
+    background: #f9fafb;
 }
 
 .notice-item-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     gap: 12px;
 }
 
@@ -893,58 +1215,625 @@ body.page-user-center {
 }
 
 .notice-priority-high {
-    background: rgba(239, 68, 68, 0.2);
-    color: #fecaca;
+    background: #fee2e2;
+    color: #b91c1c;
 }
 
 .notice-priority-medium {
-    background: rgba(234, 179, 8, 0.18);
-    color: #facc15;
+    background: #fef3c7;
+    color: #b45309;
 }
 
 .notice-priority-low {
-    background: rgba(59, 130, 246, 0.15);
-    color: #bfdbfe;
+    background: #dbeafe;
+    color: #1d4ed8;
 }
 
 .notice-item-time {
     font-size: 12px;
-    color: var(--text-secondary, #94a3b8);
+    color: #9ca3af;
     white-space: nowrap;
 }
 
 .notice-item-content {
-    color: var(--text-primary, #f1f5f9);
-    line-height: 1.6;
+    color: #4b5563;
+    line-height: 1.5;
     word-wrap: break-word;
 }
 
 .notice-item-content a {
-    color: var(--text-primary, #f1f5f9);
+    color: #2563eb;
     text-decoration: underline;
-    text-decoration-color: rgba(255, 255, 255, 0.3);
+    text-decoration-color: rgba(37, 99, 235, 0.35);
     transition: text-decoration-color 0.2s ease;
 }
 
 .notice-item-content a:hover {
-    text-decoration-color: rgba(255, 255, 255, 0.6);
+    text-decoration-color: rgba(37, 99, 235, 0.8);
 }
 
 @media (max-width: 640px) {
     .notice-modal-content {
-        width: 95%;
-        max-height: 85vh;
+        width: 100%;
+        max-width: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+        top: 0;
+        left: 0;
+        transform: translate(0, 0) scale(1);
     }
-    
-    .notice-modal-header {
-        padding: 16px 20px;
+
+    .notice-modal.visible .notice-modal-content {
+        transform: translate(0, 0) scale(1);
     }
-    
-    .notice-modal-body {
-        padding: 16px 20px;
+
+    .notice-modal-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
-    
-    .notice-modal-title {
-        font-size: 1.25rem;
+
+    .notice-tab {
+        flex: 0 0 auto;
+        min-width: 110px;
+    }
+}
+
+/* ===== 公告弹窗样式（自动弹出） ===== */
+.announcement-popup-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: none;
+}
+
+.announcement-popup-modal.visible {
+    opacity: 1;
+}
+
+.announcement-popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.announcement-popup-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 90%;
+    max-width: 520px;
+    max-height: 80vh;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(229, 231, 235, 0.8);
+    color: #111827;
+    overflow: hidden;
+}
+
+.announcement-popup-modal.visible .announcement-popup-content {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.announcement-popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+    border-radius: 16px 16px 0 0;
+}
+
+.announcement-popup-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.announcement-popup-icon {
+    font-size: 24px;
+    line-height: 1;
+}
+
+.announcement-popup-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.announcement-popup-close {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.announcement-popup-close:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.announcement-popup-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background: #fcfcfc;
+}
+
+.announcement-popup-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.announcement-popup-body::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.announcement-popup-body::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.announcement-popup-body::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.announcement-popup-category {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.announcement-popup-content-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 16px 0;
+    line-height: 1.4;
+}
+
+.announcement-popup-content-text {
+    color: #4b5563;
+    line-height: 1.6;
+    word-wrap: break-word;
+    font-size: 0.9375rem;
+}
+
+.announcement-popup-content-text img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 12px 0;
+}
+
+.announcement-popup-footer {
+    display: flex;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #e5e7eb;
+    background: #ffffff;
+    border-radius: 0 0 16px 16px;
+}
+
+.announcement-popup-btn-secondary,
+.announcement-popup-btn-primary {
+    flex: 1;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.announcement-popup-btn-secondary {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+.announcement-popup-btn-secondary:hover {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+.announcement-popup-btn-primary {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.announcement-popup-btn-primary:hover {
+    background: #1d4ed8;
+}
+
+@media (max-width: 640px) {
+    .announcement-popup-content {
+        width: 100%;
+        max-width: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+        top: 0;
+        left: 0;
+        transform: translate(0, 0) scale(1);
+    }
+
+    .announcement-popup-modal.visible .announcement-popup-content {
+        transform: translate(0, 0) scale(1);
+    }
+
+    .announcement-popup-footer {
+        flex-direction: column;
+    }
+
+    .announcement-popup-btn-secondary,
+    .announcement-popup-btn-primary {
+        width: 100%;
+    }
+}
+
+/* ===== 消息弹窗样式（类似微信） ===== */
+.message-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: none;
+}
+
+.message-modal.visible {
+    opacity: 1;
+}
+
+.message-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.message-modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 90%;
+    max-width: 480px;
+    max-height: 85vh;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+
+.message-modal.visible .message-modal-content {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.message-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+.message-modal-title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.message-modal-close {
+    background: none;
+    border: none;
+    color: #6b7280;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.message-modal-close:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.message-modal-tabs {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+    padding: 0 12px;
+}
+
+.message-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 16px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 0.9375rem;
+    color: #6b7280;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.message-tab:hover {
+    color: #111827;
+    background: #f9fafb;
+}
+
+.message-tab.active {
+    color: #3b82f6;
+    font-weight: 600;
+}
+
+.message-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #3b82f6;
+}
+
+.tab-name {
+    white-space: nowrap;
+}
+
+.tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: #ef4444;
+    color: #ffffff;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.message-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    background: #f9fafb;
+    padding: 0;
+}
+
+.message-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 12px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.message-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.message-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.message-item {
+    padding: 16px 20px;
+    background: #ffffff;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.2s ease;
+    cursor: pointer;
+}
+
+.message-item:hover {
+    background: #f9fafb;
+}
+
+.message-item.unread {
+    background: #eff6ff;
+}
+
+.message-item-header {
+    margin-bottom: 8px;
+}
+
+.message-item-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.unread-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ef4444;
+    flex-shrink: 0;
+}
+
+.top-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    background: #fef3c7;
+    color: #d97706;
+    font-weight: 600;
+}
+
+.message-item-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.message-item-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.message-item-time {
+    font-size: 0.8125rem;
+    color: #9ca3af;
+}
+
+.read-status {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    background: #d1fae5;
+    color: #059669;
+}
+
+.read-status.unread {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.message-item-content {
+    font-size: 0.875rem;
+    color: #6b7280;
+    line-height: 1.5;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.message-item-actions {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.btn-mark-read {
+    padding: 4px 12px;
+    border-radius: 6px;
+    background: #eff6ff;
+    color: #3b82f6;
+    border: 1px solid #dbeafe;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    transition: all 0.2s ease;
+}
+
+.btn-mark-read:hover {
+    background: #dbeafe;
+    border-color: #93c5fd;
+}
+
+@media (max-width: 640px) {
+    .message-modal-content {
+        width: 100%;
+        max-width: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+        top: 0;
+        left: 0;
+        transform: translate(0, 0) scale(1);
+    }
+
+    .message-modal.visible .message-modal-content {
+        transform: translate(0, 0) scale(1);
+    }
+
+    .message-modal-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .message-tab {
+        flex: 0 0 auto;
+        min-width: 100px;
     }
 }
