@@ -301,6 +301,12 @@ const routes: RouteRecordRaw[] = [
         name: 'CommunityPostEdit',
         component: () => import('@/views/user/community/CommunityPostEditor.vue'),
         meta: { title: '编辑帖子', requiresAuth: true }
+      },
+      {
+        path: 'tickets',
+        name: 'MyTickets',
+        component: () => import('@/views/user/Tickets.vue'),
+        meta: { title: '我的工单', requiresAuth: true }
       }
     ]
   },
@@ -476,6 +482,12 @@ const routes: RouteRecordRaw[] = [
         path: 'queue',
         redirect: { name: 'AdminSystemConfigEmpty' },
         meta: { requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'support-tickets',
+        name: 'AdminSupportTickets',
+        component: () => import('@/views/admin/SupportTickets.vue'),
+        meta: { title: '工单管理', requiresAuth: true, requiresAdmin: true }
       }
     ]
   }

@@ -1061,3 +1061,58 @@ export interface PromptTemplateInfo {
   createTime?: string
   updateTime?: string
 }
+
+// ─── 工单系统 ───────────────────────────────────────────────
+
+export type TicketCategory = 'BUG' | 'ACCOUNT' | 'BILLING' | 'CONTENT' | 'FEATURE' | 'OTHER'
+export type TicketStatus = 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED'
+export type TicketPriority = 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT'
+
+export interface TicketReplyItem {
+  id: number
+  ticketId: number
+  authorType: 'USER' | 'OPS'
+  authorId: number
+  authorName?: string
+  content: string
+  internal: boolean
+  createTime?: string
+}
+
+export interface TicketItem {
+  id: number
+  ticketNo: string
+  userId: number
+  username?: string
+  category: TicketCategory
+  title: string
+  content?: string
+  status: TicketStatus
+  priority: TicketPriority
+  assignedTo?: number | null
+  assignedToName?: string
+  closeReason?: string | null
+  resolvedAt?: string | null
+  createTime?: string
+  updateTime?: string
+  replies?: TicketReplyItem[]
+  replyCount?: number
+}
+
+export interface TicketCreateBody {
+  category: TicketCategory
+  title: string
+  content: string
+}
+
+export interface TicketReplyBody {
+  content: string
+  internal?: boolean
+}
+
+export interface AdminTicketUpdateBody {
+  status?: TicketStatus
+  priority?: TicketPriority
+  assignedTo?: number
+  closeReason?: string
+}

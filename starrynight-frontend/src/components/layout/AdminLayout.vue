@@ -150,6 +150,7 @@ import { useTheme } from '@/composables/useTheme'
 import { ElMessage } from 'element-plus'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import { getAdminCommunityReportStats, getCommunityWorkOrderStats } from '@/api/communityAdmin'
+import { adminGetTicketStats } from '@/api/ticket'
 import {
   DataAnalysis,
   User,
@@ -179,7 +180,8 @@ import {
   Key,
   Reading,
   Monitor,
-  ChatDotRound
+  ChatDotRound,
+  Service
 } from '@element-plus/icons-vue'
 
 const route = useRoute()
@@ -192,12 +194,18 @@ const opsAvatarLetter = computed(() => authStore.userInfo?.username?.charAt(0) |
 
 const pendingReportCount = ref(0)
 const pendingWorkOrderCount = ref(0)
+const pendingTicketCount = ref(0)
 
 async function loadBadges() {
   try {
-    const [rpt, wo] = await Promise.all([getAdminCommunityReportStats(), getCommunityWorkOrderStats()])
+    const [rpt, wo, tk] = await Promise.all([
+      getAdminCommunityReportStats(),
+      getCommunityWorkOrderStats(),
+      adminGetTicketStats()
+    ])
     pendingReportCount.value = Math.max(0, Number(rpt?.pendingCount ?? 0))
     pendingWorkOrderCount.value = Math.max(0, Number(wo?.pendingCount ?? 0))
+    pendingTicketCount.value = Math.max(0, Number(tk?.openCount ?? 0))
   } catch {
     // ignore
   }
@@ -217,6 +225,7 @@ const menuOrder: Record<string, number> = {
   novels: 5,
   community: 5.3,
   'risk-control': 5.35,
+  'support-tickets': 5.4,
   announcements: 6,
   activities: 6.2,
   'redeem-codes': 6.25,
@@ -243,6 +252,7 @@ const menuIconMap: Record<string, typeof DataAnalysis> = {
   novels: Document,
   community: ChatDotRound,
   'risk-control': Operation,
+  'support-tickets': Service,
   'ai-config': Cpu,
   billing: Money,
   orders: Tickets,
@@ -272,6 +282,7 @@ const menuGroupsDef: { title: string; paths: string[] }[] = [
       'novels',
       'community',
       'risk-control',
+      'support-tickets',
       'announcements',
       'activities',
       'redeem-codes',
@@ -302,7 +313,9 @@ const adminMenus = computed(() => {
           ? pendingReportCount.value
           : segment === 'community'
             ? pendingWorkOrderCount.value
-            : 0
+            : segment === 'support-tickets'
+              ? pendingTicketCount.value
+              : 0
       return {
         path: segment,
         title: item.meta.title as string,

@@ -96,6 +96,9 @@
                   <el-dropdown-item command="vip">
                     <el-icon><Medal /></el-icon>会员中心
                   </el-dropdown-item>
+                  <el-dropdown-item command="tickets">
+                    <el-icon><Service /></el-icon>工单反馈
+                  </el-dropdown-item>
                   <el-dropdown-item command="logout" divided>
                     <el-icon><SwitchButton /></el-icon>退出登录                  </el-dropdown-item>
                 </el-dropdown-menu>
@@ -133,7 +136,7 @@ import NotificationBell from '@/components/user/NotificationBell.vue'
 import {
   HomeFilled, EditPen, Collection, UserFilled, Box, MagicStick,
   SwitchButton, ArrowDown, ArrowRight, Ticket, Medal, Fold, Tickets,
-  Reading, Notebook, DataBoard, ChatDotRound
+  Reading, Notebook, DataBoard, ChatDotRound, Service
 } from '@element-plus/icons-vue'
 
 const router = useRouter()
@@ -201,6 +204,8 @@ async function handleCommand(cmd: string) {
       router.push('/orders'); break
     case 'vip':
       router.push('/vip'); break
+    case 'tickets':
+      router.push('/tickets'); break
     case 'logout':
       await authStore.logoutWithApi()
       ElMessage.success('已退出登录')

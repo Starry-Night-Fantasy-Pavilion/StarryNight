@@ -33,6 +33,6 @@ spring:
       # · schema + table + billing：合并后共 33 张物理表（knowledge_chunk、prompt_template 在两脚本中重复定义，库中仍各 1 张）
       # · growth / notification / vip / consistency：成长、通知、会员、伏笔/一致性
       # · vector_recommendation：向量节点/集合、运营推荐（t_vector_*、t_recommendation）
-      schema-locations: classpath:db/schema.sql,classpath:db/table.sql,classpath:db/billing.sql,classpath:db/growth.sql,classpath:db/notification.sql,classpath:db/vip.sql,classpath:db/consistency.sql,classpath:db/vector_recommendation.sql,classpath:db/campaign_redeem.sql,classpath:db/novel_category_bookstore.sql
+      schema-locations: classpath:db/schema.sql,classpath:db/table.sql,classpath:db/billing.sql,classpath:db/growth.sql,classpath:db/notification.sql,classpath:db/vip.sql,classpath:db/consistency.sql,classpath:db/vector_recommendation.sql,classpath:db/campaign_redeem.sql,classpath:db/novel_category_bookstore.sql,classpath:db/support_ticket.sql
       # 种子数据（含 system_config 默认项、运营账号等）
       data-locations: classpath:db/seed.sql
