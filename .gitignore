@@ -1,0 +1,25 @@
+# Maven
+target/
+
+# IDE（保留共享的 Spring Boot / 应用运行配置，便于团队与 IDEA 默认识别）
+.idea/*
+!.idea/runConfigurations/
+!.idea/runConfigurations/*.xml
+*.iml
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Runtime
+node_modules/
+dist/

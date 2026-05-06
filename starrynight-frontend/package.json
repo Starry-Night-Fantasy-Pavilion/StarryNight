@@ -1,0 +1,45 @@
+{
+  "name": "starrynight-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@mlc-ai/web-llm": "^0.2.83",
+    "axios": "^1.9.0",
+    "dayjs": "^1.11.13",
+    "dexie": "^4.4.2",
+    "echarts": "^5.5.1",
+    "element-plus": "^2.9.9",
+    "lodash": "^4.17.21",
+    "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "^4.2.0",
+    "vue": "^3.5.32",
+    "vue-echarts": "^7.0.3",
+    "vue-router": "^4.5.1",
+    "webtorrent": "^1.9.5"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.16",
+    "@types/node": "^24.12.2",
+    "@vitejs/plugin-vue": "^6.0.6",
+    "@vue/test-utils": "^2.4.6",
+    "@vue/tsconfig": "^0.9.1",
+    "jsdom": "^25.0.1",
+    "sass": "^1.87.0",
+    "typescript": "~6.0.2",
+    "unplugin-auto-import": "^19.1.1",
+    "unplugin-vue-components": "^28.5.0",
+    "vite": "^8.0.10",
+    "vitest": "^3.0.8",
+    "vue-tsc": "^3.2.7"
+  }
+}

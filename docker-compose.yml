@@ -1,0 +1,117 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: starrynight-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-starrynight123}
+      MYSQL_DATABASE: starrynight
+      MYSQL_USER: starrynight
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-starrynight123}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./starrynight-backend/src/main/resources/sql:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    networks:
+      - starrynight-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: starrynight-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - starrynight-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    container_name: starrynight-minio
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - starrynight-network
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: starrynight-backend
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/starrynight?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false
+      SPRING_DATASOURCE_USERNAME: starrynight
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-starrynight123}
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - starrynight-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: starrynight-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - starrynight-network
+
+volumes:
+  mysql_data:
+  redis_data:
+  minio_data:
+
+networks:
+  starrynight-network:
+    driver: bridge

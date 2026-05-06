@@ -1,0 +1,15 @@
+FROM eclipse-temurin:17-jre-alpine
+
+WORKDIR /app
+
+RUN apk add --no-cache fontconfig && \
+    mkdir -p /root/.fonts
+
+COPY starrynight-backend/target/*.jar app.jar
+
+EXPOSE 8080
+
+ENV JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC"
+ENV SPRING_PROFILES_ACTIVE=prod
+
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

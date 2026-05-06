@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot: StarryNight Backend",
+      "request": "launch",
+      "mainClass": "com.starrynight.starrynight.system.StarryNightApplication",
+      "projectName": "starrynight-backend",
+      "cwd": "${workspaceFolder}/starrynight-backend",
+      "console": "internalConsole"
+    }
+  ]
+}

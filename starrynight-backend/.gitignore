@@ -1,0 +1,37 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# Spring Boot
+*.pid
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Runtime
+node_modules/
+# 未配置 OSS 时站点 Logo / 赞助 HTML 本地落盘（默认 data/portal-assets）
+data/portal-assets/

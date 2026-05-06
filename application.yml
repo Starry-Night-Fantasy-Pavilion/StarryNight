@@ -1,0 +1,38 @@
+# =============================================================================
+# StarryNight — 仓库根目录数据源配置（仅此文件维护「如何连上 MySQL」）
+# =============================================================================
+# 说明：
+#   · 业务开关、JWT、OpenAI、Redis、上传限制等均在 MySQL 表 system_config，由运营端维护。
+#   · 本文件只负责：JDBC 连接 + 启动时执行建表脚本与种子数据（脚本文件在 backend 模块 resources 内）。
+# 环境变量（未设置时，冒号后为当前默认：库 1111 / 用户 1111；生产建议改用环境变量，勿提交真实口令到公开仓库）：
+#   · SPRING_DATASOURCE_URL      — JDBC 地址
+#   · SPRING_DATASOURCE_USERNAME — 数据库用户名
+#   · SPRING_DATASOURCE_PASSWORD — 数据库密码
+#   · SQL_INIT_MODE              — 是否执行初始化脚本，常用 always / never
+# =============================================================================
+
+spring:
+  # 与 backend application.yml 一致：无 RabbitMQ 时默认不启监听，避免刷屏（可用 SPRING_RABBITMQ_LISTENER_AUTO_STARTUP=true 打开）
+  rabbitmq:
+    listener:
+      simple:
+        auto-startup: ${SPRING_RABBITMQ_LISTENER_AUTO_STARTUP:false}
+
+  datasource:
+    # JDBC 连接串（MySQL 8）；默认库名 1111，可用 SPRING_DATASOURCE_URL 覆盖
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://127.0.0.1:3306/1111?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:1111}
+    password: ${SPRING_DATASOURCE_PASSWORD:kc8jcGn8cE32HtR4}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  sql:
+    init:
+      # always：每次启动尝试执行（已执行过的语句由库/脚本自身保证幂等或跳过）
+      mode: ${SQL_INIT_MODE:always}
+      # 建表 DDL，来自 backend：src/main/resources/db/
+      # · schema + table + billing：合并后共 33 张物理表（knowledge_chunk、prompt_template 在两脚本中重复定义，库中仍各 1 张）
+      # · growth / notification / vip / consistency：成长、通知、会员、伏笔/一致性
+      # · vector_recommendation：向量节点/集合、运营推荐（t_vector_*、t_recommendation）
+      schema-locations: classpath:db/schema.sql,classpath:db/table.sql,classpath:db/billing.sql,classpath:db/growth.sql,classpath:db/notification.sql,classpath:db/vip.sql,classpath:db/consistency.sql,classpath:db/vector_recommendation.sql,classpath:db/campaign_redeem.sql,classpath:db/novel_category_bookstore.sql
+      # 种子数据（含 system_config 默认项、运营账号等）
+      data-locations: classpath:db/seed.sql

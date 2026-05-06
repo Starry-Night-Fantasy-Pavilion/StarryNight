@@ -1,0 +1,37 @@
+# =============================================================================
+# StarryNight Backend — 模块内引导配置
+# =============================================================================
+# 说明：
+#   · 运行时业务参数一律从 MySQL 表 system_config 读取（见 RuntimeConfigService）。
+#   · 数据库连接、SQL 初始化脚本路径写在【仓库根目录】的 application.yml，由下方 import 加载。
+# 加载顺序（均为 optional，按当前进程工作目录谁存在用谁）：
+#   · optional:file:../application.yml — 工作目录在 starrynight-backend 子目录时，指向上一级（仓库根）。
+#   · optional:file:./application.yml  — 工作目录在仓库根目录时，使用当前目录下的 application.yml。
+# 若启动后报数据源未配置，请确认：在 backend 目录或仓库根目录运行，或设置 SPRING_CONFIG_IMPORT 指向根目录 yml。
+# =============================================================================
+
+spring:
+  autoconfigure:
+    exclude:
+      # 邮件使用 RuntimeConfigService + JavaMailSenderImpl 自建，避免未配置 YAML 时自动装配失败
+      - org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
+  config:
+    import:
+      - optional:file:../application.yml
+      - optional:file:./application.yml
+
+  # RabbitMQ：默认不启动监听器、不参与健康检查，避免本机未装 Broker 时无限重连刷屏。
+  # 已安装 RabbitMQ 且需要消费消息时，请设置 SPRING_RABBITMQ_LISTENER_AUTO_STARTUP=true、MANAGEMENT_HEALTH_RABBIT_ENABLED=true
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
+    listener:
+      simple:
+        auto-startup: ${SPRING_RABBITMQ_LISTENER_AUTO_STARTUP:false}
+
+management:
+  health:
+    rabbit:
+      enabled: ${MANAGEMENT_HEALTH_RABBIT_ENABLED:false}

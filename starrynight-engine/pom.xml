@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.5</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.starrynight</groupId>
+    <artifactId>starrynight-engine</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>StarryNight Engine</name>
+    <description>星夜引擎核心模块</description>
+
+    <properties>
+        <java.version>17</java.version>
+        <lombok.version>1.18.38</lombok.version>
+        <mybatis-plus.version>3.5.6</mybatis-plus.version>
+        <jwt.version>0.12.6</jwt.version>
+        <springdoc.version>2.5.0</springdoc.version>
+        <transmittable-thread-local.version>2.14.5</transmittable-thread-local.version>
+        <fastjson2.version>2.0.47</fastjson2.version>
+        <milvus.version>2.4.0</milvus.version>
+        <qdrant.version>1.11.0</qdrant.version>
+    </properties>
+
+    <dependencies>
+        <!-- Spring Boot Starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Milvus SDK -->
+        <dependency>
+            <groupId>io.milvus</groupId>
+            <artifactId>milvus-sdk-java</artifactId>
+            <version>${milvus.version}</version>
+            <exclusions>
+                <!-- SDK 误带 testcontainers，会拉入 slf4j-reload4j，与 Spring Boot 默认 Logback 冲突 -->
+                <exclusion>
+                    <groupId>org.testcontainers</groupId>
+                    <artifactId>milvus</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-reload4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Qdrant Java client (artifact id is `client`, not `qdrant-client`) -->
+        <dependency>
+            <groupId>io.qdrant</groupId>
+            <artifactId>client</artifactId>
+            <version>${qdrant.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- MyBatis-Plus -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+
+        <!-- MySQL -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- JWT -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- SpringDoc OpenAPI -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Fastjson2 -->
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>${fastjson2.version}</version>
+        </dependency>
+
+        <!-- Commons -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+
+        <!-- TransmittableThreadLocal -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+            <version>${transmittable-thread-local.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>${java.version}</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
