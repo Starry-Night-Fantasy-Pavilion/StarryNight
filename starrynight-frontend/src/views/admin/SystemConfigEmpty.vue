@@ -1037,6 +1037,8 @@ async function saveOauth() {
     }
     ElMessage.success('第三方登录配置已保存')
     await loadOauth()
+  } catch (e: any) {
+    ElMessage.error(e?.message || '保存失败，请查看后端日志')
   } finally {
     oauthSaving.value = false
   }

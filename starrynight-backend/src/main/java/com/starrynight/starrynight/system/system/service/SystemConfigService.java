@@ -89,7 +89,8 @@ public class SystemConfigService {
             throw new BusinessException(404, "Config not found");
         }
 
-        if (config.getEditable() == 0) {
+        // 兼容历史数据：editable 可能为 null（旧库/手工导入），null 按可编辑处理
+        if (Integer.valueOf(0).equals(config.getEditable())) {
             throw new BusinessException("Config is not editable");
         }
 
@@ -114,7 +115,8 @@ public class SystemConfigService {
             throw new BusinessException(404, "Config not found");
         }
 
-        if (config.getEditable() == 0) {
+        // 兼容历史数据：editable 可能为 null（旧库/手工导入），null 按可删除处理
+        if (Integer.valueOf(0).equals(config.getEditable())) {
             throw new BusinessException("Config is not deletable");
         }
 
