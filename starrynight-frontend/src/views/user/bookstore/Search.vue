@@ -77,6 +77,7 @@
       </div>
 
       <div class="results-main">
+        <div v-if="resultsLoading" class="results-loading">加载中…</div>
         <div class="results-header">
           <div class="results-count">
             找到 <strong>{{ totalResults }}</strong> 部作品
@@ -93,40 +94,40 @@
           </div>
         </div>
 
-        <div v-if="searchResults.length === 0" class="empty-state">
+        <div v-if="!resultsLoading && searchResults.length === 0" class="empty-state">
           <el-icon :size="64"><Search /></el-icon>
           <p>未找到相关作品</p>
         </div>
 
-        <div v-else class="results-list">
+        <div v-else-if="!resultsLoading" class="results-list">
           <div v-for="book in searchResults" :key="book.id" class="result-item" @click="goToDetail(book.id)">
-            <img :src="book.cover" class="result-cover" />
+            <img :src="book.cover || defaultCover" class="result-cover" alt="" />
             <div class="result-info">
               <h3 class="result-title">{{ book.title }}</h3>
-              <p class="result-author">作者: {{ book.author }}</p>
+              <p class="result-author">作者: {{ book.author || '—' }}</p>
               <div class="result-meta">
-                <span class="meta-item">
+                <span v-if="book.category" class="meta-item">
                   <el-tag size="small">{{ book.category }}</el-tag>
                 </span>
-                <span class="meta-item">{{ book.wordCount }}万字</span>
-                <span class="meta-item">{{ book.status }}</span>
+                <span class="meta-item">{{ formatWordCount(book.wordCount) }}</span>
+                <span v-if="book.status" class="meta-item">{{ book.status }}</span>
               </div>
-              <p class="result-desc">{{ book.description }}</p>
-              <div class="result-tags">
+              <p class="result-desc">{{ book.description || '暂无简介' }}</p>
+              <div v-if="book.tags?.length" class="result-tags">
                 <el-tag v-for="tag in book.tags" :key="tag" size="small" type="info">{{ tag }}</el-tag>
               </div>
             </div>
             <div class="result-stats">
               <div class="stat-item">
-                <span class="stat-value">{{ book.views }}</span>
+                <span class="stat-value">{{ formatViews(book.views) }}</span>
                 <span class="stat-label">阅读</span>
               </div>
               <div class="stat-item">
-                <span class="stat-value">{{ book.rating }}</span>
+                <span class="stat-value">{{ book.rating ?? '—' }}</span>
                 <span class="stat-label">评分</span>
               </div>
               <div class="stat-item">
-                <span class="stat-value">{{ book.chapterCount }}</span>
+                <span class="stat-value">{{ book.chapterCount ?? 0 }}</span>
                 <span class="stat-label">章节</span>
               </div>
             </div>
@@ -147,12 +148,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Search } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { getBookstoreHomeCached, searchBookstoreBooks, type BookstoreSearchBook } from '@/api/bookstore'
+import { extractApiErrorMessage } from '@/utils/request'
 
 const route = useRoute()
 const router = useRouter()
+
+const defaultCover =
+  'data:image/svg+xml,' +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="160" viewBox="0 0 120 160"><rect fill="#1e293b" width="120" height="160"/><text x="60" y="85" text-anchor="middle" fill="#94a3b8" font-size="12" font-family="sans-serif">无封面</text></svg>'
+  )
 
 const searchKeyword = ref('')
 const selectedCategories = ref<number[]>([])
@@ -164,71 +174,60 @@ const sortBy = ref('relevance')
 const currentPage = ref(1)
 const pageSize = ref(20)
 const totalResults = ref(0)
+const resultsLoading = ref(false)
 
-const categories = ref([
-  { id: 1, name: '玄幻', count: 1234 },
-  { id: 2, name: '仙侠', count: 890 },
-  { id: 3, name: '都市', count: 1567 },
-  { id: 4, name: '科幻', count: 432 },
-  { id: 5, name: '悬疑', count: 321 },
-  { id: 6, name: '武侠', count: 567 }
-])
+const categories = ref<{ id: number; name: string; icon: string; count: number }[]>([])
 
 const tags = ref(['热血', '修炼', '升级', '穿越', '系统', '搞笑', '智斗', '治愈'])
 
-const searchResults = ref<any[]>([])
+const searchResults = ref<BookstoreSearchBook[]>([])
+
+function formatViews(v: unknown): string {
+  if (v == null) return '0'
+  const n = typeof v === 'number' ? v : Number(v)
+  if (!Number.isFinite(n)) return '0'
+  if (n >= 100000000) return (n / 100000000).toFixed(1) + '亿'
+  if (n >= 10000) return (n / 10000).toFixed(1) + '万'
+  return String(Math.round(n))
+}
+
+function formatWordCount(w: unknown): string {
+  if (w == null || w === '') return '—'
+  const n = typeof w === 'number' ? w : Number(w)
+  if (!Number.isFinite(n)) return '—'
+  return `${n}万字`
+}
 
 function handleSearch() {
   currentPage.value = 1
-  loadResults()
+  void loadResults()
 }
 
-function loadResults() {
-  searchResults.value = [
-    {
-      id: 1,
-      title: '仙逆',
-      author: '耳根',
-      cover: 'https://via.placeholder.com/120x160/409EFF/ffffff?text=仙逆',
-      category: '仙侠',
-      wordCount: 598,
-      status: '已完结',
-      views: '1234万',
-      rating: 4.9,
-      chapterCount: 1256,
-      description: '顺为凡，逆则仙！一个资质平庸的少年踏入修真之路，他资质平庸，却凭借着坚韧不拔的心性，一步步向着巅峰迈进。',
-      tags: ['热血', '修炼', '成长']
-    },
-    {
-      id: 2,
-      title: '斗破苍穹',
-      author: '天蚕土豆',
-      cover: 'https://via.placeholder.com/120x160/67C23A/ffffff?text=斗破',
-      category: '玄幻',
-      wordCount: 532,
-      status: '已完结',
-      views: '2345万',
-      rating: 4.8,
-      chapterCount: 1890,
-      description: '这里是属于斗气的世界，没有花俏艳丽的魔法，有的，仅仅是繁衍到巅峰的斗气！莫欺少年穷！',
-      tags: ['热血', '修炼', '逆袭']
-    },
-    {
-      id: 3,
-      title: '完美世界',
-      author: '辰东',
-      cover: 'https://via.placeholder.com/120x160/E6A23C/ffffff?text=完美世界',
-      category: '玄幻',
-      wordCount: 678,
-      status: '已完结',
-      views: '1987万',
-      rating: 4.7,
-      chapterCount: 2156,
-      description: '一粒尘可填海，一根草斩尽日月星辰，弹指间天翻地覆。独断万古的存在！',
-      tags: ['热血', '修炼', '史诗']
-    }
-  ]
-  totalResults.value = 3
+async function loadResults() {
+  resultsLoading.value = true
+  try {
+    const completionStatus =
+      statusFilter.value === 'serial' || statusFilter.value === 'finished' ? statusFilter.value : undefined
+    const data = await searchBookstoreBooks({
+      keyword: searchKeyword.value.trim() || undefined,
+      categoryIds: selectedCategories.value.length ? selectedCategories.value : undefined,
+      sort: sortBy.value,
+      membership: membershipFilter.value || undefined,
+      wordCountRange: wordCountRange.value || undefined,
+      tags: selectedTags.value.length ? selectedTags.value : undefined,
+      completionStatus,
+      page: currentPage.value,
+      size: pageSize.value
+    })
+    searchResults.value = data.records || []
+    totalResults.value = Number(data.total) || 0
+  } catch (e) {
+    searchResults.value = []
+    totalResults.value = 0
+    ElMessage.error(extractApiErrorMessage(e))
+  } finally {
+    resultsLoading.value = false
+  }
 }
 
 function applyFilters() {
@@ -245,24 +244,49 @@ function resetFilters() {
 }
 
 function handlePageChange() {
-  loadResults()
+  void loadResults()
 }
 
 function goToDetail(bookId: number) {
-  router.push(`/user/bookstore/detail/${bookId}`)
+  router.push(`/bookstore/detail/${bookId}`)
 }
 
-onMounted(() => {
-  const keyword = route.query.keyword as string
-  const category = route.query.category as string
-  const sort = route.query.sort as string
+function syncFromRoute() {
+  const keyword = route.query.keyword
+  const category = route.query.category
+  const sort = route.query.sort
 
-  if (keyword) searchKeyword.value = keyword
-  if (category) selectedCategories.value = [parseInt(category)]
-  if (sort) sortBy.value = sort
+  if (typeof keyword === 'string' && keyword) searchKeyword.value = keyword
+  if (typeof category === 'string' && category) {
+    const id = parseInt(category, 10)
+    if (!Number.isNaN(id)) selectedCategories.value = [id]
+  }
+  if (typeof sort === 'string' && sort) sortBy.value = sort
+}
 
-  loadResults()
+async function loadCategories() {
+  try {
+    const home = await getBookstoreHomeCached()
+    categories.value = home.categories || []
+  } catch {
+    categories.value = []
+  }
+}
+
+onMounted(async () => {
+  syncFromRoute()
+  await loadCategories()
+  await loadResults()
 })
+
+watch(
+  () => route.query,
+  async () => {
+    syncFromRoute()
+    await loadResults()
+  },
+  { deep: true }
+)
 </script>
 
 <style lang="scss" scoped>
@@ -305,6 +329,12 @@ onMounted(() => {
 
     .results-main {
       flex: 1;
+
+      .results-loading {
+        padding: 24px;
+        text-align: center;
+        color: var(--el-text-color-secondary);
+      }
 
       .results-header {
         display: flex;

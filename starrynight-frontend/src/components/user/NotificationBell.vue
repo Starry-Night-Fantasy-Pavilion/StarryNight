@@ -51,10 +51,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';import { useRouter } from 'vue-router'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { getNotifications, getUnreadCount, markAsRead, markAllAsRead, type NotificationMessage } from '@/api/notification'
 
 const props = defineProps<{ userId?: number }>()
+
+function effectiveUserId(): number | undefined {
+  const id = props.userId
+  return id != null && id > 0 ? id : undefined
+}
 const router = useRouter()
 const list = ref<NotificationMessage[]>([])
 const unreadCount = ref(0)
@@ -63,13 +69,78 @@ let timer: number|null = null
 
 function fmtTime(t:string):string { if(!t) return ''; const d=new Date(t);const now=+new Date();const diff=now-d.getTime(); if(diff<6e4) return '刚刚';if(diff<36e5) return `${Math.floor(diff/6e4)}分钟前`;if(diff<864e5) return `${Math.floor(diff/36e5)}小时前`;return d.toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'}) }
 
-async function loadNotifications() { loading.value=true; try { const r=await getNotifications(props.userId||0,5); list.value=r.data } catch{} finally { loading.value=false } }
-async function loadCount() { try { const r=await getUnreadCount(props.userId||0); unreadCount.value=r.data } catch{} }
-async function clickNotif(n:NotificationMessage) { if(n.isRead===0){ await markAsRead(n.id);n.isRead=1;unreadCount.value=Math.max(0,unreadCount.value-1) } if(n.linkUrl) window.location.href=n.linkUrl; else goCenter() }
-async function markAll() { try { await markAllAsRead(props.userId||0); unreadCount.value=0;list.value.forEach(n=>n.isRead=1) } catch{} }
-function goCenter() { router.push({ name:'NotificationCenter', query:{ userId: String(props.userId||0) } }) }
-onMounted(()=>{ loadCount(); timer=window.setInterval(loadCount,30000) })
-onUnmounted(()=>{ if(timer){clearInterval(timer);timer=null} })
+async function loadNotifications() {
+  const uid = effectiveUserId()
+  if (!uid) {
+    list.value = []
+    return
+  }
+  loading.value = true
+  try {
+    list.value = await getNotifications(uid, 5)
+  } catch {
+    /* 静默 */
+  } finally {
+    loading.value = false
+  }
+}
+async function loadCount() {
+  const uid = effectiveUserId()
+  if (!uid) {
+    unreadCount.value = 0
+    return
+  }
+  try {
+    unreadCount.value = await getUnreadCount(uid)
+  } catch {
+    /* 静默 */
+  }
+}
+async function clickNotif(n: NotificationMessage) {
+  if (n.isRead === 0) {
+    await markAsRead(n.id)
+    n.isRead = 1
+    unreadCount.value = Math.max(0, unreadCount.value - 1)
+  }
+  if (n.linkUrl) window.location.href = n.linkUrl
+  else goCenter()
+}
+async function markAll() {
+  const uid = effectiveUserId()
+  if (!uid) return
+  try {
+    await markAllAsRead(uid)
+    unreadCount.value = 0
+    list.value.forEach((n) => (n.isRead = 1))
+  } catch {
+    /* 静默 */
+  }
+}
+function goCenter() {
+  router.push({ name: 'NotificationCenter' })
+}
+function restartPolling() {
+  if (timer) {
+    clearInterval(timer)
+    timer = null
+  }
+  void loadCount()
+  const uid = effectiveUserId()
+  if (uid) {
+    timer = window.setInterval(loadCount, 30000)
+  }
+}
+onMounted(() => restartPolling())
+watch(
+  () => props.userId,
+  () => restartPolling()
+)
+onUnmounted(() => {
+  if (timer) {
+    clearInterval(timer)
+    timer = null
+  }
+})
 </script>
 
 <style lang="scss">

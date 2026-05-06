@@ -13,6 +13,13 @@ import router from '@/router'
 import { getApiBaseUrl } from '@/config/apiBase'
 import type { ResponseVO } from '@/types/api'
 
+declare module 'axios' {
+  interface AxiosRequestConfig {
+    /** 为 true 时响应错误不弹全局 ElMessage（用于轮询、后台刷新） */
+    silentGlobalError?: boolean
+  }
+}
+
 interface RetryableRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean
 }
@@ -261,7 +268,8 @@ service.interceptors.response.use(
       rel.startsWith('auth/register/') ||
       rawUrl.includes('/auth/login') ||
       rawUrl.includes('/auth/register')
-    if (!authFormUrls) {
+    const silentGlobal = originalRequest?.silentGlobalError === true
+    if (!authFormUrls && !silentGlobal) {
       ElMessage.error(message)
     }
     return Promise.reject(error)

@@ -398,7 +398,7 @@ const permissionOptions = [
   { value: 'dashboard', label: '仪表盘' },
   { value: 'users', label: '用户管理' },
   { value: 'categories', label: '分类管理' },
-  { value: 'bookstore', label: '在线书城' },
+  { value: 'bookstore', label: '星夜书库' },
   { value: 'recommendations', label: '推荐管理' },
   { value: 'novels', label: '作品管理' },
   { value: 'community', label: '社区管理' },

@@ -159,7 +159,7 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '知识库详情', requiresAuth: true }
       },
       {
-        path: 'characters/:novelId',
+        path: 'characters',
         name: 'CharacterLibrary',
         component: () => import('@/views/user/CharacterLibrary.vue'),
         meta: { title: '角色库', requiresAuth: true }
@@ -252,7 +252,7 @@ const routes: RouteRecordRaw[] = [
         path: 'bookstore',
         name: 'BookStore',
         component: () => import('@/views/user/bookstore/BookStore.vue'),
-        meta: { title: '在线书城' }
+        meta: { title: '星夜书库' }
       },
       {
         path: 'bookstore/detail/:id',

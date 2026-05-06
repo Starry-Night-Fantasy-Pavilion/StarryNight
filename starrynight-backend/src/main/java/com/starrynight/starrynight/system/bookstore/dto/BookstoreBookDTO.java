@@ -41,11 +41,8 @@ public class BookstoreBookDTO {
 
     private String tags;
 
-    /** 书源详情或目录页 URL */
+    /** 书源 URL（文档接口 {@code /api/bookstore/book?url=}） */
     private String sourceUrl;
-
-    /** 书源规则 JSON（须为合法 JSON 文本） */
-    private String sourceJson;
 
     /** 已发布章节条数（运营端列表展示） */
     private Integer chapterCount;

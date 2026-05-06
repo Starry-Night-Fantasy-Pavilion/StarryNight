@@ -122,6 +122,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useUserSessionStore } from '@/stores/auth'
 import {
   getNotifications,
   getNotificationsByType,
@@ -137,9 +138,8 @@ import {
   type NotificationSetting
 } from '@/api/notification'
 
-const props = defineProps<{
-  userId: number
-}>()
+const authStore = useUserSessionStore()
+const userId = computed(() => authStore.userInfo?.id ?? 0)
 
 const notifications = ref<NotificationMessage[]>([])
 const loading = ref(false)
@@ -199,15 +199,18 @@ function formatTime(timeStr: string): string {
 }
 
 async function loadNotifications() {
+  const uid = userId.value
+  if (!uid) {
+    notifications.value = []
+    total.value = 0
+    return
+  }
   loading.value = true
   try {
-    let res
     if (activeTab.value === 'all') {
-      res = await getNotifications(props.userId, pageSize.value)
-      notifications.value = res.data
+      notifications.value = await getNotifications(uid, pageSize.value)
     } else {
-      res = await getNotificationsByType(props.userId, activeTab.value)
-      notifications.value = res.data
+      notifications.value = await getNotificationsByType(uid, activeTab.value)
     }
     total.value = notifications.value.length
   } catch (error) {
@@ -218,18 +221,23 @@ async function loadNotifications() {
 }
 
 async function loadUnreadCount() {
+  const uid = userId.value
+  if (!uid) {
+    unreadCount.value = 0
+    return
+  }
   try {
-    const res = await getUnreadCount(props.userId)
-    unreadCount.value = res.data
+    unreadCount.value = await getUnreadCount(uid)
   } catch (error) {
     console.error('Failed to load unread count:', error)
   }
 }
 
 async function loadSettings() {
+  const uid = userId.value
+  if (!uid) return
   try {
-    const res = await getUserSettings(props.userId)
-    settings.value = res.data
+    settings.value = await getUserSettings(uid)
   } catch (error) {
     console.error('Failed to load settings:', error)
   }
@@ -253,8 +261,10 @@ async function handleClick(notification: NotificationMessage) {
 }
 
 async function handleMarkAllRead() {
+  const uid = userId.value
+  if (!uid) return
   try {
-    await markAllAsRead(props.userId)
+    await markAllAsRead(uid)
     unreadCount.value = 0
     notifications.value.forEach(n => n.isRead = 1)
     ElMessage.success('已全部标为已读')
@@ -277,12 +287,14 @@ async function handleDelete(id: number) {
 }
 
 async function handlePushChange(type: string, enabled: boolean) {
+  const uid = userId.value
+  if (!uid) return
   try {
-    await updateSetting(props.userId, type, enabled, undefined)
+    await updateSetting(uid, type, enabled, undefined)
     if (settings.value[type]) {
       settings.value[type].pushEnabled = enabled ? 1 : 0
     } else {
-      settings.value[type] = { id: 0, userId: props.userId, notificationType: type, pushEnabled: enabled ? 1 : 0, emailEnabled: 0 }
+      settings.value[type] = { id: 0, userId: uid, notificationType: type, pushEnabled: enabled ? 1 : 0, emailEnabled: 0 }
     }
     ElMessage.success('设置已更新')
   } catch (error) {

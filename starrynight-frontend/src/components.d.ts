@@ -11,6 +11,7 @@ declare module 'vue' {
     AdminLayout: typeof import('./components/layout/AdminLayout.vue')['default']
     CheckinCard: typeof import('./components/user/CheckinCard.vue')['default']
     ElAlert: typeof import('element-plus/es')['ElAlert']
+    ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElBadge: typeof import('element-plus/es')['ElBadge']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']

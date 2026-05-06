@@ -67,7 +67,12 @@
             </el-breadcrumb>
           </div>
           <div class="topbar-right">
-            <NotificationBell class="topbar-action" />
+            <router-link to="/bookstore" class="topbar-bookstore topbar-action" title="星夜书库">
+              <el-icon :size="20"><Reading /></el-icon>
+              <span class="topbar-bookstore__text">星夜书库</span>
+            </router-link>
+            <div class="topbar-divider"></div>
+            <NotificationBell class="topbar-action" :user-id="authStore.userInfo?.id" />
             <div class="topbar-divider"></div>
             <el-dropdown trigger="click" @command="handleCommand" placement="bottom-end">
               <div class="topbar-user">
@@ -466,6 +471,34 @@ async function handleCommand(cmd: string) {
 .topbar-action {
   display: flex;
   align-items: center;
+}
+
+.topbar-bookstore {
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: $border-radius-sm;
+  color: $text-secondary;
+  text-decoration: none;
+  font-size: $font-size-sm;
+  font-weight: 500;
+  transition: color $transition-fast, background $transition-fast;
+  &:hover {
+    color: $text-primary;
+    background: $primary-ghost;
+  }
+}
+
+.topbar-bookstore__text {
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .topbar-bookstore__text {
+    display: none;
+  }
+  .topbar-bookstore {
+    padding: 4px 8px;
+  }
 }
 
 .topbar-divider {

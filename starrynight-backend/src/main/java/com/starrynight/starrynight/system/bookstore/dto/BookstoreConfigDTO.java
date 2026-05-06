@@ -9,10 +9,4 @@ public class BookstoreConfigDTO {
     private Boolean enabled;
 
     private String siteTitle;
-
-    private String bannersJson;
-
-    private String sidebarReadersJson;
-
-    private String latestUpdatesJson;
 }

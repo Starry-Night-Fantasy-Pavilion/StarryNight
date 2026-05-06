@@ -13,7 +13,13 @@
 
     <div class="reader-content" @click="toggleHeader">
       <div v-if="loadError" class="chapter-error">{{ loadError }}</div>
-      <div v-else-if="!loading && !toc.length" class="chapter-empty">本书暂无章节，请在运营后台「在线书城 → 书籍管理」中添加章节正文。</div>
+      <div v-else-if="!loading && !toc.length" class="chapter-empty">
+        {{
+          liveMode
+            ? '本书暂无可读内容。请检查书源接口 /api/bookstore/book 与 url、sourceId 是否可用。'
+            : '本书暂无章节数据。请确认运营端已配置书源 URL，或稍后再试。'
+        }}
+      </div>
       <template v-else>
         <div class="chapter-title">第 {{ currentChapterNo }} 章 {{ chapterTitle }}</div>
         <div v-if="loading" class="chapter-loading">加载中…</div>
@@ -94,8 +100,17 @@ import {
   getBookstoreChaptersCached,
   getBookstoreChapterReadCached,
   type BookstoreChapterRead,
-  type BookstoreChapterTocItem
+  type BookstoreChapterTocItem,
+  type BookstoreLiveChapterApi
 } from '@/api/bookstore'
+import {
+  readLiveTocFromSession,
+  writeLiveTocToSession,
+  fetchLiveBookCached,
+  fetchLiveChapterCached,
+  rewriteBookstoreImagesViaProxy,
+  type LiveTocPayload
+} from '@/utils/book-source-utils'
 import { extractApiErrorMessage } from '@/utils/request'
 
 const route = useRoute()
@@ -108,6 +123,8 @@ const bookTitle = ref('')
 const chapterTitle = ref('')
 const currentChapterNo = ref(startChapter)
 const toc = ref<BookstoreChapterTocItem[]>([])
+const liveMode = ref(false)
+const liveToc = ref<LiveTocPayload | null>(null)
 const lastRead = ref<BookstoreChapterRead | null>(null)
 const chapterContent = ref('')
 const loading = ref(true)
@@ -141,7 +158,7 @@ function toggleHeader() {
 }
 
 function goBack() {
-  router.push(`/user/bookstore/detail/${bookId}`)
+  router.push(`/bookstore/detail/${bookId}`)
 }
 
 function toggleBookmark() {
@@ -177,6 +194,28 @@ function onTocSelect() {
   void loadChapter()
 }
 
+function applyLiveChapterPayload(d: BookstoreLiveChapterApi) {
+  const payload = liveToc.value
+  if (!payload) return
+  const idx = payload.chapters.findIndex((c) => c.chapterNo === currentChapterNo.value)
+  const n = payload.chapters.length
+  const prevNo = idx > 0 ? payload.chapters[idx - 1].chapterNo : null
+  const nextNo = idx >= 0 && idx < n - 1 ? payload.chapters[idx + 1].chapterNo : null
+  const html = rewriteBookstoreImagesViaProxy(d.contentHtml)
+  lastRead.value = {
+    bookId,
+    chapterNo: currentChapterNo.value,
+    title: d.title,
+    contentHtml: html,
+    prevChapterNo: prevNo,
+    nextChapterNo: nextNo,
+    totalChapters: n
+  }
+  chapterTitle.value = d.title
+  chapterContent.value = html
+  updateProgress()
+}
+
 async function loadChapter() {
   if (!Number.isFinite(bookId) || bookId < 1) {
     loadError.value = '无效的书籍链接'
@@ -191,16 +230,25 @@ async function loadChapter() {
   loading.value = true
   loadError.value = ''
   try {
-    const d = await getBookstoreChapterReadCached(bookId, currentChapterNo.value, (fresh) => {
-      lastRead.value = fresh
-      chapterTitle.value = fresh.title
-      chapterContent.value = fresh.contentHtml
+    if (liveMode.value && liveToc.value) {
+      const ch = liveToc.value.chapters.find((c) => c.chapterNo === currentChapterNo.value)
+      if (!ch?.url) {
+        throw new Error('无效章节或缺少章节 URL')
+      }
+      const d = await fetchLiveChapterCached(liveToc.value.sourceId, ch.url, (fresh) => applyLiveChapterPayload(fresh))
+      applyLiveChapterPayload(d)
+    } else {
+      const d = await getBookstoreChapterReadCached(bookId, currentChapterNo.value, (fresh) => {
+        lastRead.value = fresh
+        chapterTitle.value = fresh.title
+        chapterContent.value = fresh.contentHtml
+        updateProgress()
+      })
+      lastRead.value = d
+      chapterTitle.value = d.title
+      chapterContent.value = d.contentHtml
       updateProgress()
-    })
-    lastRead.value = d
-    chapterTitle.value = d.title
-    chapterContent.value = d.contentHtml
-    updateProgress()
+    }
   } catch (e) {
     loadError.value = extractApiErrorMessage(e)
     ElMessage.error(loadError.value)
@@ -209,9 +257,10 @@ async function loadChapter() {
   }
 }
 
-function seekTo(val: number) {
+function seekTo(val: number | number[]) {
   if (!toc.value.length) return
-  const i = Math.max(0, Math.min(toc.value.length - 1, Math.round((val / 100) * toc.value.length) - 1))
+  const num = Array.isArray(val) ? Number(val[0]) : Number(val)
+  const i = Math.max(0, Math.min(toc.value.length - 1, Math.round((num / 100) * toc.value.length) - 1))
   currentChapterNo.value = toc.value[i].chapterNo
   void loadChapter()
 }
@@ -233,9 +282,45 @@ onMounted(async () => {
     return
   }
   try {
-    const [meta, list] = await Promise.all([getBookstoreBookCached(bookId), getBookstoreChaptersCached(bookId)])
+    const meta = await getBookstoreBookCached(bookId)
     bookTitle.value = meta.title || '书籍'
-    toc.value = list || []
+
+    let session = readLiveTocFromSession(bookId)
+    if ((!session?.chapters?.length || session.sourceId !== bookId) && meta.liveParseAvailable) {
+      try {
+        const live = await fetchLiveBookCached(bookId)
+        if (live.chapters?.length) {
+          session = {
+            sourceId: bookId,
+            chapters: live.chapters.map((c, i) => ({
+              chapterNo: i + 1,
+              title: c.title,
+              url: c.url
+            }))
+          }
+          writeLiveTocToSession(bookId, session)
+        }
+      } catch {
+        /* 走库内目录 */
+      }
+    }
+
+    if (session?.chapters?.length && session.sourceId === bookId) {
+      liveMode.value = true
+      liveToc.value = session
+      toc.value = session.chapters.map((c) => ({
+        id: c.chapterNo,
+        chapterNo: c.chapterNo,
+        title: c.title,
+        wordCount: 0
+      }))
+    } else {
+      liveMode.value = false
+      liveToc.value = null
+      const list = await getBookstoreChaptersCached(bookId)
+      toc.value = list || []
+    }
+
     if (toc.value.length) {
       const exists = toc.value.some((c) => c.chapterNo === currentChapterNo.value)
       if (!exists) {

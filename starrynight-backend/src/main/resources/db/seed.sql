@@ -455,14 +455,5 @@ INSERT INTO system_config (config_key, config_value, config_type, config_name, c
 SELECT 'bookstore.enabled', 'true', 'boolean', '书城启用', 'bookstore', '关闭后前台书城首页仅提示维护', 1
 WHERE NOT EXISTS (SELECT 1 FROM system_config WHERE config_key = 'bookstore.enabled');
 INSERT INTO system_config (config_key, config_value, config_type, config_name, config_group, description, editable)
-SELECT 'bookstore.site_title', '星夜书城', 'string', '书城标题', 'bookstore', '页头展示标题', 1
+SELECT 'bookstore.site_title', '星夜书库', 'string', '书库标题', 'bookstore', '页头展示标题', 1
 WHERE NOT EXISTS (SELECT 1 FROM system_config WHERE config_key = 'bookstore.site_title');
-INSERT INTO system_config (config_key, config_value, config_type, config_name, config_group, description, editable)
-SELECT 'bookstore.banners_json', '[]', 'json', '轮播图 JSON', 'bookstore', '[{"title":"","description":"","imageUrl":"","bookId":1}]', 1
-WHERE NOT EXISTS (SELECT 1 FROM system_config WHERE config_key = 'bookstore.banners_json');
-INSERT INTO system_config (config_key, config_value, config_type, config_name, config_group, description, editable)
-SELECT 'bookstore.sidebar_readers_json', '[]', 'json', '侧栏读者榜 JSON', 'bookstore', '可选静态数据', 1
-WHERE NOT EXISTS (SELECT 1 FROM system_config WHERE config_key = 'bookstore.sidebar_readers_json');
-INSERT INTO system_config (config_key, config_value, config_type, config_name, config_group, description, editable)
-SELECT 'bookstore.latest_updates_json', '[]', 'json', '侧栏最新更新 JSON', 'bookstore', '[{"bookTitle":"","chapter":1,"time":""}]', 1
-WHERE NOT EXISTS (SELECT 1 FROM system_config WHERE config_key = 'bookstore.latest_updates_json');

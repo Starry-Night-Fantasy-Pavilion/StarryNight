@@ -16,7 +16,7 @@
           <div v-if="readingBooks.length === 0" class="empty-state">
             <el-icon :size="64"><Reading /></el-icon>
             <p>暂无追读书籍</p>
-            <el-button type="primary" @click="$router.push('/user/bookstore')">去书城看看</el-button>
+            <el-button type="primary" @click="$router.push('/bookstore')">去星夜书库看看</el-button>
           </div>
           <div v-else-if="viewMode === 'grid'" class="book-grid">
             <div v-for="book in readingBooks" :key="book.id" class="book-card" @click="goToDetail(book)">
@@ -88,7 +88,10 @@
         </el-tab-pane>
 
         <el-tab-pane label="阅读历史" name="history">
-          <div class="history-list">
+          <div v-if="Object.keys(historyGroups).length === 0" class="empty-state">
+            <p>暂无阅读历史</p>
+          </div>
+          <div v-else class="history-list">
             <div v-for="(group, date) in historyGroups" :key="date" class="history-group">
               <div class="history-date">{{ date }}</div>
               <div class="history-items">
@@ -130,16 +133,9 @@ interface Book {
   lastReadTime?: string
 }
 
-const readingBooks = ref<Book[]>([
-  { id: 1, title: '仙逆', author: '耳根', cover: 'https://via.placeholder.com/120x160/409EFF/ffffff?text=仙逆', progress: 45, currentChapter: 12 },
-  { id: 2, title: '斗破苍穹', author: '天蚕土豆', cover: 'https://via.placeholder.com/120x160/67C23A/ffffff?text=斗破', progress: 78, currentChapter: 20 },
-  { id: 3, title: '完美世界', author: '辰东', cover: 'https://via.placeholder.com/120x160/E6A23C/ffffff?text=完美世界', progress: 30, currentChapter: 8 }
-])
-
-const finishedBooks = ref<Book[]>([
-  { id: 4, title: '全职高手', author: '蝴蝶蓝', cover: 'https://via.placeholder.com/120x160/F56C6C/ffffff?text=全职', progress: 100, currentChapter: 20, wordCount: 198 },
-  { id: 5, title: '凡人修仙传', author: '忘语', cover: 'https://via.placeholder.com/120x160/909399/ffffff?text=凡人', progress: 100, currentChapter: 25, wordCount: 256 }
-])
+/** 书架数据待对接阅读进度 API；当前不注入任何假书 */
+const readingBooks = ref<Book[]>([])
+const finishedBooks = ref<Book[]>([])
 
 const historyGroups = computed(() => {
   const groups: Record<string, Book[]> = {}
@@ -152,11 +148,11 @@ const historyGroups = computed(() => {
 })
 
 function goToDetail(book: Book) {
-  router.push(`/user/bookstore/detail/${book.id}`)
+  router.push(`/bookstore/detail/${book.id}`)
 }
 
 function continueReading(book: Book) {
-  router.push(`/user/bookstore/reader/${book.id}/${book.currentChapter}`)
+  router.push(`/bookstore/reader/${book.id}/${book.currentChapter}`)
 }
 
 function removeFromShelf(book: Book) {

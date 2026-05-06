@@ -7,45 +7,26 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("bookstore_book")
-public class BookstoreBook {
+@TableName("bookstore_book_source")
+public class BookstoreBookSource {
 
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    private String title;
+    private String bookSourceName;
 
-    private String author;
+    private String bookSourceUrl;
 
-    private String coverUrl;
+    private String bookSourceGroup;
 
-    private String intro;
+    private String sourceJson;
 
-    private Long categoryId;
-
-    private Integer isVip;
-
-    private BigDecimal rating;
-
-    private Integer wordCount;
-
-    private Long readCount;
+    private Integer enabled;
 
     private Integer sortOrder;
-
-    private Integer status;
-
-    private String tags;
-
-    /** 书源 URL：按文档对应 {@code GET /api/bookstore/book?url=}，缺省时与 sourceId 联用拉站解析 */
-    private String sourceUrl;
-
-    /** 书源规则 JSON */
-    private String sourceJson;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookstoreChapterAdminRowDTO {
-    private Long id;
-    private Integer chapterNo;
-    private String title;
-    private Integer wordCount;
+public class BookstoreLiveChapterNavDTO {
+
+    private BookstoreLiveChapterNavPointerDTO prevChapter;
+
+    private BookstoreLiveChapterNavPointerDTO nextChapter;
 }

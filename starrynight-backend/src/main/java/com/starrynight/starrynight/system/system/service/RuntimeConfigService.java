@@ -2,6 +2,7 @@ package com.starrynight.starrynight.system.system.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.boot.logging.LoggingSystem;
 import org.springframework.dao.DataAccessException;
@@ -27,14 +28,27 @@ public class RuntimeConfigService {
 
     private static final Logger log = LoggerFactory.getLogger(RuntimeConfigService.class);
 
-    private final JdbcTemplate jdbcTemplate;
+    /**
+     * 延迟解析 {@link JdbcTemplate}，避免启动/条件评估阶段与数据源初始化顺序导致的半初始化实例
+     * （历史上 {@link com.starrynight.starrynight.framework.common.config.condition.RabbitMqIntegrationEnabledCondition}
+     * 曾过早 getBean 本类，导致字段注入未完成）。
+     */
+    private final ObjectProvider<JdbcTemplate> jdbcTemplateProvider;
 
     private final ConcurrentHashMap<String, String> dbSnapshot = new ConcurrentHashMap<>();
 
     private final CopyOnWriteArrayList<Runnable> afterReloadHooks = new CopyOnWriteArrayList<>();
 
-    public RuntimeConfigService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = Objects.requireNonNull(jdbcTemplate, "jdbcTemplate");
+    public RuntimeConfigService(ObjectProvider<JdbcTemplate> jdbcTemplateProvider) {
+        this.jdbcTemplateProvider = Objects.requireNonNull(jdbcTemplateProvider, "jdbcTemplateProvider");
+    }
+
+    private JdbcTemplate jdbcTemplate() {
+        JdbcTemplate jt = jdbcTemplateProvider.getIfAvailable();
+        if (jt == null) {
+            throw new IllegalStateException("JdbcTemplate 尚未就绪，无法加载 system_config");
+        }
+        return jt;
     }
 
     @PostConstruct
@@ -48,7 +62,7 @@ public class RuntimeConfigService {
     public synchronized void reloadFromDatabase() {
         dbSnapshot.clear();
         try {
-            List<Map<String, Object>> rows = jdbcTemplate.queryForList(
+            List<Map<String, Object>> rows = jdbcTemplate().queryForList(
                     "SELECT config_key, config_value FROM system_config");
             for (Map<String, Object> row : rows) {
                 Object k = row.get("config_key");

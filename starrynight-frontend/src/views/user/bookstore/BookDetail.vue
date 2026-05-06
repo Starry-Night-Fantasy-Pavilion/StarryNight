@@ -3,7 +3,7 @@
     <div class="detail-header">
       <div class="header-content">
         <div class="book-cover">
-          <img :src="book.cover" :alt="book.title" />
+          <img :src="detailCoverSrc" :alt="book.title" />
           <div class="cover-overlay">
             <el-tag v-if="book.isVip" type="warning">VIP</el-tag>
           </div>
@@ -71,7 +71,7 @@
           </div>
         </el-card>
 
-        <el-card class="content-card">
+        <el-card v-if="reviews.length" class="content-card">
           <template #header>
             <span>热门书评</span>
           </template>
@@ -92,7 +92,7 @@
       </div>
 
       <div class="sidebar">
-        <el-card class="sidebar-card">
+        <el-card v-if="authorBooks.length" class="sidebar-card">
           <template #header>
             <span>作者其他作品</span>
           </template>
@@ -107,7 +107,7 @@
           </div>
         </el-card>
 
-        <el-card class="sidebar-card">
+        <el-card v-if="similarBooks.length" class="sidebar-card">
           <template #header>
             <span>相似推荐</span>
           </template>
@@ -127,12 +127,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { View, Star, Document, Collection, Share } from '@element-plus/icons-vue'
-import { getBookstoreBookCached, getBookstoreChaptersCached, type BookstoreChapterTocItem } from '@/api/bookstore'
+import {
+  getBookstoreBookCached,
+  getBookstoreChaptersCached,
+  type BookstoreChapterTocItem
+} from '@/api/bookstore'
+import {
+  fetchLiveBookCached,
+  writeLiveTocToSession,
+  clearLiveTocSession
+} from '@/utils/book-source-utils'
 import { extractApiErrorMessage } from '@/utils/request'
+import { svgDataPlaceholder } from '@/utils/placeholderImage'
 
 const route = useRoute()
 const router = useRouter()
@@ -153,20 +163,17 @@ const book = ref({
 })
 
 const chapters = ref<BookstoreChapterTocItem[]>([])
-const reviews = ref([
-  { id: 1, name: '书虫小王', avatar: 'https://via.placeholder.com/40x40/409EFF/ffffff?text=王', rating: 5, time: '2026-04-28', content: '太好看了！仙逆是我看过最好的修仙小说！' },
-  { id: 2, name: '阅读达人', avatar: 'https://via.placeholder.com/40x40/67C23A/ffffff?text=张', rating: 4, time: '2026-04-27', content: '剧情很棒，就是更新太慢了' }
-])
+/** 书评 / 同作者 / 相似推荐待对接接口，不展示假数据 */
+const reviews = ref<{ id: number; name: string; avatar: string; rating: number; time: string; content: string }[]>([])
+const authorBooks = ref<{ id: number; title: string; cover: string; views: number }[]>([])
+const similarBooks = ref<{ id: number; title: string; author: string; cover: string }[]>([])
 
-const authorBooks = ref([
-  { id: 2, title: '我欲封天', cover: 'https://via.placeholder.com/50x70/67C23A/ffffff?text=我欲封天', views: 987654 },
-  { id: 3, title: '求魔', cover: 'https://via.placeholder.com/50x70/E6A23C/ffffff?text=求魔', views: 876543 }
-])
-
-const similarBooks = ref([
-  { id: 4, title: '凡人修仙传', author: '忘语', cover: 'https://via.placeholder.com/50x70/909399/ffffff?text=凡人' },
-  { id: 5, title: '道君', author: '跃千愁', cover: 'https://via.placeholder.com/50x70/F56C6C/ffffff?text=道君' }
-])
+const detailCoverSrc = computed(() => {
+  const c = (book.value.cover || '').trim()
+  if (c) return c
+  const t = (book.value.title || '书').slice(0, 8)
+  return svgDataPlaceholder(180, 240, '4f46e5', 'ffffff', t)
+})
 
 function formatViews(views: number): string {
   if (views >= 10000000) return (views / 10000000).toFixed(1) + '千万'
@@ -177,14 +184,14 @@ function formatViews(views: number): string {
 function startReading() {
   const first = chapters.value[0]
   if (!first) {
-    ElMessage.warning('本书暂无章节，请稍后再试')
+    ElMessage.warning('本书暂无章节：请确认已配置书源 URL，并按文档走 /api/bookstore/book。')
     return
   }
-  router.push(`/user/bookstore/reader/${bookId}/${first.chapterNo}`)
+  router.push(`/bookstore/reader/${bookId}/${first.chapterNo}`)
 }
 
 function readChapter(chapterNo: number) {
-  router.push(`/user/bookstore/reader/${bookId}/${chapterNo}`)
+  router.push(`/bookstore/reader/${bookId}/${chapterNo}`)
 }
 
 function addToBookshelf() {
@@ -196,12 +203,12 @@ function shareBook() {
 }
 
 function goToDetail(id: number) {
-  router.push(`/user/bookstore/detail/${id}`)
+  router.push(`/bookstore/detail/${id}`)
 }
 
 onMounted(async () => {
   try {
-    const [d, toc] = await Promise.all([getBookstoreBookCached(bookId), getBookstoreChaptersCached(bookId)])
+    const d = await getBookstoreBookCached(bookId)
     const wan = d.wordCount != null ? Math.round((d.wordCount / 10000) * 10) / 10 : 0
     book.value = {
       id: d.id,
@@ -216,6 +223,34 @@ onMounted(async () => {
       tags: d.tags || [],
       isVip: Boolean(d.isVip)
     }
+
+    if (d.liveParseAvailable) {
+      try {
+        const live = await fetchLiveBookCached(bookId)
+        if (live.chapters?.length) {
+          chapters.value = live.chapters.map((c, i) => ({
+            id: i + 1,
+            chapterNo: i + 1,
+            title: c.title,
+            wordCount: 0
+          }))
+          writeLiveTocToSession(bookId, {
+            sourceId: bookId,
+            chapters: live.chapters.map((c, i) => ({
+              chapterNo: i + 1,
+              title: c.title,
+              url: c.url
+            }))
+          })
+          return
+        }
+      } catch {
+        /* 回退库内章节 */
+      }
+    }
+
+    clearLiveTocSession(bookId)
+    const toc = await getBookstoreChaptersCached(bookId)
     chapters.value = toc || []
   } catch (e) {
     ElMessage.error(extractApiErrorMessage(e))

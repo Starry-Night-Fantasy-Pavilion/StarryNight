@@ -189,6 +189,13 @@
             <version>${commons-text.version}</version>
         </dependency>
 
+        <!-- 书城：HTML 目录/正文解析（对齐设计文档 cheerio 流程） -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.17.2</version>
+        </dependency>
+
         <!-- Word Document Generation -->
         <dependency>
             <groupId>org.apache.poi</groupId>

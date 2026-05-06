@@ -10,10 +10,10 @@
       <div class="landing-nav">
       <router-link to="/" class="landing-nav__brand">
         <span v-if="portal.siteLogoUrl" class="landing-nav__logo-img">
-          <img :src="portal.siteLogoUrl" alt="" width="28" height="28" referrerpolicy="no-referrer" />
+          <img :src="portal.siteLogoUrl" alt="" width="40" height="40" referrerpolicy="no-referrer" />
         </span>
         <span v-else class="landing-nav__logo" aria-hidden="true">
-          <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
+          <svg viewBox="0 0 32 32" width="40" height="40" fill="none">
             <circle cx="16" cy="16" r="14" stroke="url(#lLogoGrad)" stroke-width="1.5" opacity="0.45" />
             <circle cx="16" cy="16" r="4" fill="url(#lLogoGrad)" />
             <circle cx="6" cy="8" r="1.2" fill="url(#lLogoGrad)" opacity="0.55" />
@@ -36,7 +36,7 @@
       <nav class="landing-nav__links" aria-label="页面导航">
         <a href="#features" class="landing-nav__link">产品能力</a>
         <a href="#scenes" class="landing-nav__link">使用场景</a>
-        <router-link to="/bookstore" class="landing-nav__link">在线书城</router-link>
+        <router-link to="/bookstore" class="landing-nav__link">星夜书库</router-link>
         <router-link to="/community" class="landing-nav__link">社区</router-link>
       </nav>
 
@@ -65,7 +65,7 @@
             <el-button type="primary" size="large" class="hero__btn-main">立即开始创作</el-button>
           </router-link>
           <router-link to="/bookstore">
-            <el-button size="large" class="hero__btn-ghost">逛逛书城</el-button>
+            <el-button size="large" class="hero__btn-ghost">逛逛星夜书库</el-button>
           </router-link>
         </div>
         <ul class="hero__metrics" aria-label="产品亮点">
@@ -89,7 +89,7 @@
             :style="{ animationDelay: `${i * 0.05}s` }"
           >
             <div class="feature-card__icon" :class="`tone-${card.tone}`">
-              <component :is="card.icon" :size="22" />
+              <component :is="card.icon" :size="28" />
             </div>
             <h3 class="feature-card__title">{{ card.title }}</h3>
             <p class="feature-card__text">{{ card.text }}</p>
@@ -135,7 +135,7 @@
       <div class="landing-footer__row">
         <span class="landing-footer__brand">星夜 · {{ portal.siteName }}</span>
         <div class="landing-footer__links">
-          <router-link to="/bookstore">书城</router-link>
+          <router-link to="/bookstore">星夜书库</router-link>
           <router-link to="/community">社区</router-link>
           <router-link to="/auth/login">登录</router-link>
         </div>
@@ -256,7 +256,7 @@ const scenes = [
   position: relative;
   width: 100%;
   min-width: 0;
-  min-height: 100%;
+  min-height: 100vh;
   color: $text-primary;
   background: $bg-canvas;
 }
@@ -321,10 +321,17 @@ const scenes = [
   justify-content: space-between;
   gap: $space-md;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: $space-sm $space-xl;
+  padding: $space-md clamp($space-lg, 4vw, $space-3xl);
   box-sizing: border-box;
+}
+
+.landing-nav__actions :deep(.el-button) {
+  min-height: 42px;
+  padding: 0 20px;
+  font-size: $font-size-md;
+  font-weight: 600;
 }
 
 .landing-nav__brand {
@@ -337,7 +344,7 @@ const scenes = [
 }
 
 .landing-nav__title {
-  font-size: $font-size-lg;
+  font-size: $font-size-xl;
   font-weight: 700;
   letter-spacing: 0.12em;
   background: linear-gradient(135deg, #a78bfa, #818cf8);
@@ -347,10 +354,10 @@ const scenes = [
 }
 
 .landing-nav__subtitle {
-  font-size: $font-size-xs;
+  font-size: $font-size-sm;
   color: $text-muted;
   font-weight: 500;
-  padding-left: 6px;
+  padding-left: 10px;
   border-left: 1px solid $border-default;
 }
 
@@ -366,7 +373,7 @@ const scenes = [
 }
 
 .landing-nav__link {
-  font-size: $font-size-sm;
+  font-size: $font-size-md;
   font-weight: 500;
   color: $text-secondary;
   text-decoration: none;
@@ -397,19 +404,19 @@ main {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 1120px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: $space-2xl $space-xl $space-3xl;
+  padding: clamp($space-xl, 4vw, $space-3xl) clamp($space-lg, 4vw, $space-3xl) $space-3xl;
   box-sizing: border-box;
 }
 
 .hero {
-  padding: $space-2xl 0 $space-3xl;
+  padding: clamp($space-2xl, 6vw, $space-3xl) 0 clamp($space-3xl, 7vw, 5rem);
   text-align: center;
 }
 
 .hero__eyebrow {
-  font-size: $font-size-sm;
+  font-size: $font-size-md;
   font-weight: 600;
   color: $primary-light;
   letter-spacing: 0.08em;
@@ -418,9 +425,9 @@ main {
 }
 
 .hero__title {
-  font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+  font-size: clamp(2rem, 5.2vw, 3.35rem);
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.18;
   letter-spacing: -0.02em;
   margin-bottom: $space-lg;
 }
@@ -433,10 +440,10 @@ main {
 }
 
 .hero__lead {
-  max-width: 640px;
+  max-width: 42rem;
   margin: 0 auto;
-  font-size: $font-size-md;
-  line-height: 1.75;
+  font-size: clamp($font-size-md, 1.35vw, 1.125rem);
+  line-height: 1.8;
   color: $text-secondary;
 }
 
@@ -450,9 +457,11 @@ main {
 
 .hero__btn-main {
   font-weight: 600;
-  padding: 12px 28px;
+  padding: 14px 32px;
+  min-height: 48px;
   height: auto;
   border-radius: $radius-md;
+  font-size: $font-size-md;
   background: linear-gradient(135deg, $primary-color, $primary-dark);
   border: none;
   &:hover {
@@ -463,9 +472,11 @@ main {
 
 .hero__btn-ghost {
   font-weight: 600;
-  padding: 12px 24px;
+  padding: 14px 28px;
+  min-height: 48px;
   height: auto;
   border-radius: $radius-md;
+  font-size: $font-size-md;
 }
 
 .hero__metrics {
@@ -475,26 +486,26 @@ main {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: $space-xl;
-  max-width: 720px;
+  gap: clamp($space-lg, 4vw, $space-2xl);
+  max-width: 52rem;
 }
 
 .hero__metrics li {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 140px;
+  gap: 6px;
+  min-width: 10.5rem;
 }
 
 .hero__metric-value {
-  font-size: $font-size-md;
+  font-size: $font-size-lg;
   font-weight: 700;
   color: $text-primary;
 }
 .hero__metric-label {
-  font-size: $font-size-xs;
+  font-size: $font-size-sm;
   color: $text-muted;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .section {
@@ -503,31 +514,31 @@ main {
 
 .section__head {
   text-align: center;
-  max-width: 640px;
-  margin: 0 auto $space-xl;
+  max-width: 44rem;
+  margin: 0 auto $space-2xl;
 }
 
 .section__title {
-  font-size: $font-size-2xl;
+  font-size: clamp(1.5rem, 3.2vw, 2.125rem);
   font-weight: 800;
-  margin-bottom: $space-sm;
+  margin-bottom: $space-md;
   letter-spacing: -0.02em;
 }
 
 .section__desc {
-  font-size: $font-size-sm;
+  font-size: $font-size-md;
   color: $text-secondary;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
 .features__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: $space-md;
+  grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
+  gap: $space-lg;
 }
 
 .feature-card {
-  padding: $space-lg;
+  padding: $space-xl;
   background: $bg-surface;
   border: 1px solid $border-color;
   border-radius: $border-radius-xl;
@@ -546,9 +557,9 @@ main {
 }
 
 .feature-card__icon {
-  width: 42px;
-  height: 42px;
-  border-radius: $radius-sm;
+  width: 52px;
+  height: 52px;
+  border-radius: $radius-md;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -581,15 +592,15 @@ main {
 }
 
 .feature-card__title {
-  font-size: $font-size-md;
+  font-size: $font-size-lg;
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: $space-sm;
 }
 
 .feature-card__text {
-  font-size: $font-size-sm;
+  font-size: $font-size-md;
   color: $text-secondary;
-  line-height: 1.65;
+  line-height: 1.7;
   margin: 0;
 }
 
@@ -606,29 +617,29 @@ main {
 }
 
 .scene-card {
-  padding: $space-xl;
+  padding: clamp($space-xl, 3vw, $space-2xl);
   border-radius: $border-radius-xl;
   background: linear-gradient(160deg, rgba(99, 102, 241, 0.08), transparent 55%), $bg-surface;
   border: 1px solid $border-color;
 }
 
 .scene-card__title {
-  font-size: $font-size-md;
+  font-size: $font-size-lg;
   font-weight: 700;
-  margin-bottom: $space-sm;
+  margin-bottom: $space-md;
 }
 
 .scene-card__text {
-  font-size: $font-size-sm;
+  font-size: $font-size-md;
   color: $text-secondary;
-  line-height: 1.65;
+  line-height: 1.7;
   margin-bottom: $space-md;
 }
 
 .scene-card__bullets {
   margin: 0;
-  padding-left: 1.1em;
-  font-size: $font-size-sm;
+  padding-left: 1.15em;
+  font-size: $font-size-md;
   color: $text-muted;
   line-height: 1.75;
 }
@@ -643,7 +654,7 @@ main {
   align-items: center;
   justify-content: space-between;
   gap: $space-xl;
-  padding: $space-2xl;
+  padding: clamp($space-xl, 4vw, $space-3xl);
   border-radius: $border-radius-xl;
   background: linear-gradient(135deg, rgba(79, 70, 229, 0.92), rgba(99, 102, 241, 0.85));
   color: #fff;
@@ -651,16 +662,16 @@ main {
 }
 
 .cta-band__title {
-  font-size: $font-size-xl;
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
   font-weight: 800;
-  margin-bottom: $space-sm;
+  margin-bottom: $space-md;
 }
 
 .cta-band__text {
-  font-size: $font-size-sm;
+  font-size: $font-size-md;
   opacity: 0.92;
-  line-height: 1.65;
-  max-width: 480px;
+  line-height: 1.7;
+  max-width: 32rem;
   margin: 0;
 }
 
@@ -672,6 +683,9 @@ main {
 
 .cta-band__btn {
   font-weight: 600;
+  min-height: 48px;
+  padding: 0 28px;
+  font-size: $font-size-md;
   border: none;
   background: #fff;
   color: #4338ca;
@@ -683,6 +697,9 @@ main {
 
 .cta-band__btn-secondary {
   font-weight: 600;
+  min-height: 48px;
+  padding: 0 28px;
+  font-size: $font-size-md;
   color: #fff !important;
   border-color: rgba(255, 255, 255, 0.55) !important;
   background: transparent !important;
@@ -696,9 +713,9 @@ main {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 1120px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: $space-xl $space-xl $space-2xl;
+  padding: $space-2xl clamp($space-lg, 4vw, $space-3xl) $space-3xl;
   box-sizing: border-box;
   border-top: 1px solid $border-subtle;
 }
@@ -713,7 +730,7 @@ main {
 }
 
 .landing-footer__brand {
-  font-size: $font-size-sm;
+  font-size: $font-size-md;
   font-weight: 600;
   color: $text-secondary;
 }
@@ -722,7 +739,7 @@ main {
   display: flex;
   gap: $space-lg;
   a {
-    font-size: $font-size-sm;
+    font-size: $font-size-md;
     color: $text-muted;
     text-decoration: none;
     &:hover {

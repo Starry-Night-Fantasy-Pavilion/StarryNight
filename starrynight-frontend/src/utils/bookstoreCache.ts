@@ -7,7 +7,10 @@ export const BOOKSTORE_CACHE_TTL = {
   home: 60 * 60 * 1000,
   book: 30 * 60 * 1000,
   toc: 30 * 60 * 1000,
-  chapter: 30 * 60 * 1000
+  chapter: 30 * 60 * 1000,
+  /** 与文档一致：书源实时解析结果 */
+  liveBook: 30 * 60 * 1000,
+  liveChapter: 30 * 60 * 1000
 } as const
 
 type CacheEnvelope<T> = { v: T; exp: number }

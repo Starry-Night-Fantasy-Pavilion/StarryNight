@@ -1,14 +1,19 @@
 package com.starrynight.starrynight.system.bookstore.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Map;
 
+/** 实时解析返回的书籍元信息（与运营库字段对齐 + extraInfo） */
 @Data
 @Builder
-public class BookstoreBookPublicDTO {
+@NoArgsConstructor
+@AllArgsConstructor
+public class BookstoreLiveBookPayloadDTO {
 
     private Long id;
 
@@ -20,18 +25,11 @@ public class BookstoreBookPublicDTO {
 
     private String description;
 
-    private Long views;
+    private String category;
 
     private BigDecimal rating;
 
-    private Boolean isVip;
-
     private Integer wordCount;
 
-    private String category;
-
-    private List<String> tags;
-
-    /** 已配置书源 URL/规则时，可走实时解析 API（/api/bookstore/book、chapter） */
-    private Boolean liveParseAvailable;
+    private Map<String, Object> extraInfo;
 }

@@ -4,17 +4,16 @@ import com.starrynight.starrynight.framework.common.vo.PageVO;
 import com.starrynight.starrynight.framework.common.vo.ResponseVO;
 import com.starrynight.starrynight.system.bookstore.dto.BookstoreBookDTO;
 import com.starrynight.starrynight.system.bookstore.dto.BookstoreConfigDTO;
-import com.starrynight.starrynight.system.bookstore.dto.BookstoreChapterAdminRowDTO;
-import com.starrynight.starrynight.system.bookstore.dto.BookstoreChapterMutateDTO;
-import com.starrynight.starrynight.system.bookstore.entity.BookstoreChapter;
-import com.starrynight.starrynight.system.bookstore.service.BookstoreChapterService;
+import com.starrynight.starrynight.system.bookstore.dto.BookstoreLegadoImportResultDTO;
+import com.starrynight.starrynight.system.bookstore.dto.BookstoreLegadoImportUrlDTO;
+import com.starrynight.starrynight.system.bookstore.dto.BookstoreLegadoSourceAdminDTO;
+import com.starrynight.starrynight.system.bookstore.service.BookstoreLegadoSourceService;
 import com.starrynight.starrynight.system.bookstore.service.BookstoreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/bookstore")
@@ -23,7 +22,7 @@ import java.util.List;
 public class AdminBookstoreController {
 
     private final BookstoreService bookstoreService;
-    private final BookstoreChapterService bookstoreChapterService;
+    private final BookstoreLegadoSourceService bookstoreLegadoSourceService;
 
     @GetMapping("/config")
     public ResponseVO<BookstoreConfigDTO> getConfig() {
@@ -65,39 +64,35 @@ public class AdminBookstoreController {
         return ResponseVO.success();
     }
 
-    @GetMapping("/books/{bookId}/chapters")
-    public ResponseVO<List<BookstoreChapterAdminRowDTO>> listChapters(@PathVariable Long bookId) {
-        return ResponseVO.success(bookstoreChapterService.listAdminRows(bookId));
+    /** Legado 书源集合：从 URL 拉取 JSON 数组并入库 */
+    @PostMapping("/legado-sources/import-url")
+    public ResponseVO<BookstoreLegadoImportResultDTO> importLegadoFromUrl(@RequestBody BookstoreLegadoImportUrlDTO dto) {
+        return ResponseVO.success(bookstoreLegadoSourceService.importFromUrl(dto.getUrl()));
     }
 
-    @GetMapping("/books/{bookId}/chapters/{chapterId}")
-    public ResponseVO<BookstoreChapter> getChapter(
-            @PathVariable Long bookId,
-            @PathVariable Long chapterId) {
-        return ResponseVO.success(bookstoreChapterService.getAdminDetail(bookId, chapterId));
+    /** 直接提交书源数组 JSON（与阅读 3.0 导出格式一致） */
+    @PostMapping(value = "/legado-sources/import-json", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseVO<BookstoreLegadoImportResultDTO> importLegadoJson(@RequestBody String rawJson) {
+        return ResponseVO.success(bookstoreLegadoSourceService.importJsonArray(rawJson));
     }
 
-    @PostMapping("/books/{bookId}/chapters")
-    public ResponseVO<BookstoreChapterAdminRowDTO> createChapter(
-            @PathVariable Long bookId,
-            @Valid @RequestBody BookstoreChapterMutateDTO dto) {
-        return ResponseVO.success(bookstoreChapterService.create(bookId, dto));
+    @GetMapping("/legado-sources/list")
+    public ResponseVO<PageVO<BookstoreLegadoSourceAdminDTO>> listLegadoSources(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseVO.success(bookstoreLegadoSourceService.pageAdmin(keyword, page, size));
     }
 
-    @PutMapping("/books/{bookId}/chapters/{chapterId}")
-    public ResponseVO<Void> updateChapter(
-            @PathVariable Long bookId,
-            @PathVariable Long chapterId,
-            @Valid @RequestBody BookstoreChapterMutateDTO dto) {
-        bookstoreChapterService.update(bookId, chapterId, dto);
+    @DeleteMapping("/legado-sources/{id}")
+    public ResponseVO<Void> deleteLegadoSource(@PathVariable Long id) {
+        bookstoreLegadoSourceService.delete(id);
         return ResponseVO.success();
     }
 
-    @DeleteMapping("/books/{bookId}/chapters/{chapterId}")
-    public ResponseVO<Void> deleteChapter(
-            @PathVariable Long bookId,
-            @PathVariable Long chapterId) {
-        bookstoreChapterService.delete(bookId, chapterId);
+    @PutMapping("/legado-sources/{id}/enabled")
+    public ResponseVO<Void> setLegadoSourceEnabled(@PathVariable Long id, @RequestParam boolean enabled) {
+        bookstoreLegadoSourceService.setEnabled(id, enabled);
         return ResponseVO.success();
     }
 }

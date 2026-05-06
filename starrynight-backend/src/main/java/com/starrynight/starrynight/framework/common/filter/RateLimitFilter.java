@@ -66,6 +66,13 @@ public class RateLimitFilter implements Filter {
             }
         }
 
+        // 运营端已走 JWT + 角色鉴权；系统配置等页面会短时间连续 PUT 同一路径（如 OAuth 多键批量保存），
+        // 若仍按全局限流易误触 429。
+        if (path.startsWith("/api/admin/")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         String clientId = getClientId(httpRequest);
         String key = RATE_LIMIT_PREFIX + clientId + ":" + path;
 
