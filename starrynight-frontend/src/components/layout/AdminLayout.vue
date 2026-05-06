@@ -149,7 +149,7 @@ import { ADMIN_CONSOLE_BASE_PATH, ADMIN_OPS_LOGIN_PATH } from '@/config/portal'
 import { useTheme } from '@/composables/useTheme'
 import { ElMessage } from 'element-plus'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
-import { getAdminCommunityReportStats, getCommunityWorkOrderStats } from '@/api/communityAdmin'
+import { getCommunityWorkOrderStats } from '@/api/communityAdmin'
 import { adminGetTicketStats } from '@/api/ticket'
 import {
   DataAnalysis,
@@ -192,18 +192,12 @@ const adminBasePath = ADMIN_CONSOLE_BASE_PATH
 
 const opsAvatarLetter = computed(() => authStore.userInfo?.username?.charAt(0) || '运')
 
-const pendingReportCount = ref(0)
 const pendingWorkOrderCount = ref(0)
 const pendingTicketCount = ref(0)
 
 async function loadBadges() {
   try {
-    const [rpt, wo, tk] = await Promise.all([
-      getAdminCommunityReportStats(),
-      getCommunityWorkOrderStats(),
-      adminGetTicketStats()
-    ])
-    pendingReportCount.value = Math.max(0, Number(rpt?.pendingCount ?? 0))
+    const [wo, tk] = await Promise.all([getCommunityWorkOrderStats(), adminGetTicketStats()])
     pendingWorkOrderCount.value = Math.max(0, Number(wo?.pendingCount ?? 0))
     pendingTicketCount.value = Math.max(0, Number(tk?.openCount ?? 0))
   } catch {
@@ -224,7 +218,6 @@ const menuOrder: Record<string, number> = {
   recommendations: 4,
   novels: 5,
   community: 5.3,
-  'risk-control': 5.35,
   'support-tickets': 5.4,
   announcements: 6,
   activities: 6.2,
@@ -251,7 +244,6 @@ const menuIconMap: Record<string, typeof DataAnalysis> = {
   recommendations: Star,
   novels: Document,
   community: ChatDotRound,
-  'risk-control': Operation,
   'support-tickets': Service,
   'ai-config': Cpu,
   billing: Money,
@@ -281,7 +273,6 @@ const menuGroupsDef: { title: string; paths: string[] }[] = [
       'recommendations',
       'novels',
       'community',
-      'risk-control',
       'support-tickets',
       'announcements',
       'activities',
@@ -304,18 +295,17 @@ const adminMenus = computed(() => {
       const segment = item.path.replace(`${adminBasePath}/`, '')
       if (segment === 'profile') return false
       if (segment === 'roles') return false
+      if (segment === 'risk-control') return false
       return Boolean(item.meta?.requiresAdmin && item.meta?.title)
     })
     .map((item) => {
       const segment = item.path.replace(`${adminBasePath}/`, '')
       const badge =
-        segment === 'risk-control'
-          ? pendingReportCount.value
-          : segment === 'community'
-            ? pendingWorkOrderCount.value
-            : segment === 'support-tickets'
-              ? pendingTicketCount.value
-              : 0
+        segment === 'community'
+          ? pendingWorkOrderCount.value
+          : segment === 'support-tickets'
+            ? pendingTicketCount.value
+            : 0
       return {
         path: segment,
         title: item.meta.title as string,
