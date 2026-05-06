@@ -2,7 +2,6 @@ package com.starrynight.starrynight.system.system.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.boot.logging.LoggingSystem;
 import org.springframework.dao.DataAccessException;
@@ -28,12 +27,15 @@ public class RuntimeConfigService {
 
     private static final Logger log = LoggerFactory.getLogger(RuntimeConfigService.class);
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     private final ConcurrentHashMap<String, String> dbSnapshot = new ConcurrentHashMap<>();
 
     private final CopyOnWriteArrayList<Runnable> afterReloadHooks = new CopyOnWriteArrayList<>();
+
+    public RuntimeConfigService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = Objects.requireNonNull(jdbcTemplate, "jdbcTemplate");
+    }
 
     @PostConstruct
     public void init() {
